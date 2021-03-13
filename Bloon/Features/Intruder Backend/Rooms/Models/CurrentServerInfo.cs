@@ -2,8 +2,6 @@ namespace Bloon.Features.IntruderBackend.Rooms
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
-    using Bloon.Features.Doorman;
-    using Newtonsoft.Json;
 
     /// <summary>
     /// Not used via api.intruderfps.com. This is a model for Bloon's internal use only as it creates the embed based off these details.
@@ -42,6 +40,7 @@ namespace Bloon.Features.IntruderBackend.Rooms
         public int AsiaPlayerCount { get; set; }
 
         public int AsiaRoomCount { get; set; }
+
         public ulong ASTOD { get; set; }
 
         public int JPPlayerCount { get; set; }

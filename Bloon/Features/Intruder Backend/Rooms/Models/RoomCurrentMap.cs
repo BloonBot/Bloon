@@ -1,6 +1,7 @@
 namespace Bloon.Features.IntruderBackend.Rooms
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
     using Bloon.Features.IntruderBackend.Maps;
     using Newtonsoft.Json;
@@ -26,7 +27,7 @@ namespace Bloon.Features.IntruderBackend.Rooms
         public bool IsMapMakerMap { get; set; }
 
         [NotMapped]
-        public string[] Tags { get; set; }
+        public List<string[]> Tags { get; set; }
 
         public DateTime LastUpdate { get; set; }
     }

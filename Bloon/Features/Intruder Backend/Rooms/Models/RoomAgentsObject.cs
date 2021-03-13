@@ -1,5 +1,6 @@
 namespace Bloon.Features.IntruderBackend.Rooms
 {
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
     using Bloon.Features.IntruderBackend.Agents;
 
@@ -9,6 +10,6 @@ namespace Bloon.Features.IntruderBackend.Rooms
     [NotMapped]
     public class RoomAgentsObject
     {
-        public Agent[] AgentsInRoom { get; set; }
+        public List<Agent> AgentsInRoom { get; set; }
     }
 }

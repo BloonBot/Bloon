@@ -1,5 +1,6 @@
 namespace Bloon.Features.IntruderBackend.News
 {
+    using System.Collections.Generic;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -10,7 +11,7 @@ namespace Bloon.Features.IntruderBackend.News
         [JsonProperty("totalCount")]
         public int TotalCount { get; set; }
 
-        public News[] Data { get; set; }
+        public List<News> Data { get; set; }
 
         [JsonProperty("page")]
         public int Page { get; set; }

@@ -25,23 +25,24 @@ namespace Bloon.Features.Wiki
         }
 
         [GroupCommand]
-        public async Task QueryWikiAsync(CommandContext ctx, [RemainingText]string pageTitle)
+        public async Task QueryWikiAsync(CommandContext ctx, [RemainingText] string pageTitle)
         {
             if (string.IsNullOrEmpty(pageTitle))
             {
-                await ctx.Channel.SendMessageAsync("Correct, we have a wiki.").ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync("Correct, we have a wiki.");
                 return;
             }
-            //else if (pageTitle.Equals("-rc", StringComparison.Ordinal))
-            //{
-            //    await this.ShowRecentChangesAsync(ctx).ConfigureAwait(false);
+
+            // else if (pageTitle.Equals("-rc", StringComparison.Ordinal))
+            // {
+            //    await this.ShowRecentChangesAsync(ctx);
             //    return;
-            //}
-            //else if (pageTitle.Equals("-au", StringComparison.Ordinal))
-            //{
-            //    await this.ReturnActiveUsers(ctx).ConfigureAwait(false);
+            // }
+            // else if (pageTitle.Equals("-au", StringComparison.Ordinal))
+            // {
+            //    await this.ReturnActiveUsers(ctx);
             //    return;
-            //}
+            // }
 
             // Base embed
             DiscordEmbedBuilder wikiEmbed = new DiscordEmbedBuilder
@@ -55,7 +56,7 @@ namespace Bloon.Features.Wiki
                 Timestamp = DateTime.UtcNow,
             };
 
-            WikiArticle article = await this.wikiService.GetArticleAsync(pageTitle).ConfigureAwait(false);
+            WikiArticle article = await this.wikiService.GetArticleAsync(pageTitle);
 
             // Found a matching article
             if (article != null)
@@ -64,12 +65,12 @@ namespace Bloon.Features.Wiki
                 wikiEmbed.Title = article.Title;
                 wikiEmbed.Description = article.Body;
                 wikiEmbed.Url = article.Url.ToString();
-                await ctx.Channel.SendMessageAsync(string.Empty, embed: wikiEmbed.Build()).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync(string.Empty, embed: wikiEmbed.Build());
                 return;
             }
 
             // No exact match, find page titles containing the passed title
-            List<string> suggestedPages = await this.wikiService.GetSuggestedPagesAsync(pageTitle).ConfigureAwait(false);
+            List<string> suggestedPages = await this.wikiService.GetSuggestedPagesAsync(pageTitle);
 
             // Show what we found
             if (suggestedPages.Count > 0)
@@ -86,7 +87,7 @@ namespace Bloon.Features.Wiki
                 wikiEmbed.Description = @"¯\_(ツ)_/¯";
             }
 
-            await ctx.Channel.SendMessageAsync(embed: wikiEmbed.Build()).ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync(embed: wikiEmbed.Build());
         }
 
         [Command("-recentchanges")]
@@ -94,21 +95,21 @@ namespace Bloon.Features.Wiki
         [Description("Shows recent changes from the wiki. Default amount returned is 10 entries")]
         public async Task ShowRecentChangesAsync(CommandContext ctx)
         {
-            List<RecentChanges> wikiArticles = await this.wikiService.GetRecentChanges().ConfigureAwait(false);
+            List<RecentChange> wikiArticles = await this.wikiService.GetRecentChanges();
 
             if (wikiArticles.Count == 0)
             {
-                await ctx.RespondAsync("No recent changes found!").ConfigureAwait(false);
+                await ctx.RespondAsync("No recent changes found!");
                 return;
             }
 
             string table = wikiArticles.Select(a => new
             {
-                a.pageid,
-                Type = a.type.Capitalize(),
-                Title = a.title.Truncate(10),
-                Author = a.user.Truncate(10),
-                Timestamp = a.timestamp.ToString("g", CultureInfo.InvariantCulture),
+                a.PageId,
+                Type = a.Type.Capitalize(),
+                Title = a.Title.Truncate(10),
+                Author = a.User.Truncate(10),
+                Timestamp = a.Timestamp.ToString("g", CultureInfo.InvariantCulture),
             }).ToMarkdownTable();
 
             // Base embed
@@ -125,7 +126,7 @@ namespace Bloon.Features.Wiki
                 Description = $"```md\n{table}\n```",
             };
 
-            await ctx.Channel.SendMessageAsync(embed: wikiEmbed).ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync(embed: wikiEmbed);
         }
 
         [Command("-activeusers")]
@@ -133,7 +134,7 @@ namespace Bloon.Features.Wiki
         [Description("Returns a list of active wiki editors within the past 30 days.")]
         public async Task ReturnActiveUsers(CommandContext ctx)
         {
-            List<WikiUser> activeUsers = await this.wikiService.GetActiveUsers().ConfigureAwait(false);
+            List<WikiUser> activeUsers = await this.wikiService.GetActiveUsers();
 
             DiscordEmbedBuilder wikiEmbed = new DiscordEmbedBuilder
             {
@@ -152,7 +153,7 @@ namespace Bloon.Features.Wiki
                 wikiEmbed.AddField($"**__{user.Name}__**", $"**{user.CountRecentPosts}** *edits*", true);
             }
 
-            await ctx.Channel.SendMessageAsync(embed: wikiEmbed.Build()).ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync(embed: wikiEmbed.Build());
         }
     }
 }

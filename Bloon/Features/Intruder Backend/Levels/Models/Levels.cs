@@ -12,6 +12,5 @@ namespace Bloon.Features.IntruderBackend.Levels
 
         [Column("xp_required")]
         public int? XPRequired { get; set; }
-
     }
 }

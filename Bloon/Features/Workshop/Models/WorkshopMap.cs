@@ -1,10 +1,8 @@
 namespace Bloon.Features.Workshop.Models
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Text;
     using Newtonsoft.Json;
 
     [Table("workshop_maps")]
@@ -77,11 +75,11 @@ namespace Bloon.Features.Workshop.Models
 
         [Column("ban_reason")]
         [JsonProperty("ban_reason")]
-        public string Ban_reason { get; set; }
+        public string BanReason { get; set; }
 
         [Column("can_subscribe")]
         [JsonProperty("can_subscribe")]
-        public bool Can_subscribe { get; set; }
+        public bool CanSubscribe { get; set; }
 
         [Column("subscriptions")]
         [JsonProperty("subscriptions")]
@@ -118,14 +116,6 @@ namespace Bloon.Features.Workshop.Models
         [Column("views")]
         [JsonProperty("views")]
         public int Views { get; set; }
-
-        [NotMapped]
-        [JsonProperty("previews")]
-        public WorkshopMapPreview[] Previews { get; set; }
-
-        [NotMapped]
-        [JsonProperty("tags")]
-        public WorkshopMapTag[] Tags { get; set; }
 
         [Column("revision_change_number")]
         [JsonProperty("revision_change_number")]

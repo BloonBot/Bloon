@@ -2,26 +2,22 @@ namespace Bloon.Features.IntruderBackend.Servers
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
+    using System.IO;
     using System.Linq;
     using System.Net.Http;
     using System.Text;
     using System.Threading.Tasks;
     using Bloon.Core.Database;
-    using Bloon.Core.Discord;
-    using Bloon.Features.IntruderBackend.Agents;
+    using Bloon.Features.Censor;
     using Bloon.Features.IntruderBackend.Rooms;
     using Bloon.Utils;
     using Bloon.Variables.Emojis;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.VisualBasic;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Serilog;
-    using Bloon.Features.Censor;
-    using System.IO;
 
-    public partial class RoomService
+    public class RoomService
     {
         private const string BaseUrl = "https://api.intruderfps.com/rooms?HideEmpty=true";
 
@@ -34,10 +30,41 @@ namespace Bloon.Features.IntruderBackend.Servers
             this.scopeFactory = scopeFactory;
         }
 
-        public async Task<List<Rooms>> GetRooms(string? q, int? version, string? region, string? hideEmpty, string? hideFull,
-            string? hidePassworded, string? hideOfficial, string? hideCustom, string? hideUnranked, string? orderBy, int? page, int? perPage)
+        // https://stackoverflow.com/questions/592248/how-can-i-check-if-the-current-time-is-between-in-a-time-frame
+        // ty u bueaitiful sonnabitch
+        public static bool IsTimeOfDayBetween(DateTime time, TimeSpan startTime, TimeSpan endTime)
         {
-            JToken queryRoomResponse = await this.QueryRooms(q, version, region, hideEmpty, hideFull, hidePassworded, hideOfficial, hideCustom, hideUnranked, orderBy, page, perPage).ConfigureAwait(false);
+            if (endTime == startTime)
+            {
+                return true;
+            }
+            else if (endTime < startTime)
+            {
+                return time.TimeOfDay <= endTime ||
+                    time.TimeOfDay >= startTime;
+            }
+            else
+            {
+                return time.TimeOfDay >= startTime &&
+                    time.TimeOfDay <= endTime;
+            }
+        }
+
+        public async Task<List<Rooms>> GetRooms(
+            string? q,
+            int? version,
+            string? region,
+            string? hideEmpty,
+            string? hideFull,
+            string? hidePassworded,
+            string? hideOfficial,
+            string? hideCustom,
+            string? hideUnranked,
+            string? orderBy,
+            int? page,
+            int? perPage)
+        {
+            JToken queryRoomResponse = await this.QueryRooms(q, version, region, hideEmpty, hideFull, hidePassworded, hideOfficial, hideCustom, hideUnranked, orderBy, page, perPage);
             RoomObject roomObject = JsonConvert.DeserializeObject<RoomObject>(queryRoomResponse.ToString());
             List<Rooms> rooms = new List<Rooms>();
 
@@ -49,11 +76,10 @@ namespace Bloon.Features.IntruderBackend.Servers
             return rooms;
         }
 
-        public async Task<CurrentServerInfo> GetCSIRooms(string? q, int? version, string? region, string? hideEmpty, string? hideFull,
-                string? hidePassworded, string? hideOfficial, string? hideCustom, string? hideUnranked, string? orderBy, int? page, int? perPage)
+        public async Task<CurrentServerInfo> GetCSIRooms(string? hideEmpty, string? hideFull, string? hidePassworded, string? hideOfficial, string? hideCustom, string? hideUnranked, string? region)
         {
             // Send first request
-            JToken queryRoomResponse = await this.QueryRooms(null, null, null, hideEmpty, hideFull, hidePassworded, hideOfficial, hideCustom, hideUnranked, "official%3Adesc", 1, 100).ConfigureAwait(false);
+            JToken queryRoomResponse = await this.QueryRooms(null, null, null, hideEmpty, hideFull, hidePassworded, hideOfficial, hideCustom, hideUnranked, "official%3Adesc", 1, 100);
 
             RoomObject roomObject = JsonConvert.DeserializeObject<RoomObject>(queryRoomResponse.ToString());
 
@@ -73,22 +99,24 @@ namespace Bloon.Features.IntruderBackend.Servers
                     room.ServerIcon = $"<:uo:{ServerEmojis.Unofficial}>";
                 }
 
-                if (room.passworded)
+                if (room.Passworded)
                 {
                     room.ServerIcon = $"<:asd:{ServerEmojis.Password}>";
                 }
-                room.Name = this.FilterRoomNames(room.Name);
+
+                room.Name = FilterRoomNames(room.Name);
                 rooms.Add(room);
                 room.RegionFlag = ConvertRegion(room.Region);
-                totalPlayers = totalPlayers + room.AgentCount;
+                totalPlayers += room.AgentCount;
             }
 
             // MAKE SURE THE ROOM COUNT IN OUR MODEL MATCHES THE ROOMOBJECT REQUEST
             while (rooms.Count != roomObject.TotalCount)
             {
                 i++;
+
                 // Send another request for moar data
-                queryRoomResponse = await this.QueryRooms(null, null, null, hideEmpty, hideFull, hidePassworded, hideOfficial, hideCustom, hideUnranked, "official%3Adesc", i, 100).ConfigureAwait(false);
+                queryRoomResponse = await this.QueryRooms(null, null, null, hideEmpty, hideFull, hidePassworded, hideOfficial, hideCustom, hideUnranked, "official%3Adesc", i, 100);
 
                 // Decode the mainframe overloader
                 roomObject = JsonConvert.DeserializeObject<RoomObject>(queryRoomResponse.ToString());
@@ -104,26 +132,38 @@ namespace Bloon.Features.IntruderBackend.Servers
                         room.ServerIcon = $"<:uo:{ServerEmojis.Unofficial}>";
                     }
 
-                    if (room.passworded)
+                    if (room.Passworded)
                     {
                         room.ServerIcon = $"<:asd:{ServerEmojis.Password}>";
                     }
 
                     rooms.Add(room);
                     room.RegionFlag = ConvertRegion(room.Region);
-                    totalPlayers = totalPlayers + room.AgentCount;
+                    totalPlayers += room.AgentCount;
                 }
             }
 
-            CurrentServerInfo csi = this.CountRegions(rooms);
+            CurrentServerInfo csi = CountRegions(rooms);
             csi.PlayerCount = totalPlayers;
 
             return csi;
         }
 
-        public async Task<CurrentServerInfo> GetCSIRooms(string? hideEmpty, string? hideFull, string? hidePassworded, string? hideOfficial, string? hideCustom, string? hideUnranked, string? region)
+        public async Task<CurrentServerInfo> GetCSIRooms(
+            string? q,
+            int? version,
+            string? region,
+            string? hideEmpty,
+            string? hideFull,
+            string? hidePassworded,
+            string? hideOfficial,
+            string? hideCustom,
+            string? hideUnranked,
+            string? orderBy,
+            int? page,
+            int? perPage)
         {
-            JToken queryRoomResponse = await this.QueryRooms(null, null, region, hideEmpty, hideFull, hidePassworded, hideOfficial, hideCustom, hideUnranked, null, 1, 100).ConfigureAwait(false);
+            JToken queryRoomResponse = await this.QueryRooms(null, null, region, hideEmpty, hideFull, hidePassworded, hideOfficial, hideCustom, hideUnranked, null, 1, 100);
             RoomObject roomObject = JsonConvert.DeserializeObject<RoomObject>(queryRoomResponse.ToString());
             List<Rooms> rooms = new List<Rooms>();
 
@@ -133,7 +173,7 @@ namespace Bloon.Features.IntruderBackend.Servers
             {
                 rooms.Add(room);
                 room.RegionFlag = ConvertRegion(room.Region);
-                totalPlayers = totalPlayers + room.AgentCount;
+                totalPlayers += room.AgentCount;
             }
 
             CurrentServerInfo csi = new CurrentServerInfo()
@@ -144,79 +184,64 @@ namespace Bloon.Features.IntruderBackend.Servers
 
             return csi;
         }
-        private CurrentServerInfo CountRegions(List<Rooms> rooms)
+
+        public async Task ArchiveRoomData(List<Rooms> rooms)
         {
-            CurrentServerInfo csi = new CurrentServerInfo()
+            if (rooms.Count != 0)
             {
-                Rooms = rooms,
-            };
+                using IServiceScope scope = this.scopeFactory.CreateScope();
+                using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
 
-            // Get Current Universal Standard Time
-            DateTime time = DateTime.UtcNow;
-
-            foreach (Rooms regionRooms in rooms)
-            {
-                switch (regionRooms.Region)
+                foreach (Rooms room in rooms)
                 {
-                    case "EU":
-                        csi.EUPlayerCount = csi.EUPlayerCount + regionRooms.AgentCount;
-                        csi.EURoomCount++;
-                        break;
-                    case "US":
-                        csi.USPlayerCount = csi.USPlayerCount + regionRooms.AgentCount;
-                        csi.USRoomCount++;
-                        break;
-                    case "AU":
-                        csi.AUPlayerCount = csi.AUPlayerCount + regionRooms.AgentCount;
-                        csi.AURoomCount++;
-                        break;
-                    case "USW":
-                        csi.USPlayerCount = csi.USPlayerCount + regionRooms.AgentCount;
-                        csi.USRoomCount++;
-                        break;
-                    case "RU":
-                        csi.RUPlayerCount = csi.RUPlayerCount + regionRooms.AgentCount;
-                        csi.RURoomCount++;
-                        break;
-                    case "Asia":
-                        csi.AsiaPlayerCount = csi.AsiaPlayerCount + regionRooms.AgentCount;
-                        csi.AsiaRoomCount++;
-                        break;
-                    case "JP":
-                        csi.JPPlayerCount = csi.JPPlayerCount + regionRooms.AgentCount;
-                        csi.JPRoomCount++;
-                        break;
-                    case "SA":
-                        csi.SAPlayerCount = csi.SAPlayerCount + regionRooms.AgentCount;
-                        csi.SARoomCount++;
-                        break;
-                    case "CAE":
-                        csi.CAEPlayerCount = csi.CAEPlayerCount + regionRooms.AgentCount;
-                        csi.CAERoomCount++;
-                        break;
-                    case "KR":
-                        csi.KRPlayerCount = csi.KRPlayerCount + regionRooms.AgentCount;
-                        csi.KRRoomCount++;
-                        break;
-                    case "IN":
-                        csi.INPlayerCount = csi.INPlayerCount + regionRooms.AgentCount;
-                        csi.INRoomCount++;
-                        break;
+                    try
+                    {
+                        room.DBCreatorSteamId = room.Creator.SteamID;
+                        room.DBCurrentMap = room.CurrentMap.Id;
+                        if (room.Password != null)
+                        {
+                            room.Passworded = true;
+                        }
+                        else
+                        {
+                            room.Passworded = false;
+                        }
+
+                        Rooms dbRoom = db.Rooms.Where(x => x.RoomId == room.RoomId).FirstOrDefault();
+
+                        if (dbRoom == null)
+                        {
+                            db.Rooms.Add(room);
+                        }
+                        else
+                        {
+                            dbRoom.Name = room.Name;
+                            dbRoom.Passworded = room.Passworded;
+                            dbRoom.Region = room.Region;
+                            dbRoom.Official = room.Official;
+                            dbRoom.Ranked = room.Ranked;
+                            dbRoom.Version = room.Version;
+                            dbRoom.Position = room.Position;
+                            dbRoom.AgentCount = room.AgentCount;
+                            dbRoom.CreatorId = room.CreatorId;
+                            dbRoom.DBCreatorSteamId = room.DBCreatorSteamId;
+                            dbRoom.LastUpdate = room.LastUpdate;
+                            dbRoom.DBCurrentMap = room.CurrentMap.Id;
+                            db.Update(dbRoom);
+                        }
+
+                        await db.SaveChangesAsync();
+                    }
+                    catch (Exception e1)
+                    {
+                        Log.Error(e1, $"ROOM ID: {room.RoomId} | Name: {room.Name} | Creator: {room.Creator.Name}");
+                    }
                 }
             }
-            // US WEST csi.USWTOD = this.CheckTimeOfDay(DateTime.UtcNow.AddHours(-8.0));
-            csi.CAETOD = this.CheckTimeOfDay(DateTime.UtcNow.AddHours(-5.0));
-            csi.USTOD = this.CheckTimeOfDay(DateTime.UtcNow.AddHours(-5.0));
-            csi.SATOD = this.CheckTimeOfDay(DateTime.UtcNow.AddHours(-3.0));
-            csi.EUTOD = this.CheckTimeOfDay(DateTime.UtcNow.AddHours(1.0));
-            csi.RUTOD = this.CheckTimeOfDay(DateTime.UtcNow.AddHours(3.0));
-            csi.INTOD = this.CheckTimeOfDay(DateTime.UtcNow.AddHours(5.5));
-            csi.ASTOD = this.CheckTimeOfDay(DateTime.UtcNow.AddHours(8.0));
-            csi.JPTOD = this.CheckTimeOfDay(DateTime.UtcNow.AddHours(9.0));
-            csi.KRTOD = this.CheckTimeOfDay(DateTime.UtcNow.AddHours(9.0));
-            csi.AUTOD = this.CheckTimeOfDay(DateTime.UtcNow.AddHours(11.0));
-
-            return csi;
+            else
+            {
+                await Task.CompletedTask;
+            }
         }
 
         private static string ConvertRegion(string region)
@@ -263,7 +288,22 @@ namespace Bloon.Features.IntruderBackend.Servers
             return flag;
         }
 
-        private ulong CheckTimeOfDay(DateTime time)
+        private static string FilterRoomNames(string roomName)
+        {
+            // Remove [SeriousPlay] tag in room name
+            roomName = roomName.Replace("[SeriousPlay]", string.Empty);
+            roomName = roomName.Replace("[Casual]", string.Empty);
+            Censor censor = new Censor(File.ReadAllLines(Directory.GetCurrentDirectory() + "/Features/Censor/naughtywords.txt", Encoding.UTF8));
+            if (censor.HasNaughtyWord(roomName))
+            {
+                roomName = "Loser's Room";
+            }
+
+            roomName = roomName.Truncate(20);
+            return roomName;
+        }
+
+        private static ulong CheckTimeOfDay(DateTime time)
         {
             // time is less between 12:AM & 3:59AM
             if (IsTimeOfDayBetween(time, new TimeSpan(0, 0, 0), new TimeSpan(3, 59, 0)))
@@ -306,105 +346,96 @@ namespace Bloon.Features.IntruderBackend.Servers
             {
                 return DayNightEmojis.Moon;
             }
+
             return DayNightEmojis.Sunrise;
         }
 
-        // https://stackoverflow.com/questions/592248/how-can-i-check-if-the-current-time-is-between-in-a-time-frame
-        // ty u bueaitiful sonnabitch
-        public bool IsTimeOfDayBetween(DateTime time, TimeSpan startTime, TimeSpan endTime)
+        private static CurrentServerInfo CountRegions(List<Rooms> rooms)
         {
-            if (endTime == startTime)
+            CurrentServerInfo csi = new CurrentServerInfo()
             {
-                return true;
-            }
-            else if (endTime < startTime)
-            {
-                return time.TimeOfDay <= endTime ||
-                    time.TimeOfDay >= startTime;
-            }
-            else
-            {
-                return time.TimeOfDay >= startTime &&
-                    time.TimeOfDay <= endTime;
-            }
+                Rooms = rooms,
+            };
 
-        }
-
-        private string FilterRoomNames(string RoomName)
-        {
-            // Remove [SeriousPlay] tag in room name
-            RoomName = RoomName.Replace("[SeriousPlay]", string.Empty);
-            RoomName = RoomName.Replace("[Casual]", string.Empty);
-            Censor censor = new Censor(File.ReadAllLines(Directory.GetCurrentDirectory() + "/Features/Censor/naughtywords.txt", Encoding.UTF8));
-            if (censor.HasNaughtyWord(RoomName))
+            foreach (Rooms regionRooms in rooms)
             {
-                RoomName = "Loser's Room";
-            }
-            RoomName = RoomName.Truncate(20);
-            return RoomName;
-        }
-
-        public async Task ArchiveRoomData(List<Rooms> rooms)
-        {
-            if (rooms.Count != 0)
-            {
-                using IServiceScope scope = this.scopeFactory.CreateScope();
-                using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
-
-                foreach (Rooms room in rooms)
+                switch (regionRooms.Region)
                 {
-                    try
-                    {
-                        room.DBCreatorSteamId = room.Creator.SteamID;
-                        room.DBCurrentMap = room.CurrentMap.Id;
-                        if (room.Password != null)
-                        {
-                            room.passworded = true;
-                        }
-                        else
-                        {
-                            room.passworded = false;
-                        }
-
-                        Rooms dbRoom = db.Rooms.Where(x => x.RoomId == room.RoomId).FirstOrDefault();
-
-                        if (dbRoom == null)
-                        {
-                            db.Rooms.Add(room);
-                        }
-                        else
-                        {
-                            dbRoom.Name = room.Name;
-                            dbRoom.passworded = room.passworded;
-                            dbRoom.Region = room.Region;
-                            dbRoom.Official = room.Official;
-                            dbRoom.Ranked = room.Ranked;
-                            dbRoom.Version = room.Version;
-                            dbRoom.Position = room.Position;
-                            dbRoom.AgentCount = room.AgentCount;
-                            dbRoom.CreatorId = room.CreatorId;
-                            dbRoom.DBCreatorSteamId = room.DBCreatorSteamId;
-                            dbRoom.LastUpdate = room.LastUpdate;
-                            dbRoom.DBCurrentMap = room.CurrentMap.Id;
-                            db.Update(dbRoom);
-                        }
-
-                        await db.SaveChangesAsync().ConfigureAwait(false);
-                    }
-                    catch (Exception e1)
-                    {
-                        Log.Error(e1, $"ROOM ID: {room.RoomId} | Name: {room.Name} | Creator: {room.Creator.Name}");
-                    }
+                    case "EU":
+                        csi.EUPlayerCount += regionRooms.AgentCount;
+                        csi.EURoomCount++;
+                        break;
+                    case "US":
+                        csi.USPlayerCount += regionRooms.AgentCount;
+                        csi.USRoomCount++;
+                        break;
+                    case "AU":
+                        csi.AUPlayerCount += regionRooms.AgentCount;
+                        csi.AURoomCount++;
+                        break;
+                    case "USW":
+                        csi.USPlayerCount += regionRooms.AgentCount;
+                        csi.USRoomCount++;
+                        break;
+                    case "RU":
+                        csi.RUPlayerCount += regionRooms.AgentCount;
+                        csi.RURoomCount++;
+                        break;
+                    case "Asia":
+                        csi.AsiaPlayerCount += regionRooms.AgentCount;
+                        csi.AsiaRoomCount++;
+                        break;
+                    case "JP":
+                        csi.JPPlayerCount += regionRooms.AgentCount;
+                        csi.JPRoomCount++;
+                        break;
+                    case "SA":
+                        csi.SAPlayerCount += regionRooms.AgentCount;
+                        csi.SARoomCount++;
+                        break;
+                    case "CAE":
+                        csi.CAEPlayerCount += regionRooms.AgentCount;
+                        csi.CAERoomCount++;
+                        break;
+                    case "KR":
+                        csi.KRPlayerCount += regionRooms.AgentCount;
+                        csi.KRRoomCount++;
+                        break;
+                    case "IN":
+                        csi.INPlayerCount += regionRooms.AgentCount;
+                        csi.INRoomCount++;
+                        break;
                 }
             }
-            else
-            {
-                await Task.CompletedTask.ConfigureAwait(false);
-            }
+
+            // US WEST csi.USWTOD = this.CheckTimeOfDay(DateTime.UtcNow.AddHours(-8.0));
+            csi.CAETOD = CheckTimeOfDay(DateTime.UtcNow.AddHours(-5.0));
+            csi.USTOD = CheckTimeOfDay(DateTime.UtcNow.AddHours(-5.0));
+            csi.SATOD = CheckTimeOfDay(DateTime.UtcNow.AddHours(-3.0));
+            csi.EUTOD = CheckTimeOfDay(DateTime.UtcNow.AddHours(1.0));
+            csi.RUTOD = CheckTimeOfDay(DateTime.UtcNow.AddHours(3.0));
+            csi.INTOD = CheckTimeOfDay(DateTime.UtcNow.AddHours(5.5));
+            csi.ASTOD = CheckTimeOfDay(DateTime.UtcNow.AddHours(8.0));
+            csi.JPTOD = CheckTimeOfDay(DateTime.UtcNow.AddHours(9.0));
+            csi.KRTOD = CheckTimeOfDay(DateTime.UtcNow.AddHours(9.0));
+            csi.AUTOD = CheckTimeOfDay(DateTime.UtcNow.AddHours(11.0));
+
+            return csi;
         }
 
-        private async Task<JToken> QueryRooms(string? q, int? version, string? region, string? hideEmpty, string? hideFull,
-            string? hidePassworded, string? hideOfficial, string? hideCustom, string? hideUnranked, string? orderBy, int? page, int? perPage)
+        private async Task<JToken> QueryRooms(
+            string? q,
+            int? version,
+            string? region,
+            string? hideEmpty,
+            string? hideFull,
+            string? hidePassworded,
+            string? hideOfficial,
+            string? hideCustom,
+            string? hideUnranked,
+            string? orderBy,
+            int? page,
+            int? perPage)
         {
             // https://api.intruderfps.com/rooms?
             StringBuilder urlBuilder3000 = new StringBuilder(BaseUrl);
@@ -495,7 +526,7 @@ namespace Bloon.Features.IntruderBackend.Servers
 
             try
             {
-                string rawJson = await this.httpClient.GetStringAsync(new Uri(urlBuilder3000.ToString())).ConfigureAwait(false);
+                string rawJson = await this.httpClient.GetStringAsync(new Uri(urlBuilder3000.ToString()));
                 return string.IsNullOrEmpty(rawJson) ? null : JToken.Parse(rawJson);
             }
             catch (HttpRequestException e)

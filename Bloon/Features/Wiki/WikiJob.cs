@@ -30,7 +30,7 @@ namespace Bloon.Features.Wiki
         {
             Log.Information("Checking Wiki for new posts..");
 
-            WikiArticle article = await this.wikiService.GetLatestAsync().ConfigureAwait(false);
+            WikiArticle article = await this.wikiService.GetLatestAsync();
 
             // Unable to fetch the latest post from the wiki
             if (article == null)
@@ -38,14 +38,14 @@ namespace Bloon.Features.Wiki
                 this.bloonLog.Error($"Something went wrong fetching the latest wiki article! Check Log File");
                 return;
             }
-            else if (!await this.wikiService.TryStoreNewAsync(article).ConfigureAwait(false))
+            else if (!await this.wikiService.TryStoreNewAsync(article))
             {
                 Log.Information("Finished Wiki checks early");
                 return;
             }
 
-            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General).ConfigureAwait(false);
-            DiscordChannel sbgWiki = await this.dClient.GetChannelAsync(SBGChannels.Wiki).ConfigureAwait(false);
+            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General);
+            DiscordChannel sbgWiki = await this.dClient.GetChannelAsync(SBGChannels.Wiki);
 
             DiscordEmbed wikiEmbed = new DiscordEmbedBuilder
             {
@@ -59,8 +59,8 @@ namespace Bloon.Features.Wiki
                 Description = $"Recent Wiki Change by {article.Author} to [{article.Title}]({WikiUtils.GetUrlFromTitle(article.Title)})",
             };
 
-            await sbgWiki.SendMessageAsync(embed: wikiEmbed).ConfigureAwait(false);
-            await sbgGen.SendMessageAsync(embed: wikiEmbed).ConfigureAwait(false);
+            await sbgWiki.SendMessageAsync(embed: wikiEmbed);
+            await sbgGen.SendMessageAsync(embed: wikiEmbed);
 
             Log.Information("Finished Wiki Scraping");
         }

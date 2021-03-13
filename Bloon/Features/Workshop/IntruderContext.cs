@@ -1,6 +1,5 @@
 namespace Bloon.Core.Database
 {
-    using Bloon.Features.IntruderBackend.Agents;
     using Bloon.Features.Workshop.Models;
     using Microsoft.EntityFrameworkCore;
 

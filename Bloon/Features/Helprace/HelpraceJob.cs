@@ -32,7 +32,7 @@ namespace Bloon.Features.Helprace
         {
             Log.Information("Checking Helprace for new posts..");
 
-            HelpracePost post = await this.helpraceService.GetLatestAsync("all_topics").ConfigureAwait(false);
+            HelpracePost post = await this.helpraceService.GetLatestAsync("all_topics");
 
             // Unable to fetch the latest post from helprace
             if (post == null)
@@ -40,13 +40,13 @@ namespace Bloon.Features.Helprace
                 this.bloonLog.Error($"Something went wrong fetching the latest helprace post! Check Log File");
                 return;
             }
-            else if (!await this.helpraceService.TryStoreNewAsync(post).ConfigureAwait(false))
+            else if (!await this.helpraceService.TryStoreNewAsync(post))
             {
                 Log.Information("Finished Helprace checks early");
                 return;
             }
 
-            DiscordChannel sbgBugs = await this.dClient.GetChannelAsync(SBGChannels.Bugs).ConfigureAwait(false);
+            DiscordChannel sbgBugs = await this.dClient.GetChannelAsync(SBGChannels.Bugs);
 
             if (post.Title.Length > 128)
             {
@@ -77,9 +77,9 @@ namespace Bloon.Features.Helprace
                 Url = $"https://superbossgames.helprace.com/i{post.UID}",
             };
 
-            DiscordMessage message = await sbgBugs.SendMessageAsync(embed: hrEmbed).ConfigureAwait(false);
-            await message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(this.dClient, ReputationEmojis.Up)).ConfigureAwait(false);
-            await message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(this.dClient, ReputationEmojis.Down)).ConfigureAwait(false);
+            DiscordMessage message = await sbgBugs.SendMessageAsync(embed: hrEmbed);
+            await message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(this.dClient, ReputationEmojis.Up));
+            await message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(this.dClient, ReputationEmojis.Down));
             Log.Information("Finished Helprace Scraping");
         }
     }

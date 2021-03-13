@@ -37,7 +37,7 @@ namespace Bloon.Features.SteamNews
 
             try
             {
-                responseRaw = await this.httpClient.GetStringAsync(new Uri($"https://api.steampowered.com/ISteamNews/GetNewsForApp/v1?appid=518150&key={this.apiKey}&count=1&maxlength=500")).ConfigureAwait(false);
+                responseRaw = await this.httpClient.GetStringAsync(new Uri($"https://api.steampowered.com/ISteamNews/GetNewsForApp/v1?appid=518150&key={this.apiKey}&count=1&maxlength=500"));
                 JObject responseJson = JObject.Parse(responseRaw);
                 posts = responseJson.SelectToken("appnews.newsitems.newsitem") as JArray;
             }
@@ -85,7 +85,7 @@ namespace Bloon.Features.SteamNews
             Log.Information("[STEAM] New POST!");
 
             db.SteamNewsPosts.Add(post);
-            await db.SaveChangesAsync().ConfigureAwait(false);
+            await db.SaveChangesAsync();
 
             return true;
         }

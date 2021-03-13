@@ -32,8 +32,8 @@ namespace Bloon.Features.IntruderBackend.Servers
         public async Task Execute()
         {
             Log.Information("Looking for available Intruder servers..");
-            DiscordChannel sbgCSI = await this.dClient.GetChannelAsync(SBGChannels.CurrentServerInfo).ConfigureAwait(false);
-            CurrentServerInfo csi = await this.roomService.GetCSIRooms(null, null, null, null, "false", "true", "false", "false", "false", null, 1, 100).ConfigureAwait(false);
+            DiscordChannel sbgCSI = await this.dClient.GetChannelAsync(SBGChannels.CurrentServerInfo);
+            CurrentServerInfo csi = await this.roomService.GetCSIRooms(null, null, null, null, "false", "true", "false", "false", "false", null, 1, 100);
 
             DiscordEmbedBuilder serverEmbed = new DiscordEmbedBuilder
             {
@@ -43,9 +43,9 @@ namespace Bloon.Features.IntruderBackend.Servers
                 },
                 Color = new DiscordColor(217, 187, 19),
                 Timestamp = DateTime.UtcNow,
+                Title = "Current Server Information",
+                Url = "https://intruderfps.com/rooms",
             };
-            serverEmbed.Title = "Current Server Information";
-            serverEmbed.Url = "https://intruderfps.com/rooms";
             int skipRoomCount = 0;
             if (csi.Rooms.Count > 0)
             {
@@ -73,23 +73,21 @@ namespace Bloon.Features.IntruderBackend.Servers
             }
             else
             {
-                serverEmbed.AddField($"Current Server Information",
-                    $"Publicly no current servers available.\n" +
-                    $"Use `.ltp` to join the **Looking to Play** role", true);
+                serverEmbed.AddField(
+                    $"Current Server Information",
+                    $"Publicly no current servers available.\nUse `.ltp` to join the **Looking to Play** role",
+                    true);
             }
 #pragma warning disable SA1118 // Parameter should not span multiple lines
-            serverEmbed.AddField("Statistics",
-               // $"{RegionFlagEmojis.CAE}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.CAETOD)}|**{csi.CAEPlayerCount}** agents | **{csi.CAERoomCount}** Rooms\n" +
+            serverEmbed.AddField(
+                "Statistics",
                 $"{RegionFlagEmojis.US}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.USTOD)}| **{csi.USPlayerCount}** agents | **{csi.USRoomCount}** Rooms\n" +
                 $"{RegionFlagEmojis.SA}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.SATOD)}| **{csi.SAPlayerCount}** agents | **{csi.SARoomCount}** Rooms\n" +
                 $"{RegionFlagEmojis.EU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.EUTOD)}| **{csi.EUPlayerCount}** agents | **{csi.EURoomCount}** Rooms\n" +
                 $"{RegionFlagEmojis.RU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.RUTOD)}| **{csi.RUPlayerCount}** agents | **{csi.RURoomCount}** Rooms\n" +
-                //$"{RegionFlagEmojis.IN}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.INTOD)}|**{csi.INPlayerCount}** agents | **{csi.INRoomCount}** Rooms\n" +
-                //$"{RegionFlagEmojis.Asia}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.ASTOD)}|**{csi.AsiaPlayerCount}** agents | **{csi.AsiaRoomCount}** Rooms\n" +
                 $"{RegionFlagEmojis.JP}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.JPTOD)}| **{csi.JPPlayerCount}** agents | **{csi.JPRoomCount}** Rooms\n" +
-                //$"{RegionFlagEmojis.KR}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.KRTOD)}| **{csi.KRPlayerCount}** agents | **{csi.KRRoomCount}** Rooms\n" +
                 $"{RegionFlagEmojis.AU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.AUTOD)}| **{csi.AUPlayerCount}** agents | **{csi.AURoomCount}** Rooms\n" +
-                $"Players: **{csi.PlayerCount}** | Servers: **{csi.Rooms.Count}**\n", true);
+                $"Agents: **{csi.PlayerCount}** | Rooms: **{csi.Rooms.Count}**\n", true);
 #pragma warning restore SA1118 // Parameter should not span multiple lines
 
             string extensions = $"{DiscordEmoji.FromGuildEmote(this.dClient, BrowserEmojis.Chrome)} [**Chrome**](https://chrome.google.com/webstore/detail/intruder-notifications/aoebpknpfcepopfgnbnikaipjeekalim) | "
@@ -103,15 +101,15 @@ namespace Bloon.Features.IntruderBackend.Servers
             serverEmbed.Timestamp = DateTime.UtcNow;
 
             await this.activityManager.TrySetActivityAsync($"{csi.PlayerCount} agents ", ActivityType.Watching)
-                .ConfigureAwait(false);
+                ;
 
             try
             {
-                foreach (DiscordMessage msg in await sbgCSI.GetMessagesAsync().ConfigureAwait(false))
+                foreach (DiscordMessage msg in await sbgCSI.GetMessagesAsync())
                 {
                     if (msg.Author.Id == this.dClient.CurrentUser.Id)
                     {
-                        await msg.ModifyAsync(embed: serverEmbed.Build()).ConfigureAwait(false);
+                        await msg.ModifyAsync(embed: serverEmbed.Build());
                         return;
                     }
                 }

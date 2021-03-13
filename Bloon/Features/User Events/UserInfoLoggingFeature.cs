@@ -58,27 +58,29 @@ namespace Bloon.Features.Doorman
             return base.Enable();
         }
 
+        private static bool IsSBG(ulong guildId) => guildId == Variables.Guilds.SBG;
+
         private async Task DBLogBanRemoved(DiscordClient sender, GuildBanRemoveEventArgs args)
         {
-            if(this.IsSBG(args.Guild.Id))
+            if (IsSBG(args.Guild.Id))
             {
-                await this.userEventService.AddUserUnBannedEventAsync(args).ConfigureAwait(false);
+                await this.userEventService.AddUserUnBannedEventAsync(args);
             }
         }
 
         private async Task DBLogBanAdded(DiscordClient sender, GuildBanAddEventArgs args)
         {
-            if (this.IsSBG(args.Guild.Id))
+            if (IsSBG(args.Guild.Id))
             {
-                await this.userEventService.AddUserBannedEventAsync(args).ConfigureAwait(false);
+                await this.userEventService.AddUserBannedEventAsync(args);
             }
         }
 
         private async Task DBLogMemberJoined(DiscordClient dClient, GuildMemberAddEventArgs args)
         {
-            if (this.IsSBG(args.Guild.Id))
+            if (IsSBG(args.Guild.Id))
             {
-                await this.userEventService.AddUserJoinedEventAsync(args).ConfigureAwait(false);
+                await this.userEventService.AddUserJoinedEventAsync(args);
             }
 
             // Log to Discord
@@ -87,20 +89,22 @@ namespace Bloon.Features.Doorman
 
         private async Task DBLogMemberLeft(DiscordClient dClient, GuildMemberRemoveEventArgs args)
         {
-            if (this.IsSBG(args.Guild.Id))
+            if (IsSBG(args.Guild.Id))
             {
-                await this.userEventService.AddUserLeftEventAsync(args).ConfigureAwait(false);
+                await this.userEventService.AddUserLeftEventAsync(args);
             }
         }
 
-        private async Task DiscordLogUserJoin(DiscordClient dClient, GuildMemberAddEventArgs args)
+        private Task DiscordLogUserJoin(DiscordClient dClient, GuildMemberAddEventArgs args)
         {
             if (args.Guild.Id != Variables.Guilds.SBG)
             {
-                return;
+                return Task.CompletedTask;
             }
 
             this.bloonLog.Information(LogConsole.UserInfo, EventEmojis.Join, $"{args.Member.Username} **Joined** SBG. Account Created: {args.Member.CreationTimestamp.UtcDateTime.ToString("D", CultureInfo.InvariantCulture)} | ID: {args.Member.Id}");
+
+            return Task.CompletedTask;
         }
 
         private async Task DiscordLogUserLeft(DiscordClient dClient, GuildMemberRemoveEventArgs args)
@@ -123,7 +127,7 @@ namespace Bloon.Features.Doorman
             {
                 memberCached = false;
                 DiscordUser user = await this.dClient.GetUserAsync(args.Member.Id)
-                    .ConfigureAwait(false);
+                    ;
                 username = user.Username;
                 discriminator = user.Discriminator;
             }
@@ -141,18 +145,6 @@ namespace Bloon.Features.Doorman
             }
 
             this.bloonLog.Information(LogConsole.UserInfo, EventEmojis.Leave, message);
-        }
-
-        private bool IsSBG(ulong guildId)
-        {
-            if (guildId == Variables.Guilds.SBG)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
     }
 }

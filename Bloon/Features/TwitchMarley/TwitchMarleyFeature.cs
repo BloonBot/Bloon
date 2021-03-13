@@ -94,21 +94,21 @@ namespace Bloon.Features.TwitchMarley
                 }
 
                 DiscordRole streaming = args.PresenceAfter.Guild.GetRole(SBGRoles.NowStreaming);
-                DiscordMember member = await args.PresenceAfter.Guild.GetMemberAsync(args.UserAfter.Id).ConfigureAwait(false);
+                DiscordMember member = await args.PresenceAfter.Guild.GetMemberAsync(args.UserAfter.Id);
                 bool wasStreaming = args.PresenceBefore?.Activities.Any(a => a.StreamUrl != null) ?? false;
                 DiscordActivity stream = args.PresenceAfter.Activities.Where(a => a.StreamUrl != null).FirstOrDefault();
 
                 // User Started Streaming Intruder
                 if (!wasStreaming && stream != null)
                 {
-                    SearchStreams search = await this.twitchAPI.V5.Search.SearchStreamsAsync(stream.StreamUrl.Replace("https://www.twitch.tv/", string.Empty, StringComparison.Ordinal)).ConfigureAwait(false);
+                    SearchStreams search = await this.twitchAPI.V5.Search.SearchStreamsAsync(stream.StreamUrl.Replace("https://www.twitch.tv/", string.Empty, StringComparison.Ordinal));
 
                     foreach (Stream searchStream in search.Streams)
                     {
                         if (searchStream.Game == "Intruder")
                         {
-                            await this.activityManager.SetStreamAsync(args.UserAfter.Id, searchStream.Channel.Name.Capitalize(), searchStream.Channel.Url).ConfigureAwait(false);
-                            await member.GrantRoleAsync(streaming).ConfigureAwait(false);
+                            await this.activityManager.SetStreamAsync(args.UserAfter.Id, searchStream.Channel.Name.Capitalize(), searchStream.Channel.Url);
+                            await member.GrantRoleAsync(streaming);
                             break;
                         }
                     }
@@ -119,10 +119,10 @@ namespace Bloon.Features.TwitchMarley
                 {
                     if (this.activityManager.IsStreamOwner(args.UserAfter.Id))
                     {
-                        await this.activityManager.ClearStreamAsync().ConfigureAwait(false);
+                        await this.activityManager.ClearStreamAsync();
                     }
 
-                    await member.RevokeRoleAsync(streaming).ConfigureAwait(false);
+                    await member.RevokeRoleAsync(streaming);
                 }
             });
 

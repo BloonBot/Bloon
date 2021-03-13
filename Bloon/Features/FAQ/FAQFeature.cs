@@ -65,7 +65,7 @@ namespace Bloon.Features.FAQ
                 {
                     if (faq.Key.IsMatch(args.Message.Content))
                     {
-                        await args.Channel.SendMessageAsync(faq.Value).ConfigureAwait(false);
+                        await args.Channel.SendMessageAsync(faq.Value);
                         break; // Make sure we only send one faq response
                     }
                 }

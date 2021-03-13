@@ -1,12 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Bloon.Features.Intruder_Backend.Rooms.Models
+namespace Bloon.Features.IntruderBackend.Rooms.Models
 {
+    using Newtonsoft.Json;
+
     public class RoomScores
     {
-        public int guards { get; set; }
-        public int intruders { get; set; }
+        [JsonProperty("guards")]
+        public int Guards { get; set; }
+
+        [JsonProperty("intruders")]
+        public int Intruders { get; set; }
     }
 }

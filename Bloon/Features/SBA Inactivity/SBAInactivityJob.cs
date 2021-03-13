@@ -36,9 +36,9 @@ namespace Bloon.Features.SBAInactivity
 
         public async Task Execute()
         {
-            DiscordGuild sbg = await this.dClient.GetGuildAsync(Guilds.SBG).ConfigureAwait(false);
+            DiscordGuild sbg = await this.dClient.GetGuildAsync(Guilds.SBG);
             DiscordRole sbaRole = sbg.GetRole(SBGRoles.SBA);
-            DiscordChannel sbaChannel = await this.dClient.GetChannelAsync(SBGChannels.SecretBaseAlpha).ConfigureAwait(false);
+            DiscordChannel sbaChannel = await this.dClient.GetChannelAsync(SBGChannels.SecretBaseAlpha);
 
             List<DiscordMember> roleMembers = sbg.Members
                 .Select(m => m.Value)
@@ -80,7 +80,7 @@ namespace Bloon.Features.SBAInactivity
                         + "The 'Secret Base Alpha' role and access levels will be removed if you remain inactive!\n"
                         + $"Last activity: {trackedUser.LastMessage.ToString("D", CultureInfo.InvariantCulture)}";
 
-                    await this.SendDM(user, dmMessage, false).ConfigureAwait(false);
+                    await this.SendDM(user, dmMessage, false);
                     this.bloonLog.Information(LogConsole.RoleEdits, ManageRoleEmojis.Warning, $"**Inactivity Warning**: {user.Username} - SBA");
 
                     trackedUser.WarningTimestamp = DateTime.Now;
@@ -90,41 +90,41 @@ namespace Bloon.Features.SBAInactivity
                 // Too late
                 else if (daysInactive >= 21 && daysSinceLastWarning >= 7)
                 {
-                    await user.RevokeRoleAsync(sbaRole).ConfigureAwait(false);
+                    await user.RevokeRoleAsync(sbaRole);
 
                     string dmMessage = "Hello again,\n"
                         + "Your 'Secret Base Alpha' role and access levels have been removed due to inactivity!\n"
                         + "I'm truly sorry, but I have my orders.\n\n"
                         + "P.S. I did warn you";
-                    await this.SendDM(user, dmMessage, true).ConfigureAwait(false);
+                    await this.SendDM(user, dmMessage, true);
 
                     db.Remove(trackedUser);
 
-                    await sbaChannel.SendMessageAsync($"Kicked {user.Username}#{user.Discriminator} out of SBA").ConfigureAwait(false);
+                    await sbaChannel.SendMessageAsync($"Kicked {user.Username}#{user.Discriminator} out of SBA");
                     this.bloonLog.Information(LogConsole.RoleEdits, ManageRoleEmojis.Demotion, $"**Inactivity Role Demotion**: {user.Username} - SBA");
                 }
 
-                await db.SaveChangesAsync().ConfigureAwait(false);
+                await db.SaveChangesAsync();
             }
         }
 
         private async Task SendDM(DiscordMember member, string message, bool kicked)
         {
-            DiscordDmChannel dmChannel = await member.CreateDmChannelAsync().ConfigureAwait(false);
-            DiscordChannel sbaChannel = await this.dClient.GetChannelAsync(SBGChannels.SecretBaseAlpha).ConfigureAwait(false);
+            DiscordDmChannel dmChannel = await member.CreateDmChannelAsync();
+            DiscordChannel sbaChannel = await this.dClient.GetChannelAsync(SBGChannels.SecretBaseAlpha);
 
             try
             {
-                await dmChannel.SendMessageAsync(message).ConfigureAwait(false);
+                await dmChannel.SendMessageAsync(message);
             }
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
 #pragma warning restore CA1031 // Do not catch general exception types
             {
                 // Send the message in SBA as a public message to warn the user before we kick them.
-                if(!kicked)
+                if (!kicked)
                 {
-                    await sbaChannel.SendMessageAsync($"{member.Mention}, we tried to send you a message but failed. {message}").ConfigureAwait(false);
+                    await sbaChannel.SendMessageAsync($"{member.Mention}, we tried to send you a message but failed. {message}");
                 }
 
                 Log.Error(e, $"Unable to send an inactivity DM to {member.Username} : {member.Id}");

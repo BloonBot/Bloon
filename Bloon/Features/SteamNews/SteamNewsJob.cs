@@ -30,7 +30,7 @@ namespace Bloon.Features.SteamNews
         {
             Log.Information("Checking Steam for new announcements..");
 
-            SteamNewsPost post = await this.newsService.GetLatestAsync().ConfigureAwait(false);
+            SteamNewsPost post = await this.newsService.GetLatestAsync();
 
             // Unable to fetch the latest announcement from Steam
             if (post == null)
@@ -38,13 +38,13 @@ namespace Bloon.Features.SteamNews
                 this.bloonLog.Error($"Something went wrong fetching the latest Steam announcement! Check Log File");
                 return;
             }
-            else if (!await this.newsService.TryStoreNewAsync(post).ConfigureAwait(false))
+            else if (!await this.newsService.TryStoreNewAsync(post))
             {
                 Log.Information("Finished Steam announcement checks early");
                 return;
             }
 
-            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General).ConfigureAwait(false);
+            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General);
 
             DiscordEmbedBuilder mapEmbed = new DiscordEmbedBuilder
             {
@@ -69,7 +69,7 @@ namespace Bloon.Features.SteamNews
                 mapEmbed.ImageUrl = post.ImageUrl.ToString();
             }
 
-            await sbgGen.SendMessageAsync(embed: mapEmbed).ConfigureAwait(false);
+            await sbgGen.SendMessageAsync(embed: mapEmbed);
             Log.Information("Finished Steam Announcement Scraping");
         }
     }

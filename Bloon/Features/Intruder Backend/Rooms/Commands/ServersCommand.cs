@@ -1,7 +1,6 @@
 namespace Bloon.Features.IntruderBackend.Servers
 {
     using System;
-    using System.Collections.Generic;
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
@@ -27,11 +26,11 @@ namespace Bloon.Features.IntruderBackend.Servers
         /// Base #current-server-info command.
         /// </summary>
         /// <param name="ctx">Discord Client Context</param>
-        /// <returns>Server Embed via Command</returns>
+        /// <returns>Server Embed via Command.</returns>
         [GroupCommand]
         public async Task CurrentServerInfo(CommandContext ctx)
         {
-            CurrentServerInfo csi = await this.roomService.GetCSIRooms(null, null, null, null, "false", "false", "false", "false", "false", null, 1, 100).ConfigureAwait(false);
+            CurrentServerInfo csi = await this.roomService.GetCSIRooms(null, null, null, null, "false", "false", "false", "false", "false", null, 1, 100);
             DiscordEmbedBuilder serverEmbed = new DiscordEmbedBuilder
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
@@ -64,6 +63,7 @@ namespace Bloon.Features.IntruderBackend.Servers
                 {
                     serverList.Append($"<:unofficial:{ServerEmojis.Unofficial}> <:os:{ServerEmojis.Official}> <:passworded:{ServerEmojis.Password}> and **{skipRoomCount}** more servers.");
                 }
+
                 serverEmbed.Title = "Current Server Information";
                 serverEmbed.Url = "https://intruderfps.com/rooms";
                 serverEmbed.AddField($"Server | Region | Name - [Agents]", serverList.ToString(), true);
@@ -78,15 +78,15 @@ namespace Bloon.Features.IntruderBackend.Servers
             serverEmbed.AddField("Browser Extensions", extensions);
             serverEmbed.Footer.Text = $"SuperbossGames | #current-server-info | Total Agents: {csi.PlayerCount}";
 
-            await ctx.RespondAsync(embed: serverEmbed.Build()).ConfigureAwait(false);
+            await ctx.RespondAsync(embed: serverEmbed.Build());
         }
 
         [GroupCommand]
-        public async Task CurrentServerInfo(CommandContext ctx, [RemainingText]string region)
+        public async Task CurrentServerInfo(CommandContext ctx, [RemainingText] string region)
         {
             region = ConvertRegion(region);
 
-            CurrentServerInfo csi = await this.roomService.GetCSIRooms("true", "false", "false", "false", "false", "false", region).ConfigureAwait(false);
+            CurrentServerInfo csi = await this.roomService.GetCSIRooms("true", "false", "false", "false", "false", "false", region);
 
             DiscordEmbedBuilder serverEmbed = new DiscordEmbedBuilder
             {
@@ -112,6 +112,7 @@ namespace Bloon.Features.IntruderBackend.Servers
                     {
                         serverList.AppendLine($"{room.ServerIcon} | {room.RegionFlag} | {room.Name} - [{room.AgentCount}/{room.MaxAgents}]");
                     }
+
                     roomCount++;
                 }
 
@@ -133,12 +134,12 @@ namespace Bloon.Features.IntruderBackend.Servers
             serverEmbed.AddField("Browser Extensions", extensions);
             serverEmbed.Footer.Text = $"SuperbossGames | #current-server-info | Total Agents: {csi.PlayerCount}";
 
-            await ctx.RespondAsync(embed: serverEmbed.Build()).ConfigureAwait(false);
+            await ctx.RespondAsync(embed: serverEmbed.Build());
         }
 
         private static string ConvertRegion(string region)
         {
-            switch (region.ToLower())
+            switch (region.ToLowerInvariant())
             {
                 case "europe":
                 case "eu":
@@ -188,6 +189,7 @@ namespace Bloon.Features.IntruderBackend.Servers
                     region = "RU";
                     break;
             }
+
             return region;
         }
     }

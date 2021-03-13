@@ -20,7 +20,7 @@ namespace Bloon.Features.IntruderBackend.Agents
         public async Task Execute()
         {
             // Scrape historical agent data.
-            await this.agentService.ScrapeHistoricalData().ConfigureAwait(false);
+            await this.agentService.ScrapeHistoricalData();
         }
     }
 }

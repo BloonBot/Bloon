@@ -67,8 +67,8 @@ namespace Bloon.Core.Discord
             this.cNext.RegisterCommands<GeneralCommands>();
             this.cNext.RegisterCommands<OwnerCommands>();
 
-            await this.dClient.InitializeAsync().ConfigureAwait(false);
-            await this.dClient.ConnectAsync().ConfigureAwait(false);
+            await this.dClient.InitializeAsync();
+            await this.dClient.ConnectAsync();
         }
 
         private Task OnGuildAvailable(DiscordClient dClient, GuildCreateEventArgs args)
@@ -111,14 +111,14 @@ namespace Bloon.Core.Discord
         {
             if (args.Exception is ChecksFailedException)
             {
-                await args.Context.Message.CreateReactionAsync(DiscordEmoji.FromName(this.dClient, ":underage:")).ConfigureAwait(false);
+                await args.Context.Message.CreateReactionAsync(DiscordEmoji.FromName(this.dClient, ":underage:"));
                 return;
             }
             else if (args.Exception is CommandNotFoundException)
             {
                 if (!(args.Context.Message.Content.Length > 1 && args.Context.Message.Content[0] == args.Context.Message.Content[1]))
                 {
-                    await args.Context.RespondAsync($"'{args.Context.Message.Content.Split(' ')[0]}' is not a known command. See '.help'").ConfigureAwait(false);
+                    await args.Context.RespondAsync($"'{args.Context.Message.Content.Split(' ')[0]}' is not a known command. See '.help'");
                 }
 
                 return;

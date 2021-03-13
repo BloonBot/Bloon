@@ -1,7 +1,6 @@
 namespace Bloon.Core.Database
 {
     using System;
-    using Bloon.Features.IntruderBackend.Agents;
     using Bloon.Features.PackageAccounts;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Storage.ValueConversion;

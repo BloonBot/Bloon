@@ -44,7 +44,7 @@ namespace Bloon.Features.Helprace
         {
             try
             {
-                return await this.httpClient.GetStringAsync(new Uri($"{HelpraceURL}/{argument}?sort_by=created&sort_order=desc&fields=id%2Ctitle%2Cbody%2Ccreated%2Cauthor%2Cvotes%2Cchannel")).ConfigureAwait(false);
+                return await this.httpClient.GetStringAsync(new Uri($"{HelpraceURL}/{argument}?sort_by=created&sort_order=desc&fields=id%2Ctitle%2Cbody%2Ccreated%2Cauthor%2Cvotes%2Cchannel"));
             }
             catch (HttpRequestException e)
             {
@@ -65,7 +65,7 @@ namespace Bloon.Features.Helprace
 
             if (this.CheckArguments(argument) == true)
             {
-                rawHelprace = await this.QueryHelprace(argument).ConfigureAwait(false);
+                rawHelprace = await this.QueryHelprace(argument);
             }
             else
             {
@@ -116,7 +116,7 @@ namespace Bloon.Features.Helprace
         /// <returns>An array of helprace posts.</returns>
         public async Task GetAllTopics(int pageNumber = 1)
         {
-            string rawHelprace = await this.httpClient.GetStringAsync(new Uri($"{HelpraceURL}/all_topics?sort_by=created&sort_order=desc&fields=id%2Ctitle%2Cbody%2Ccreated%2Cauthor%2Cvotes%2Cchannel&per_page=100&page={pageNumber}")).ConfigureAwait(false);
+            string rawHelprace = await this.httpClient.GetStringAsync(new Uri($"{HelpraceURL}/all_topics?sort_by=created&sort_order=desc&fields=id%2Ctitle%2Cbody%2Ccreated%2Cauthor%2Cvotes%2Cchannel&per_page=100&page={pageNumber}"));
 
             JObject jObject = JObject.Parse(rawHelprace);
             JArray jPosts = jObject["topics"]["data"] as JArray;
@@ -133,7 +133,7 @@ namespace Bloon.Features.Helprace
                     Title = HttpUtility.HtmlDecode(jPosts[i]["title"].ToString()),
                 };
 
-                await this.TryStoreNewAsync(post).ConfigureAwait(false);
+                await this.TryStoreNewAsync(post);
             }
         }
 
@@ -155,7 +155,7 @@ namespace Bloon.Features.Helprace
             Log.Information("[HELPRACE] Found new post. Adding {0}. Author: {1}", entry.UID, entry.Author);
 
             db.HelpracePosts.Add(entry);
-            await db.SaveChangesAsync().ConfigureAwait(false);
+            await db.SaveChangesAsync();
 
             return true;
         }

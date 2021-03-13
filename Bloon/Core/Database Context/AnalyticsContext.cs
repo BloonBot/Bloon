@@ -1,11 +1,11 @@
-using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Newtonsoft.Json;
-using Bloon.Analytics.Users;
-
 namespace Bloon.Core.Database
 {
+    using System;
+    using Bloon.Analytics.Users;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+    using Newtonsoft.Json;
+
     public partial class AnalyticsContext : DbContext
     {
         public AnalyticsContext(DbContextOptions<AnalyticsContext> options)

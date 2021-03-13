@@ -1,10 +1,11 @@
 namespace Bloon.Features.IntruderBackend.Agents
 {
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
     using Newtonsoft.Json;
 
     /// <summary>
-    /// https://api.intruderfps.com/agents .
+    /// https://api.intruderfps.com/agents.
     /// </summary>
     [NotMapped]
     public class AgentsObject
@@ -12,7 +13,7 @@ namespace Bloon.Features.IntruderBackend.Agents
         [JsonProperty("totalCount")]
         public int TotalCount { get; set; }
 
-        public Agent[] Data { get; set; }
+        public List<Agent> Data { get; set; }
 
         [JsonProperty("page")]
         public int Page { get; set; }

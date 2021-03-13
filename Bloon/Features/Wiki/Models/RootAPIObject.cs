@@ -1,13 +1,11 @@
 namespace Bloon.Features.Wiki.Models
 {
+    using System.Text.Json;
+    using Newtonsoft.Json;
+
     public class RootAPIObject
     {
-        public string batchcomplete { get; set; }
-
-        public APIContinue _continue { get; set; }
-
-        public Query query { get; set; }
-
-        public Parse parse { get; set; }
+        [JsonProperty("query")]
+        public Query Query { get; set; }
     }
 }

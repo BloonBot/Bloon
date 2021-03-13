@@ -3,28 +3,23 @@ namespace Bloon.Features.Workshop
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Bloon.Core.Discord;
     using Bloon.Core.Services;
-    using Bloon.Features.IntruderBackend.Maps;
     using Bloon.Features.Workshop.Models;
     using Bloon.Utils;
     using Bloon.Variables.Channels;
     using Bloon.Variables.Emojis;
     using DSharpPlus;
     using DSharpPlus.Entities;
-    using LinqToTwitter;
     using Serilog;
 
     public class WorkshopJob : ITimedJob
     {
         private readonly DiscordClient dClient;
-        private readonly BloonLog bloonLog;
         private readonly WorkshopService workshopService;
 
-        public WorkshopJob(DiscordClient dClient, BloonLog bloonLog, WorkshopService workshopService)
+        public WorkshopJob(DiscordClient dClient, WorkshopService workshopService)
         {
             this.dClient = dClient;
-            this.bloonLog = bloonLog;
             this.workshopService = workshopService;
         }
 
@@ -36,9 +31,8 @@ namespace Bloon.Features.Workshop
         {
             Log.Information("Checking Workshop for new maps..");
 
-            // SocialItemWorkshopMap map = await this.workshopService.GetLatestAsync().ConfigureAwait(false);
-
-            List<WorkshopMap> maps = await this.workshopService.GetRecentlyUpdatedOrAddedAsync().ConfigureAwait(false);
+            // SocialItemWorkshopMap map = await this.workshopService.GetLatestAsync();
+            List<WorkshopMap> maps = await this.workshopService.GetRecentlyUpdatedOrAddedAsync();
 
             if (maps.Count == 0)
             {
@@ -46,8 +40,8 @@ namespace Bloon.Features.Workshop
                 return;
             }
 
-            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General).ConfigureAwait(false);
-            DiscordChannel sbgMM = await this.dClient.GetChannelAsync(SBGChannels.MapMakerShowcase).ConfigureAwait(false);
+            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General);
+            DiscordChannel sbgMM = await this.dClient.GetChannelAsync(SBGChannels.MapMakerShowcase);
 
             DiscordEmbedBuilder workshopMapEmbed = new DiscordEmbedBuilder
             {
@@ -84,6 +78,7 @@ namespace Bloon.Features.Workshop
                     embedDescription = embedDescription + $"{DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Map)} __[{workshopMap.Title}](https://steamcommunity.com/sharedfiles/filedetails/?id={workshopMap.FileID})__ • {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)} __[{await this.workshopService.GetDBWorkshopMapCreator(workshopMap.CreatorSteamID)}](https://steamcommunity.com/profiles/{workshopMap.CreatorSteamID}/myworkshopfiles/?appid=518150)__ \n" +
                         $"{workshopMap.Description.Truncate(256)}\n{(workshopMap.Description.Length > 0 ? "...\n" : string.Empty)}\n";
                 }
+
                 workshopMapEmbed.Description = embedDescription;
                 workshopMapEmbed.Url = $"https://steamcommunity.com/app/518150/workshop/";
                 workshopMapEmbed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
@@ -92,8 +87,8 @@ namespace Bloon.Features.Workshop
                 };
             }
 
-            await sbgGen.SendMessageAsync(embed: workshopMapEmbed).ConfigureAwait(false);
-            await sbgMM.SendMessageAsync(embed: workshopMapEmbed).ConfigureAwait(false);
+            await sbgGen.SendMessageAsync(embed: workshopMapEmbed);
+            await sbgMM.SendMessageAsync(embed: workshopMapEmbed);
             Log.Information("Finished Workshop Scraping");
         }
     }

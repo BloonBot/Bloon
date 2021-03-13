@@ -1,7 +1,7 @@
 namespace Bloon.Core.Database
 {
-    using Microsoft.EntityFrameworkCore;
     using Bloon.Analytics.Users;
+    using Microsoft.EntityFrameworkCore;
 
     public partial class AnalyticsContext : DbContext
     {

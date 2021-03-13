@@ -30,7 +30,7 @@ namespace Bloon.Features.Youtube
         {
             Log.Information("Checking YouTube for new videos..");
 
-            YouTubeVideo video = await this.youTubeService.GetLatestAsync().ConfigureAwait(false);
+            YouTubeVideo video = await this.youTubeService.GetLatestAsync();
 
             // Unable to fetch the latest post from youtube
             if (video == null)
@@ -38,13 +38,13 @@ namespace Bloon.Features.Youtube
                 this.bloonLog.Error($"Something went wrong fetching the latest youtube video! Check Log File");
                 return;
             }
-            else if (!await this.youTubeService.TryStoreNewAsync(video).ConfigureAwait(false))
+            else if (!await this.youTubeService.TryStoreNewAsync(video))
             {
                 Log.Information("Finished Youtube checks early");
                 return;
             }
 
-            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General).ConfigureAwait(false);
+            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General);
 
             DiscordEmbed ytEmbed = new DiscordEmbedBuilder
             {
@@ -70,7 +70,7 @@ namespace Bloon.Features.Youtube
                 },
             };
 
-            await sbgGen.SendMessageAsync(embed: ytEmbed).ConfigureAwait(false);
+            await sbgGen.SendMessageAsync(embed: ytEmbed);
             Log.Information("Finished YouTube Scraping");
         }
     }

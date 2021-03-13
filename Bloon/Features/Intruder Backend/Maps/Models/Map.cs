@@ -1,9 +1,9 @@
 namespace Bloon.Features.IntruderBackend.Maps
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Runtime.InteropServices;
     using Newtonsoft.Json;
 
     [Table("maps")]
@@ -42,7 +42,7 @@ namespace Bloon.Features.IntruderBackend.Maps
         public bool IsMapMakerMap { get; set; }
 
         [NotMapped]
-        public string[] Tags { get; set; }
+        public List<string> Tags { get; set; }
 
         [Column("last_update")]
         [JsonProperty("lastUpdate")]

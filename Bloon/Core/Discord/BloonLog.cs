@@ -51,19 +51,19 @@ namespace Bloon.Core.Discord
         {
             DiscordChannel channel = consoleChannel switch
             {
-                LogConsole.Commands => await this.dClient.GetChannelAsync(BloonChannels.Commands).ConfigureAwait(false),
-                LogConsole.Jobs => await this.dClient.GetChannelAsync(BloonChannels.Jobs).ConfigureAwait(false),
-                LogConsole.RoleEdits => await this.dClient.GetChannelAsync(BloonChannels.RoleEdits).ConfigureAwait(false),
-                LogConsole.UserInfo => await this.dClient.GetChannelAsync(BloonChannels.SBGUserInfo).ConfigureAwait(false),
-                _ => await this.dClient.GetChannelAsync(BloonChannels.Console).ConfigureAwait(false),
+                LogConsole.Commands => await this.dClient.GetChannelAsync(BloonChannels.Commands),
+                LogConsole.Jobs => await this.dClient.GetChannelAsync(BloonChannels.Jobs),
+                LogConsole.RoleEdits => await this.dClient.GetChannelAsync(BloonChannels.RoleEdits),
+                LogConsole.UserInfo => await this.dClient.GetChannelAsync(BloonChannels.SBGUserInfo),
+                _ => await this.dClient.GetChannelAsync(BloonChannels.Console),
             };
-            await channel.SendMessageAsync($"**[{DateTime.UtcNow}]** {DiscordEmoji.FromGuildEmote(this.dClient, emoji)} {message}").ConfigureAwait(false);
+            await channel.SendMessageAsync($"**[{DateTime.UtcNow}]** {DiscordEmoji.FromGuildEmote(this.dClient, emoji)} {message}");
         }
 
         public async void Error(string message)
         {
-            DiscordChannel logChannel = await this.dClient.GetChannelAsync(BloonChannels.ExceptionReporting).ConfigureAwait(false);
-            await logChannel.SendMessageAsync(message).ConfigureAwait(false);
+            DiscordChannel logChannel = await this.dClient.GetChannelAsync(BloonChannels.ExceptionReporting);
+            await logChannel.SendMessageAsync(message);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Bloon.Features.Youtube
 
             try
             {
-                rawJson = await this.httpClient.GetStringAsync(new Uri($"https://www.googleapis.com/youtube/v3/search?key={this.apiKey}&channelId=UCuxq1O0Giy8ZK67WmuD_HkA&part=snippet,id&order=date&maxResults=1")).ConfigureAwait(false);
+                rawJson = await this.httpClient.GetStringAsync(new Uri($"https://www.googleapis.com/youtube/v3/search?key={this.apiKey}&channelId=UCuxq1O0Giy8ZK67WmuD_HkA&part=snippet,id&order=date&maxResults=1"));
             }
             catch (HttpRequestException e)
             {
@@ -70,7 +70,7 @@ namespace Bloon.Features.Youtube
             Log.Information("[YOUTUBE] New Video!");
 
             db.YoutubeVideos.Add(video);
-            await db.SaveChangesAsync().ConfigureAwait(false);
+            await db.SaveChangesAsync();
 
             return true;
         }

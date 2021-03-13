@@ -14,43 +14,25 @@ namespace Bloon.Features.Wiki
         [NotMapped]
         public int PageId
         {
-            get
-            {
-                return this.Additional["pageId"] != null ? int.Parse(this.Additional["pageId"].ToString(), CultureInfo.InvariantCulture) : 0;
-            }
+            get => this.Additional["pageId"] != null ? int.Parse(this.Additional["pageId"].ToString(), CultureInfo.InvariantCulture) : 0;
 
-            set
-            {
-                this.Additional["pageId"] = value;
-            }
+            set => this.Additional["pageId"] = value;
         }
 
         [NotMapped]
         public string PostType
         {
-            get
-            {
-                return this.Additional["type"]?.ToString() ?? null;
-            }
+            get => this.Additional["type"]?.ToString() ?? null;
 
-            set
-            {
-                this.Additional["type"] = value;
-            }
+            set => this.Additional["type"] = value;
         }
 
         [NotMapped]
         public int ByteDifference
         {
-            get
-            {
-                return this.Additional["byteDifference"] != null ? int.Parse(this.Additional["byteDifference"].ToString(), CultureInfo.InvariantCulture) : 0;
-            }
+            get => this.Additional["byteDifference"] != null ? int.Parse(this.Additional["byteDifference"].ToString(), CultureInfo.InvariantCulture) : 0;
 
-            set
-            {
-                this.Additional["byteDifference"] = value;
-            }
+            set => this.Additional["byteDifference"] = value;
         }
 
         [NotMapped]

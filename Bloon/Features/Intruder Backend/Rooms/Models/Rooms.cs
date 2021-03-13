@@ -4,12 +4,9 @@ namespace Bloon.Features.IntruderBackend.Rooms
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using Bloon.Features.Intruder_Backend.Rooms.Models;
     using Bloon.Features.IntruderBackend.Agents;
     using Bloon.Features.IntruderBackend.Maps;
-    using Bloon.Variables.Emojis;
-    using DSharpPlus.Entities;
-    using LinqToTwitter;
+    using Bloon.Features.IntruderBackend.Rooms.Models;
     using Newtonsoft.Json;
 
     [Table("room_history")]
@@ -66,7 +63,7 @@ namespace Bloon.Features.IntruderBackend.Rooms
         public RoomCurrentMap CurrentMap { get; set; }
 
         [NotMapped]
-        public Map[] Maps { get; set; }
+        public List<Map> Maps { get; set; }
 
         [NotMapped]
         [JsonProperty("maxAgents")]
@@ -93,7 +90,7 @@ namespace Bloon.Features.IntruderBackend.Rooms
 
         [NotMapped]
         [JsonProperty("tuning")]
-        public Object? Tuning { get; set; }
+        public object? Tuning { get; set; }
 
         [Column("last_update")]
         [JsonProperty("lastUpdate")]
@@ -109,7 +106,7 @@ namespace Bloon.Features.IntruderBackend.Rooms
         public ulong DBCreatorSteamId { get; set; }
 
         [Column("passworded")]
-        public bool passworded { get; set; }
+        public bool Passworded { get; set; }
 
         [NotMapped]
         public string RegionFlag { get; set; }
@@ -118,6 +115,6 @@ namespace Bloon.Features.IntruderBackend.Rooms
         public string ServerIcon { get; set; }
 
         // statuses of all players in the room? Why tho
-        //public AgentStatus statuses { get; set; }
+        // public AgentStatus statuses { get; set; }
     }
 }

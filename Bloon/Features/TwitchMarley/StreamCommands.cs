@@ -29,13 +29,13 @@ namespace Bloon.Commands
         [GroupCommand]
         [Description("Sets the Stream")]
 #pragma warning disable CA1054 // Uri parameters should not be strings
-        public async Task SetStream(CommandContext ctx, [Description("Stream Url")]string url)
+        public async Task SetStream(CommandContext ctx, [Description("Stream Url")] string url)
 #pragma warning restore CA1054 // Uri parameters should not be strings
         {
             // Dumb Discord.NET
             if (url.StartsWith('-'))
             {
-                await ctx.RespondAsync("Invalid stream url").ConfigureAwait(false);
+                await ctx.RespondAsync("Invalid stream url");
                 return;
             }
 
@@ -48,7 +48,7 @@ namespace Bloon.Commands
 
                 if (!match.Success)
                 {
-                    await ctx.RespondAsync("Unable to process stream url").ConfigureAwait(false);
+                    await ctx.RespondAsync("Unable to process stream url");
                     return;
                 }
 
@@ -59,38 +59,38 @@ namespace Bloon.Commands
 
             try
             {
-                users = await this.twitchAPI.V5.Users.GetUserByNameAsync(name).ConfigureAwait(false);
+                users = await this.twitchAPI.V5.Users.GetUserByNameAsync(name);
             }
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
 #pragma warning restore CA1031 // Do not catch general exception types
             {
                 Log.Error(e, "Unable to grab Twitch users");
-                await ctx.RespondAsync("Invalid stream url").ConfigureAwait(false);
+                await ctx.RespondAsync("Invalid stream url");
                 return;
             }
 
             if (users.Matches.Length == 0)
             {
-                await ctx.RespondAsync($"Streamer not found").ConfigureAwait(false);
+                await ctx.RespondAsync($"Streamer not found");
                 return;
             }
 
-            StreamByUser userStream = await this.twitchAPI.V5.Streams.GetStreamByUserAsync(users.Matches[0].Id).ConfigureAwait(false);
+            StreamByUser userStream = await this.twitchAPI.V5.Streams.GetStreamByUserAsync(users.Matches[0].Id);
 
             if (userStream.Stream == null)
             {
-                await ctx.RespondAsync($"Stream seems to be offline").ConfigureAwait(false);
+                await ctx.RespondAsync($"Stream seems to be offline");
                 return;
             }
             else if (userStream.Stream.Game != "Intruder")
             {
-                await ctx.RespondAsync($"I only promote **Intruder**{(userStream.Stream.Game.Length > 0 ? $", not **{userStream.Stream.Game}**," : string.Empty)} streams").ConfigureAwait(false);
+                await ctx.RespondAsync($"I only promote **Intruder**{(userStream.Stream.Game.Length > 0 ? $", not **{userStream.Stream.Game}**," : string.Empty)} streams");
                 return;
             }
 
-            await this.activityManager.SetStreamAsync(ctx.User.Id, name.Capitalize(), url, true).ConfigureAwait(false);
-            await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":heavy_check_mark:")).ConfigureAwait(false);
+            await this.activityManager.SetStreamAsync(ctx.User.Id, name.Capitalize(), url, true);
+            await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":heavy_check_mark:"));
         }
 
         [Command("-clear")]
@@ -99,8 +99,8 @@ namespace Bloon.Commands
         [Description("Clears the Stream")]
         public async Task ClearStream(CommandContext ctx)
         {
-            await this.activityManager.ClearStreamAsync().ConfigureAwait(false);
-            await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":heavy_check_mark:")).ConfigureAwait(false);
+            await this.activityManager.ClearStreamAsync();
+            await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":heavy_check_mark:"));
         }
     }
 }

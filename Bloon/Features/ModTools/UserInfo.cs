@@ -2,15 +2,15 @@ namespace Bloon.Features.ModTools
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Threading.Tasks;
+    using Bloon.Analytics.Users;
+    using Bloon.Features.Analytics;
+    using Bloon.Variables;
+    using DSharpPlus;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
-    using Bloon.Features.Analytics;
-    using System.Globalization;
-    using Bloon.Analytics.Users;
-    using Bloon.Variables;
-    using DSharpPlus;
 
     [Group("userlookup")]
     [Aliases("ul", "ui")]
@@ -28,7 +28,9 @@ namespace Bloon.Features.ModTools
         [Command("-info")]
         [Aliases("-i")]
         [Description("Shows all information of a particular user.")]
+#pragma warning disable CA1822 // Mark members as static
         public async Task GuildUserLookup(CommandContext ctx, ulong userID, string guildName = null)
+#pragma warning restore CA1822 // Mark members as static
         {
             ulong guildId;
 
@@ -55,9 +57,9 @@ namespace Bloon.Features.ModTools
                     break;
             }
 
-            DiscordGuild guild = await ctx.Client.GetGuildAsync(guildId).ConfigureAwait(false);
+            DiscordGuild guild = await ctx.Client.GetGuildAsync(guildId);
 
-            DiscordMember member = await guild.GetMemberAsync(userID).ConfigureAwait(false);
+            DiscordMember member = await guild.GetMemberAsync(userID);
 
             Permissions memberPerms = member.PermissionsIn(guild.GetDefaultChannel());
 
@@ -122,24 +124,24 @@ namespace Bloon.Features.ModTools
 
             userDetails.AddField("Guild Permissions", permissions);
 
-            await ctx.RespondAsync(embed: userDetails.Build()).ConfigureAwait(false);
+            await ctx.RespondAsync(embed: userDetails.Build());
         }
 
         [Command("-events")]
         [Aliases("-e")]
         [Description("Shows all events of a particular user.")]
-        public async Task SearchOnlineAgents(CommandContext ctx, [RemainingText]string discordId)
+        public async Task SearchOnlineAgents(CommandContext ctx, [RemainingText] string discordId)
         {
-            List<UserEvent> userEvents = this.userEventService.QueryEventReportAsync(ulong.Parse(discordId));
-            DiscordGuild sbg = await ctx.Client.GetGuildAsync(Variables.Guilds.SBG).ConfigureAwait(false);
+            List<UserEvent> userEvents = this.userEventService.QueryEventReportAsync(ulong.Parse(discordId, CultureInfo.CurrentCulture));
+            DiscordGuild sbg = await ctx.Client.GetGuildAsync(Guilds.SBG);
             DiscordMember member;
             try
             {
-                member = await ctx.Guild.GetMemberAsync(ulong.Parse(discordId)).ConfigureAwait(false);
+                member = await ctx.Guild.GetMemberAsync(ulong.Parse(discordId, CultureInfo.CurrentCulture));
             }
             catch (DSharpPlus.Exceptions.NotFoundException)
             {
-                member = await sbg.GetMemberAsync(ulong.Parse(discordId)).ConfigureAwait(false);
+                member = await sbg.GetMemberAsync(ulong.Parse(discordId, CultureInfo.CurrentCulture));
             }
 
             string eventText = string.Empty;
@@ -151,19 +153,23 @@ namespace Bloon.Features.ModTools
                 {
                     eventText = eventText + DiscordEmoji.FromGuildEmote(ctx.Client, Variables.Emojis.EventEmojis.Join) + " Joined\n";
                 }
+
                 if (events.Event == Event.Left)
                 {
                     eventText = eventText + DiscordEmoji.FromGuildEmote(ctx.Client, Variables.Emojis.EventEmojis.Leave) + " Left\n";
                 }
+
                 if (events.Event == Event.Banned)
                 {
                     eventText = eventText + DiscordEmoji.FromGuildEmote(ctx.Client, Variables.Emojis.EventEmojis.Banned) + " Banned\n";
                 }
+
                 if (events.Event == Event.Unbanned)
                 {
                     eventText = eventText + DiscordEmoji.FromGuildEmote(ctx.Client, Variables.Emojis.EventEmojis.Edited) + " Unbanned\n";
                 }
-                timestamps = timestamps + $"{events.Timestamp.ToString("ddd, MMM d, yyyy")}\n";
+
+                timestamps += $"{events.Timestamp.ToString("ddd, MMM d, yyyy", CultureInfo.CurrentCulture)}\n";
             }
 
             DiscordEmbedBuilder userDetails = new DiscordEmbedBuilder
@@ -185,7 +191,7 @@ namespace Bloon.Features.ModTools
             userDetails.AddField($"Events", eventText, inline: true);
             userDetails.AddField($"Timestamps", timestamps, inline: true);
 
-            await ctx.RespondAsync(string.Empty, embed: userDetails.Build()).ConfigureAwait(false);
+            await ctx.RespondAsync(string.Empty, embed: userDetails.Build());
         }
     }
 }

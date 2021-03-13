@@ -51,7 +51,7 @@ namespace Bloon.Features.RandomResponses
             // 10% chance of flipping out...I mean flipping tables
             if (randomValue == 0)
             {
-                await message.Channel.SendMessageAsync(flipped ? TableUnflipped : TableFlipped).ConfigureAwait(false);
+                await message.Channel.SendMessageAsync(flipped ? TableUnflipped : TableFlipped);
             }
         }
 
@@ -64,10 +64,10 @@ namespace Bloon.Features.RandomResponses
             }
 
             // Respond to Rob
-            await this.RespondToRobAsync(args.Message).ConfigureAwait(false);
+            await this.RespondToRobAsync(args.Message);
 
             // (Un)Flip tables
-            await FlipTables(args.Message).ConfigureAwait(false);
+            await FlipTables(args.Message);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Bloon.Features.RandomResponses
 
             if (message.Content.Contains("csbutt", StringComparison.Ordinal) || message.Content.Contains("csbutts", StringComparison.Ordinal))
             {
-                await message.CreateReactionAsync(DiscordEmoji.FromName(this.dClient, ":fire:")).ConfigureAwait(false);
+                await message.CreateReactionAsync(DiscordEmoji.FromName(this.dClient, ":fire:"));
             }
         }
     }

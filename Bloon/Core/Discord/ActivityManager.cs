@@ -36,7 +36,7 @@ namespace Bloon.Core.Discord
         public async Task ClearStreamAsync()
         {
             this.streamOwnerID = 0;
-            await this.ResetActivityAsync().ConfigureAwait(false);
+            await this.ResetActivityAsync();
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Bloon.Core.Discord
                 return;
             }
 
-            DiscordChannel sbgGeneral = await this.dClient.GetChannelAsync(SBGChannels.General).ConfigureAwait(false);
+            DiscordChannel sbgGeneral = await this.dClient.GetChannelAsync(SBGChannels.General);
             DiscordEmbed streamEmbed = new DiscordEmbedBuilder
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
@@ -89,9 +89,9 @@ namespace Bloon.Core.Discord
                 ActivityType = ActivityType.Streaming,
                 Name = $"Intruder with {streamerName}",
                 StreamUrl = url,
-            }).ConfigureAwait(false);
+            });
 
-            await sbgGeneral.SendMessageAsync(embed: streamEmbed).ConfigureAwait(false);
+            await sbgGeneral.SendMessageAsync(embed: streamEmbed);
         }
 
         /// <summary>
@@ -113,12 +113,12 @@ namespace Bloon.Core.Discord
             {
                 ActivityType = activityType,
                 Name = activity,
-            }).ConfigureAwait(false);
+            });
 
             if (autoReset)
             {
-                await Task.Delay(AutoResetMs).ConfigureAwait(false);
-                await this.ResetActivityAsync().ConfigureAwait(false);
+                await Task.Delay(AutoResetMs);
+                await this.ResetActivityAsync();
             }
         }
     }

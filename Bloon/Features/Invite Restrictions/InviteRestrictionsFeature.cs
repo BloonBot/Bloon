@@ -57,15 +57,15 @@ namespace Bloon.Features.Censor
                 return;
             }
 
-            DiscordMember member = await args.Channel.Guild.GetMemberAsync(args.Author.Id).ConfigureAwait(false);
+            DiscordMember member = await args.Channel.Guild.GetMemberAsync(args.Author.Id);
 
             if ((DateTime.UtcNow - member.JoinedAt.UtcDateTime).TotalHours < 24)
             {
                 DiscordChannel sbgAUG = args.Channel.Guild.GetChannel(SBGChannels.Bloonside);
 
-                await args.Message.DeleteAsync().ConfigureAwait(false);
-                await args.Channel.SendMessageAsync("Invite link removed (Joined <24 hours ago)").ConfigureAwait(false);
-                await sbgAUG.SendMessageAsync($"Removed an invite link from `{args.Author.Username}#{args.Author.Discriminator}` to `{match.Value}` in {args.Channel.Mention}.").ConfigureAwait(false);
+                await args.Message.DeleteAsync();
+                await args.Channel.SendMessageAsync("Invite link removed (Joined <24 hours ago)");
+                await sbgAUG.SendMessageAsync($"Removed an invite link from `{args.Author.Username}#{args.Author.Discriminator}` to `{match.Value}` in {args.Channel.Mention}.");
             }
         }
     }

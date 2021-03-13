@@ -29,7 +29,7 @@ namespace Bloon.Features.NowPlaying
 
         public async Task Execute()
         {
-            DiscordGuild sbg = await this.dClient.GetGuildAsync(Guilds.SBG).ConfigureAwait(false);
+            DiscordGuild sbg = await this.dClient.GetGuildAsync(Guilds.SBG);
             DiscordRole nowPlayingRole = sbg.GetRole(SBGRoles.NowPlaying);
 
             List<DiscordMember> prunableMembers = sbg.Members
@@ -41,7 +41,7 @@ namespace Bloon.Features.NowPlaying
             {
                 if (member.Presence == null || !member.Presence.Activities.Any(a => a.Name.Contains("Intruder", StringComparison.Ordinal)))
                 {
-                    await member.RevokeRoleAsync(nowPlayingRole).ConfigureAwait(false);
+                    await member.RevokeRoleAsync(nowPlayingRole);
                     this.bloonLog.Information(LogConsole.RoleEdits, ManageRoleEmojis.Demotion, $"**Role Demotion**: {member.Username} - Now Playing");
                 }
             }

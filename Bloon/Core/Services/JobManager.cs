@@ -77,7 +77,7 @@ namespace Bloon.Core.Services
 
             foreach (ITimedJob timedJob in this.jobs)
             {
-                string jobName = timedJob.GetType().FullName;
+                string jobName = timedJob.GetType().FullName!;
 
                 Job job = dbJobs.Where(j => j.Name == jobName).FirstOrDefault();
 
@@ -99,7 +99,7 @@ namespace Bloon.Core.Services
                 }
             }
 
-            await db.SaveChangesAsync().ConfigureAwait(false);
+            await db.SaveChangesAsync();
 
             if (timedJobs.Count > 0)
             {
@@ -107,7 +107,7 @@ namespace Bloon.Core.Services
 
                 try
                 {
-                    await jobs.ConfigureAwait(false);
+                    await jobs;
                 }
 #pragma warning disable CA1031 // Do not catch general exception types
                 catch (Exception ex)
@@ -128,7 +128,7 @@ namespace Bloon.Core.Services
                     Log.Error(jobs.Exception, "One or more jobs failed.");
                 }
 
-                //this.bloonLog.Information(LogConsole.Jobs, SBGEmojis.Bloon, $"Jobs finished:\n- {string.Join("\n- ", timedJobs.Select(j => $"{DiscordEmoji.FromGuildEmote(this.dClient, j.Emoji)} {j.GetType().Name}"))}");
+                // this.bloonLog.Information(LogConsole.Jobs, SBGEmojis.Bloon, $"Jobs finished:\n- {string.Join("\n- ", timedJobs.Select(j => $"{DiscordEmoji.FromGuildEmote(this.dClient, j.Emoji)} {j.GetType().Name}"))}");
             }
         }
     }

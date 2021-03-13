@@ -31,7 +31,7 @@ namespace Bloon.Features.LTP
             // User is already within the looking to play role, remove them.
             if (ctx.Member.Roles.Any(r => r.Id == SBGRoles.LookingToPlay))
             {
-                await ctx.Member.RevokeRoleAsync(ltp).ConfigureAwait(false);
+                await ctx.Member.RevokeRoleAsync(ltp);
                 this.db.Remove(new LTPJoin()
                 {
                     UserId = ctx.User.Id,
@@ -41,7 +41,7 @@ namespace Bloon.Features.LTP
             // User is not within the looking to play role, promote them to it.
             else
             {
-                await ctx.Member.GrantRoleAsync(ltp).ConfigureAwait(false);
+                await ctx.Member.GrantRoleAsync(ltp);
                 this.db.LTPJoins.Add(new LTPJoin()
                 {
                     UserId = ctx.User.Id,
@@ -49,8 +49,8 @@ namespace Bloon.Features.LTP
                 });
             }
 
-            await this.db.SaveChangesAsync().ConfigureAwait(false);
-            await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":heavy_check_mark:")).ConfigureAwait(false);
+            await this.db.SaveChangesAsync();
+            await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":heavy_check_mark:"));
         }
     }
 }

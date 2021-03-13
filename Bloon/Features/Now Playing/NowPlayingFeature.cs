@@ -59,14 +59,14 @@ namespace Bloon.Features.NowPlaying
                 }
 
                 DiscordRole nowPlayingRole = args.PresenceAfter.Guild.GetRole(SBGRoles.NowPlaying);
-                DiscordMember member = await args.PresenceAfter.Guild.GetMemberAsync(args.UserAfter.Id).ConfigureAwait(false);
+                DiscordMember member = await args.PresenceAfter.Guild.GetMemberAsync(args.UserAfter.Id);
                 bool wasPlaying = (args.PresenceBefore?.Activities.Any(a => a.Name == "Intruder") ?? false) || member.Roles.Any(r => r.Id == SBGRoles.NowPlaying);
                 bool nowPlaying = args.PresenceAfter.Activities.Any(a => a.Name == "Intruder");
 
                 // User started playing Intruder
                 if (!wasPlaying && nowPlaying)
                 {
-                    await member.GrantRoleAsync(nowPlayingRole).ConfigureAwait(false);
+                    await member.GrantRoleAsync(nowPlayingRole);
                     using IServiceScope scope = this.scopeFactory.CreateScope();
                     using BloonContext db = scope.ServiceProvider.GetRequiredService<BloonContext>();
                     LTPJoin join = db.LTPJoins.Where(l => l.UserId == args.UserAfter.Id).FirstOrDefault();
@@ -74,14 +74,14 @@ namespace Bloon.Features.NowPlaying
                     if (join != null)
                     {
                         join.Timestamp = DateTime.UtcNow;
-                        await db.SaveChangesAsync().ConfigureAwait(false);
+                        await db.SaveChangesAsync();
                     }
                 }
 
                 // User stopped playing Intruder
                 else if (wasPlaying && (!nowPlaying || args.PresenceAfter.Status == UserStatus.Invisible || args.PresenceAfter.Status == UserStatus.Offline))
                 {
-                    await member.RevokeRoleAsync(nowPlayingRole).ConfigureAwait(false);
+                    await member.RevokeRoleAsync(nowPlayingRole);
                 }
             });
 

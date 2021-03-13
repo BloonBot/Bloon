@@ -73,7 +73,7 @@ namespace Bloon.Features.RolePersistence
             IServiceScope scope = this.scopeFactory.CreateScope();
             BloonContext db = scope.ServiceProvider.GetRequiredService<BloonContext>();
             await db.Database.ExecuteSqlRawAsync("DELETE FROM `role_member` WHERE `id` = {0}", args.Member.Id)
-                .ConfigureAwait(false);
+                ;
         }
 
         private async Task OnGuildMemberAdded(DiscordClient dClient, GuildMemberAddEventArgs args)
@@ -89,7 +89,7 @@ namespace Bloon.Features.RolePersistence
                 .Where(r => r.MemberId == args.Member.Id)
                 .Select(r => r.RoleId)
                 .ToListAsync()
-                .ConfigureAwait(false);
+                ;
 
             List<string> addedRoleNames = new List<string>();
 
@@ -99,7 +99,7 @@ namespace Bloon.Features.RolePersistence
                 {
                     addedRoleNames.Add(role.Name);
                     await args.Member.GrantRoleAsync(role)
-                        .ConfigureAwait(false);
+                        ;
                 }
             }
 
@@ -110,7 +110,7 @@ namespace Bloon.Features.RolePersistence
 
             await args.Guild.GetChannel(SBGChannels.Bloonside)
                 .SendMessageAsync($"Granted **{string.Join(", ", addedRoleNames)}** to **{args.Member.Username}**.")
-                .ConfigureAwait(false);
+                ;
         }
 
         private async Task OnGuildMembersChunked(DiscordClient dClient, GuildMembersChunkEventArgs args)
@@ -126,7 +126,7 @@ namespace Bloon.Features.RolePersistence
             List<RoleMember> roleMembers = await db.RoleMembers
                 .Where(r => args.Members.Select(m => m.Id).Contains(r.MemberId))
                 .ToListAsync()
-                .ConfigureAwait(false);
+                ;
 
             db.RoleMembers.RemoveRange(roleMembers);
 
@@ -160,7 +160,7 @@ namespace Bloon.Features.RolePersistence
             }
 
             await db.SaveChangesAsync()
-                .ConfigureAwait(false);
+                ;
         }
 
         private async Task OnGuildMemberUpdated(DiscordClient dClient, GuildMemberUpdateEventArgs args)
@@ -182,7 +182,7 @@ namespace Bloon.Features.RolePersistence
             {
                 RoleMember roleMember = await db.RoleMembers.Where(r => r.MemberId == args.Member.Id && r.RoleId == role.Id)
                     .FirstOrDefaultAsync()
-                    .ConfigureAwait(false);
+                    ;
 
                 if (roleMember == null && roleAssigned)
                 {
@@ -199,7 +199,7 @@ namespace Bloon.Features.RolePersistence
             }
 
             await db.SaveChangesAsync()
-                .ConfigureAwait(false);
+                ;
         }
 
         private async Task OnGuildRoleDeleted(DiscordClient dClient, GuildRoleDeleteEventArgs args)
@@ -212,7 +212,7 @@ namespace Bloon.Features.RolePersistence
             IServiceScope scope = this.scopeFactory.CreateScope();
             BloonContext db = scope.ServiceProvider.GetRequiredService<BloonContext>();
             await db.Database.ExecuteSqlRawAsync("DELETE FROM `role_member` WHERE `role_id` = {0}", args.Role.Id)
-                .ConfigureAwait(false);
+                ;
         }
     }
 }

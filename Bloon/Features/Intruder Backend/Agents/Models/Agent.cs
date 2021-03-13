@@ -12,12 +12,13 @@ namespace Bloon.Features.IntruderBackend.Agents
     public class Agent
     {
         public AgentStats Stats { get; set; }
+
         [Key]
         [JsonProperty("id")]
         public int IntruderID { get; set; }
 
         [JsonProperty("role")]
-        public Role Role{ get; set; }
+        public Role Role { get; set; }
 
         [JsonProperty("loginCount")]
         public int LoginCount { get; set; }

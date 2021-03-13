@@ -39,7 +39,7 @@ namespace Bloon.Features.Analytics
                 using IServiceScope scope = this.scopeFactory.CreateScope();
                 using AnalyticsContext db = scope.ServiceProvider.GetRequiredService<AnalyticsContext>();
                 db.UserEvents.Add(userEvent);
-                await db.SaveChangesAsync().ConfigureAwait(false);
+                await db.SaveChangesAsync();
             }
             catch (Exception e)
             {
@@ -68,7 +68,7 @@ namespace Bloon.Features.Analytics
                 using IServiceScope scope = this.scopeFactory.CreateScope();
                 using AnalyticsContext db = scope.ServiceProvider.GetRequiredService<AnalyticsContext>();
                 db.UserEvents.Add(userEvent);
-                await db.SaveChangesAsync().ConfigureAwait(false);
+                await db.SaveChangesAsync();
             }
             catch (Exception e)
             {
@@ -97,7 +97,7 @@ namespace Bloon.Features.Analytics
                 using IServiceScope scope = this.scopeFactory.CreateScope();
                 using AnalyticsContext db = scope.ServiceProvider.GetRequiredService<AnalyticsContext>();
                 db.UserEvents.Add(userEvent);
-                await db.SaveChangesAsync().ConfigureAwait(false);
+                await db.SaveChangesAsync();
             }
             catch (Exception e)
             {
@@ -126,7 +126,7 @@ namespace Bloon.Features.Analytics
                 using IServiceScope scope = this.scopeFactory.CreateScope();
                 using AnalyticsContext db = scope.ServiceProvider.GetRequiredService<AnalyticsContext>();
                 db.UserEvents.Add(userEvent);
-                await db.SaveChangesAsync().ConfigureAwait(false);
+                await db.SaveChangesAsync();
             }
             catch (Exception e)
             {

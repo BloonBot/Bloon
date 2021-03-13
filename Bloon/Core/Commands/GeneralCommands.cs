@@ -64,7 +64,7 @@ namespace Bloon.Core.Commands
 
         [Command("donate")]
         [Description("Something something pizza and beer")]
-        public async Task DonationUrlAsync(CommandContext ctx) => await (await ctx.Member.CreateDmChannelAsync().ConfigureAwait(false)).SendMessageAsync("https://www.patreon.com/bloon").ConfigureAwait(false);
+        public async Task DonationUrlAsync(CommandContext ctx) => await (await ctx.Member.CreateDmChannelAsync()).SendMessageAsync("https://www.patreon.com/bloon");
 
         [Command("extensions")]
         [Aliases("addons", "plugins", "browsers", "chrome", "chromesucks", "firefox", "firefoxbestbrowser")]
@@ -75,11 +75,11 @@ namespace Bloon.Core.Commands
 
         [Command("vecish")]
         [Description("Shift a message using the American keyboard layout")]
-        public async Task VecishAsync(CommandContext ctx, [RemainingText]string message)
+        public async Task VecishAsync(CommandContext ctx, [RemainingText] string message)
         {
             if (string.IsNullOrEmpty(message))
             {
-                await ctx.Channel.SendMessageAsync("Try again: `.vecish <the string you want converted which you would have added had you looked up how to use this command>`").ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync("Try again: `.vecish <the string you want converted which you would have added had you looked up how to use this command>`");
                 return;
             }
 
@@ -105,7 +105,7 @@ namespace Bloon.Core.Commands
                 }
             }
 
-            //await ctx.RespondAsync(new string(chars)).ConfigureAwait(false);
+            // await ctx.RespondAsync(new string(chars));
         }
     }
 }

@@ -5,7 +5,6 @@ namespace Bloon.Commands
     using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
-    using System.Threading.Tasks.Dataflow;
     using Bloon.Core.Commands.Attributes;
     using Bloon.Features.IntruderBackend.Agents;
     using Bloon.Utils;
@@ -24,10 +23,10 @@ namespace Bloon.Commands
 
         [Command("stats")]
         [Description("Gets the stats for a particular agent.")]
-        public async Task AgentStats(CommandContext ctx, [RemainingText]string steamIDOrUsername)
+        public async Task AgentStats(CommandContext ctx, [RemainingText] string steamIDOrUsername)
         {
             // Find Agents
-            List<Agent> agents = await this.agentService.SearchAgent(steamIDOrUsername).ConfigureAwait(false);
+            List<Agent> agents = await this.agentService.SearchAgent(steamIDOrUsername);
 
             // Build Base Embed.
             DiscordEmbedBuilder userDetails = new DiscordEmbedBuilder
@@ -63,17 +62,17 @@ namespace Bloon.Commands
                 Agent agent = agents.FirstOrDefault();
 
                 // See if local DB has agent stored or not.
-                if (await this.agentService.CheckDBAgentAsync(agent.SteamID).ConfigureAwait(false))
+                if (this.agentService.CheckDBAgent(agent.SteamID))
                 {
-                    await this.agentService.UpdateDBAgentAsync(agent).ConfigureAwait(false);
+                    await this.agentService.UpdateDBAgentAsync(agent);
                 }
                 else
                 {
                     // No DB agent found, lets store them.
-                    await this.agentService.StoreAgentDBAsync(agent.SteamID).ConfigureAwait(false);
+                    await this.agentService.StoreAgentDBAsync(agent.SteamID);
                 }
 
-                AgentStats agentStats = await this.agentService.GetAgentStatsAsync(agent.SteamID).ConfigureAwait(false);
+                AgentStats agentStats = await this.agentService.GetAgentStatsAsync(agent.SteamID);
                 userDetails.Url = $"https://intruderfps.com/agents/{agent.SteamID}/";
                 float levelProgression = 0;
                 float matchWLPercent = 0;
@@ -135,21 +134,20 @@ namespace Bloon.Commands
                     $"**Arrests**: `{agentStats.Arrests}` | **Captures**: `{agentStats.Captures}` | **Hacks**: `{agentStats.NetworkHacks}`\n";
             }
 
-            await ctx.RespondAsync(embed: userDetails.Build()).ConfigureAwait(false);
+            await ctx.RespondAsync(embed: userDetails.Build());
         }
-
 
         [Command("hiscores")]
         [Aliases("hs", "hiscore", "highscores", "highscore", "top")]
-        public async Task Hiscores(CommandContext ctx, [RemainingText]string? Orderby)
+        public async Task Hiscores(CommandContext ctx, [RemainingText] string? orderby)
         {
-            if (Orderby == null)
+            if (orderby == null)
             {
-                Orderby = "xp";
+                orderby = "xp";
             }
             else
             {
-                Orderby = Orderby.ToLower();
+                orderby = orderby.ToLowerInvariant();
             }
 
             DiscordEmbedBuilder hiscoreEmbed = new DiscordEmbedBuilder
@@ -163,11 +161,11 @@ namespace Bloon.Commands
                 Timestamp = DateTime.UtcNow,
             };
 
-            List<AgentsDB> agents = this.agentService.GetDBAgentsAsync(Orderby);
+            List<AgentsDB> agents = this.agentService.GetDBAgentsAsync(orderby);
 
             string table = string.Empty;
 
-            switch (Orderby)
+            switch (orderby)
             {
                 case "match":
                 case "matches":
@@ -480,7 +478,8 @@ namespace Bloon.Commands
                     }).ToMarkdownTable();
                     break;
             }
-            if (Orderby == "help")
+
+            if (orderby == "help")
             {
                 hiscoreEmbed.Title = "Hiscores Help | Descending Only.";
 
@@ -493,21 +492,23 @@ namespace Bloon.Commands
             {
                 hiscoreEmbed.Description = $"```{table}```";
             }
-            
-            await ctx.RespondAsync(embed: hiscoreEmbed).ConfigureAwait(false);
+
+            await ctx.RespondAsync(embed: hiscoreEmbed);
         }
 
         [OwnersExclusive]
         [Command("agentstats")]
         public async Task PopulateAgentTable(CommandContext ctx, string launchCode)
         {
-            await ctx.RespondAsync("OK - starting the table population.").ConfigureAwait(false);
+            await ctx.RespondAsync("OK - starting the table population.");
             if (launchCode == "103967428408512512")
             {
-                await this.agentService.PopulateAgentTableAsync().ConfigureAwait(false);
+                await this.agentService.PopulateAgentTableAsync();
             }
-            await ctx.RespondAsync("Finished table population.").ConfigureAwait(false);
-            //List<Agent> agents = await this.agentService.GetAllAgents(null, null, null, 1, 100).ConfigureAwait(false);
+
+            await ctx.RespondAsync("Finished table population.");
+
+            // List<Agent> agents = await this.agentService.GetAllAgents(null, null, null, 1, 100);
         }
     }
 }

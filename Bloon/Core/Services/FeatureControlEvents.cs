@@ -57,8 +57,8 @@ namespace Bloon.Core.Services
                 return;
             }
 
-            DiscordChannel settingsChannel = await this.dClient.GetChannelAsync(BloonChannels.Settings).ConfigureAwait(false);
-            DiscordMessage featureMessage = await settingsChannel.GetMessageAsync(args.Message.Id).ConfigureAwait(false);
+            DiscordChannel settingsChannel = await this.dClient.GetChannelAsync(BloonChannels.Settings);
+            DiscordMessage featureMessage = await settingsChannel.GetMessageAsync(args.Message.Id);
             Feature feature = this.featureManager.Features.Where(f => f.Name == featureMessage.Embeds[0]?.Title).FirstOrDefault();
 
             if (feature == null)
@@ -67,17 +67,17 @@ namespace Bloon.Core.Services
             }
             else if (args.Emoji.Id == FeatureEmojis.ToggleOff && feature.Enabled)
             {
-                await feature.Disable().ConfigureAwait(false);
-                await this.featureManager.UpdateFeatureStatusAsync(feature.Name, false).ConfigureAwait(false);
+                await feature.Disable();
+                await this.featureManager.UpdateFeatureStatusAsync(feature.Name, false);
             }
             else if (args.Emoji.Id == FeatureEmojis.ToggleOn && !feature.Enabled)
             {
-                await feature.Enable().ConfigureAwait(false);
-                await this.featureManager.UpdateFeatureStatusAsync(feature.Name, true).ConfigureAwait(false);
+                await feature.Enable();
+                await this.featureManager.UpdateFeatureStatusAsync(feature.Name, true);
             }
 
-            await featureMessage.ModifyAsync(embed: CreateFeatureEmbed(feature)).ConfigureAwait(false);
-            await featureMessage.DeleteReactionAsync(args.Emoji, args.User).ConfigureAwait(false);
+            await featureMessage.ModifyAsync(embed: CreateFeatureEmbed(feature));
+            await featureMessage.DeleteReactionAsync(args.Emoji, args.User);
         }
 
         private async Task OnGuildAvailable(DiscordClient dClient, GuildCreateEventArgs args)
@@ -87,10 +87,10 @@ namespace Bloon.Core.Services
                 return;
             }
 
-            await this.dClient.Guilds[Guilds.Bloon].GetEmojisAsync().ConfigureAwait(false);
+            await this.dClient.Guilds[Guilds.Bloon].GetEmojisAsync();
 
-            DiscordChannel settingsChannel = await this.dClient.GetChannelAsync(BloonChannels.Settings).ConfigureAwait(false);
-            IReadOnlyList<DiscordMessage> messages = await settingsChannel.GetMessagesAsync(this.featureManager.Features.Count).ConfigureAwait(false);
+            DiscordChannel settingsChannel = await this.dClient.GetChannelAsync(BloonChannels.Settings);
+            IReadOnlyList<DiscordMessage> messages = await settingsChannel.GetMessagesAsync(this.featureManager.Features.Count);
 
             for (int i = 0; i < this.featureManager.Features.Count; i++)
             {
@@ -100,13 +100,13 @@ namespace Bloon.Core.Services
 
                 if (message == null)
                 {
-                    message = await settingsChannel.SendMessageAsync(embed: newEmbed).ConfigureAwait(false);
-                    await message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(this.dClient, FeatureEmojis.ToggleOff)).ConfigureAwait(false);
-                    await message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(this.dClient, FeatureEmojis.ToggleOn)).ConfigureAwait(false);
+                    message = await settingsChannel.SendMessageAsync(embed: newEmbed);
+                    await message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(this.dClient, FeatureEmojis.ToggleOff));
+                    await message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(this.dClient, FeatureEmojis.ToggleOn));
                 }
                 else if (!IdenticalEmbed(message.Embeds[0], newEmbed))
                 {
-                    await message.ModifyAsync(embed: newEmbed).ConfigureAwait(false);
+                    await message.ModifyAsync(embed: newEmbed);
                 }
             }
         }

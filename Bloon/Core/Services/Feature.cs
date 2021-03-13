@@ -33,9 +33,9 @@ namespace Bloon.Core.Services
         public async Task Reload()
         {
             await this.Disable()
-                .ConfigureAwait(false);
+                ;
             await this.Enable()
-                .ConfigureAwait(false);
+                ;
         }
     }
 }

@@ -3,7 +3,6 @@ namespace Bloon.Features.Doorman
     using System;
     using System.Globalization;
     using System.Threading.Tasks;
-    using Bloon.Core.Discord;
     using Bloon.Core.Services;
     using Bloon.Variables.Channels;
     using DSharpPlus;
@@ -13,12 +12,10 @@ namespace Bloon.Features.Doorman
     public class GoodbyeGreeting : Feature
     {
         private readonly DiscordClient dClient;
-        private readonly BloonLog bloonLog;
 
-        public GoodbyeGreeting(DiscordClient dClient, BloonLog bloonLog)
+        public GoodbyeGreeting(DiscordClient dClient)
         {
             this.dClient = dClient;
-            this.bloonLog = bloonLog;
         }
 
         public override string Name => "Goodbye Messages";
@@ -46,21 +43,7 @@ namespace Bloon.Features.Doorman
                 return;
             }
 
-            DiscordChannel sbgAug = await this.dClient.GetChannelAsync(SBGChannels.Bloonside).ConfigureAwait(false);
-
-            string departure;
-            Random random = new Random();
-            int randomValue = random.Next(0, 2);
-
-            // 50:50 chance
-            if (randomValue == 0)
-            {
-                departure = "Goodbye";
-            }
-            else
-            {
-                departure = "Goobye";
-            }
+            DiscordChannel sbgAug = await this.dClient.GetChannelAsync(SBGChannels.Bloonside);
 
             // Temp fix for https://github.com/DSharpPlus/DSharpPlus/pull/491
             bool memberCached = true;
@@ -76,7 +59,7 @@ namespace Bloon.Features.Doorman
             {
                 memberCached = false;
                 DiscordUser user = await this.dClient.GetUserAsync(args.Member.Id)
-                    .ConfigureAwait(false);
+                    ;
                 username = user.Username;
                 discriminator = user.Discriminator;
             }
@@ -93,7 +76,7 @@ namespace Bloon.Features.Doorman
                 message += " - Joined: **Unknown**";
             }
 
-            await sbgAug.SendMessageAsync($"{message}").ConfigureAwait(false);
+            await sbgAug.SendMessageAsync($"{message}");
         }
     }
 }

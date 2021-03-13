@@ -42,10 +42,10 @@ namespace Bloon.Features.ChannelPins
         /// <returns>Task.</returns>
         private async Task OnChannelPinsUpdatedAsync(DiscordClient dClient, ChannelPinsUpdateEventArgs args)
         {
-            int pinCount = (await args.Channel.GetPinnedMessagesAsync().ConfigureAwait(false)).Count;
+            int pinCount = (await args.Channel.GetPinnedMessagesAsync()).Count;
             if (pinCount >= PinWarningThreshold)
             {
-                await args.Channel.SendMessageAsync($"Approaching the pinned message limit [{pinCount}/50]!").ConfigureAwait(false);
+                await args.Channel.SendMessageAsync($"Approaching the pinned message limit [{pinCount}/50]!");
             }
         }
     }

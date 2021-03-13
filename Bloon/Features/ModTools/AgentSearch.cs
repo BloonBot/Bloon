@@ -30,7 +30,7 @@ namespace Bloon.Features.ModTools
         [Description("Show All Online Users")]
         public async Task SearchOnlineAgents(CommandContext ctx)
         {
-            List<Agent> agents = await this.agentService.GetAgents(null, null, true, 1, 25).ConfigureAwait(false);
+            List<Agent> agents = await this.agentService.GetAgents(null, null, true, 1, 25);
 
             DiscordEmbedBuilder onlineUsersEmbed = new DiscordEmbedBuilder
             {
@@ -60,7 +60,7 @@ namespace Bloon.Features.ModTools
 
             onlineUsersEmbed.AddField($"ID  |  NAME | Steam ID ", agentDetails, false);
 
-            await ctx.Channel.SendMessageAsync(string.Empty, embed: onlineUsersEmbed.Build()).ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync(string.Empty, embed: onlineUsersEmbed.Build());
         }
     }
 }

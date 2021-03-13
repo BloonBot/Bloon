@@ -71,7 +71,7 @@ namespace Bloon.Features.Spam
                 SpamMessage randomMessage = db.SpamMessages.Skip(random).FirstOrDefault();
                 this.messageCounter = 0;
 
-                await args.Channel.SendMessageAsync(randomMessage.Value).ConfigureAwait(false);
+                await args.Channel.SendMessageAsync(randomMessage.Value);
             }
         }
     }

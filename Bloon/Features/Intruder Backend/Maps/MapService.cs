@@ -1,5 +1,5 @@
-//namespace Bloon.Features.IntruderBackend.Servers
-//{
+// namespace Bloon.Features.IntruderBackend.Servers
+// {
 //    using System;
 //    using System.Collections.Generic;
 //    using System.Linq;
@@ -16,7 +16,7 @@
 //    using Newtonsoft.Json.Linq;
 //    using Serilog;
 
-//    public partial class RoomService
+// public partial class RoomService
 //    {
 //        public async Task ArchiveRoomMapHistory(List<Rooms> rooms)
 //        {
@@ -25,7 +25,7 @@
 //                using IServiceScope scope = this.scopeFactory.CreateScope();
 //                using AccountsContext db = scope.ServiceProvider.GetRequiredService<AccountsContext>();
 
-//                foreach (Rooms room in rooms)
+// foreach (Rooms room in rooms)
 //                {
 //                    try
 //                    {
@@ -41,9 +41,9 @@
 //                            PlayCount = 0,
 //                        };
 
-//                        Map dbMap = db.Maps.Where(x => x.IntruderId == roomMap.IntruderId).FirstOrDefault();
+// Map dbMap = db.Maps.Where(x => x.IntruderId == roomMap.IntruderId).FirstOrDefault();
 
-//                        if (dbMap == null)
+// if (dbMap == null)
 //                        {
 //                            db.Maps.Add(roomMap);
 //                        }
@@ -54,7 +54,7 @@
 //                            db.Maps.Update(dbMap);
 //                        }
 
-//                        await db.SaveChangesAsync().ConfigureAwait(false);
+// await db.SaveChangesAsync();
 //                    }
 //                    catch (Exception e1)
 //                    {
@@ -64,8 +64,8 @@
 //            }
 //            else
 //            {
-//                await Task.CompletedTask.ConfigureAwait(false);
+//                await Task.CompletedTask;
 //            }
 //        }
 //    }
-//}
+// }

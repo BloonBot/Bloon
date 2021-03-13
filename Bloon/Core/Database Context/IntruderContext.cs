@@ -1,11 +1,10 @@
 namespace Bloon.Core.Database
 {
     using System;
+    using Bloon.Features.IntruderBackend.Agents;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
     using Newtonsoft.Json;
-    using Bloon.Analytics.Users;
-    using Bloon.Features.IntruderBackend.Agents;
 
     public partial class IntruderContext : DbContext
     {

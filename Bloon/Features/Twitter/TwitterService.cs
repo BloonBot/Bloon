@@ -37,7 +37,7 @@ namespace Bloon.Features.Twitter
                 },
             };
 
-            await auth.AuthorizeAsync().ConfigureAwait(false);
+            await auth.AuthorizeAsync();
 
             this.ctx = new TwitterContext(auth);
         }
@@ -51,7 +51,7 @@ namespace Bloon.Features.Twitter
         {
             Status tweet = await this.ctx.Status
                 .Where(x => x.Type == StatusType.User && x.ScreenName == "Superbossgames" && x.TweetMode == TweetMode.Extended && x.ExcludeReplies == true && x.Count == 1)
-                .FirstOrDefaultAsync().ConfigureAwait(false);
+                .FirstOrDefaultAsync();
 
             return tweet;
         }
@@ -80,7 +80,7 @@ namespace Bloon.Features.Twitter
                 Title = tweet.FullText,
                 Timestamp = tweet.CreatedAt.ToUniversalTime(),
             });
-            await db.SaveChangesAsync().ConfigureAwait(false);
+            await db.SaveChangesAsync();
 
             return true;
         }
@@ -93,8 +93,8 @@ namespace Bloon.Features.Twitter
         {
             try
             {
-                await this.ctx.CreateFavoriteAsync(tweet.StatusID).ConfigureAwait(false);
-                await this.ctx.RetweetAsync(tweet.StatusID).ConfigureAwait(false);
+                await this.ctx.CreateFavoriteAsync(tweet.StatusID);
+                await this.ctx.RetweetAsync(tweet.StatusID);
             }
             catch (TwitterQueryException e)
             {

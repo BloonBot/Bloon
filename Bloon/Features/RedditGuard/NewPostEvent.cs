@@ -3,7 +3,6 @@ namespace Bloon.Features.RedditGuard
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Bloon.Core.Database;
-    using Bloon.Core.Discord;
     using Bloon.Variables.Channels;
     using Bloon.Variables.Emojis;
     using DSharpPlus;
@@ -17,16 +16,14 @@ namespace Bloon.Features.RedditGuard
     public class NewPostEvent
     {
         private readonly IServiceScopeFactory scopeFactory;
-        private readonly BloonLog bloonLog;
         private readonly DiscordClient dClient;
         private readonly Subreddit subreddit;
 
-        public NewPostEvent(IServiceScopeFactory scopeFactory, DiscordClient dClient, RedditClient rClient, BloonLog bloonLog)
+        public NewPostEvent(IServiceScopeFactory scopeFactory, DiscordClient dClient, RedditClient rClient)
         {
             this.scopeFactory = scopeFactory;
             this.dClient = dClient;
             this.subreddit = rClient.Subreddit("Intruder").About();
-            this.bloonLog = bloonLog;
         }
 
         public void Register()
@@ -57,7 +54,7 @@ namespace Bloon.Features.RedditGuard
             Log.Information("[Reddit] Stopped monitoring new posts");
         }
 
-        private async void NewUpdatedAsync(object sender, PostsUpdateEventArgs posts) => await this.NewUpdatedAsync(posts.Added).ConfigureAwait(false);
+        private async void NewUpdatedAsync(object sender, PostsUpdateEventArgs posts) => await this.NewUpdatedAsync(posts.Added);
 
         /// <summary>
         /// Finds the latest, new updated RedditPost. Should trigger whenever Guardbot can see the post.
@@ -74,7 +71,7 @@ namespace Bloon.Features.RedditGuard
 
             Log.Information("[REDDIT] Received {0} new post(s)!", posts.Count);
 
-            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General).ConfigureAwait(false);
+            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General);
 
             foreach (Post post in posts)
             {
@@ -112,17 +109,17 @@ namespace Bloon.Features.RedditGuard
                     Title = post.Title,
                 });
 
-                await db.SaveChangesAsync().ConfigureAwait(false);
+                await db.SaveChangesAsync();
 
                 if (string.IsNullOrEmpty(post.Listing.Thumbnail)
                     || post.Listing.Thumbnail == "self"
                     || post.Listing.Thumbnail == "default")
                 {
-                    await sbgGen.SendMessageAsync(embed: redditEmbed).ConfigureAwait(false);
+                    await sbgGen.SendMessageAsync(embed: redditEmbed);
                 }
                 else
                 {
-                    DiscordChannel sbgPNV = await this.dClient.GetChannelAsync(SBGChannels.PicsNVids).ConfigureAwait(false);
+                    DiscordChannel sbgPNV = await this.dClient.GetChannelAsync(SBGChannels.PicsNVids);
 
                     redditEmbed = new DiscordEmbedBuilder(redditEmbed)
                     {
@@ -132,7 +129,7 @@ namespace Bloon.Features.RedditGuard
                         },
                     };
 
-                    await sbgPNV.SendMessageAsync(embed: redditEmbed).ConfigureAwait(false);
+                    await sbgPNV.SendMessageAsync(embed: redditEmbed);
                 }
             }
 

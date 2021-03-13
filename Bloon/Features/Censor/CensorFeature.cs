@@ -49,12 +49,12 @@ namespace Bloon.Features.Censor
                 return;
             }
 
-            DiscordChannel aug = await this.dClient.GetChannelAsync(SBGChannels.Bloonside).ConfigureAwait(false);
-            DiscordMessage foulEmbed = await aug.GetMessageAsync(args.Message.Id).ConfigureAwait(false);
+            DiscordChannel aug = await this.dClient.GetChannelAsync(SBGChannels.Bloonside);
+            DiscordMessage foulEmbed = await aug.GetMessageAsync(args.Message.Id);
 
             if (args.Message.Channel.Id == SBGChannels.Bloonside && foulEmbed.Content.Contains("Profanity Detected", StringComparison.Ordinal) && foulEmbed.Author.Id == dClient.CurrentUser.Id)
             {
-                await foulEmbed.DeleteAsync().ConfigureAwait(false);
+                await foulEmbed.DeleteAsync();
             }
 
             return;
@@ -83,8 +83,8 @@ namespace Bloon.Features.Censor
                     Description = $"\"{args.Message.Content}\"\n\nby {args.Message.Author.Username}\n[View Message]({args.Message.JumpLink})",
                 };
 
-                DiscordMessage embedMessage = await sbgAUG.SendMessageAsync("Profanity Detected", embed: foul).ConfigureAwait(false);
-                await embedMessage.CreateReactionAsync(DiscordEmoji.FromName(this.dClient, ":wastebasket:")).ConfigureAwait(false);
+                DiscordMessage embedMessage = await sbgAUG.SendMessageAsync("Profanity Detected", embed: foul);
+                await embedMessage.CreateReactionAsync(DiscordEmoji.FromName(this.dClient, ":wastebasket:"));
             }
         }
     }

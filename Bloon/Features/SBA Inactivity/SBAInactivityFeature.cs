@@ -75,7 +75,7 @@ namespace Bloon.Features.SBAInactivity
             }
 
             tracking.LastMessage = DateTime.UtcNow;
-            await db.SaveChangesAsync().ConfigureAwait(false);
+            await db.SaveChangesAsync();
         }
     }
 }

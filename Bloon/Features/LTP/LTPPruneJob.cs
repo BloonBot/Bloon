@@ -35,7 +35,7 @@ namespace Bloon.Features.LTP
 
         public async Task Execute()
         {
-            DiscordGuild sbg = await this.dClient.GetGuildAsync(Guilds.SBG).ConfigureAwait(false);
+            DiscordGuild sbg = await this.dClient.GetGuildAsync(Guilds.SBG);
             DiscordRole ltpRole = sbg.GetRole(SBGRoles.LookingToPlay);
 
             List<DiscordMember> roleMembers = sbg.Members
@@ -57,13 +57,13 @@ namespace Bloon.Features.LTP
                     continue;
                 }
 
-                await member.RevokeRoleAsync(ltpRole).ConfigureAwait(false);
+                await member.RevokeRoleAsync(ltpRole);
 
                 this.bloonLog.Information(LogConsole.RoleEdits, ManageRoleEmojis.Demotion, $"**Role Demotion**: {member.Username} - LTP");
             }
 
             db.LTPJoins.RemoveRange(prunable);
-            await db.SaveChangesAsync().ConfigureAwait(false);
+            await db.SaveChangesAsync();
         }
     }
 }

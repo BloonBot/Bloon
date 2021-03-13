@@ -13,10 +13,10 @@ namespace Bloon.Features.RedditGuard
         private readonly DiscordClient dClient;
         private readonly NewPostEvent newPostEvent;
 
-        public RedditGuardFeature(IServiceScopeFactory scopeFactory, DiscordClient dClient, RedditClient rClient, BloonLog bloonLog)
+        public RedditGuardFeature(IServiceScopeFactory scopeFactory, DiscordClient dClient, RedditClient rClient)
         {
             this.dClient = dClient;
-            this.newPostEvent = new NewPostEvent(scopeFactory, dClient, rClient, bloonLog);
+            this.newPostEvent = new NewPostEvent(scopeFactory, dClient, rClient);
         }
 
         public override string Name => "Reddit";

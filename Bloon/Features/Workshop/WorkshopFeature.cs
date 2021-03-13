@@ -25,14 +25,14 @@ namespace Bloon.Features.Workshop
 
         public override Task Disable()
         {
-            this.cNext.UnregisterCommands<WorkshopCommand>();
+            this.cNext.UnregisterCommands<WorkshopCommands>();
             this.jobManager.RemoveJob(this.workshopJob);
             return base.Disable();
         }
 
         public override Task Enable()
         {
-            this.cNext.RegisterCommands<WorkshopCommand>();
+            this.cNext.RegisterCommands<WorkshopCommands>();
             this.jobManager.AddJob(this.workshopJob);
             return base.Enable();
         }

@@ -39,7 +39,7 @@ namespace Bloon.Features.Twitter
         {
             Log.Information("Checking Twitter for new tweets..");
 
-            Status tweet = await this.twitterService.GetLatestAsync().ConfigureAwait(false);
+            Status tweet = await this.twitterService.GetLatestAsync();
 
             // Unable to fetch the latest tweet from twitter
             if (tweet == null)
@@ -47,13 +47,13 @@ namespace Bloon.Features.Twitter
                 this.bloonLog.Error($"Something went wrong fetching the latest tweet! Check Log File");
                 return;
             }
-            else if (!await this.twitterService.TryStoreNewAsync(tweet).ConfigureAwait(false))
+            else if (!await this.twitterService.TryStoreNewAsync(tweet))
             {
                 Log.Information("Finished Twitter checks early");
                 return;
             }
 
-            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General).ConfigureAwait(false);
+            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General);
 
             DiscordEmbed tweetEmbed = new DiscordEmbedBuilder
             {
@@ -72,7 +72,7 @@ namespace Bloon.Features.Twitter
                 Description = tweet.FullText,
             };
 
-            await sbgGen.SendMessageAsync(embed: tweetEmbed).ConfigureAwait(false);
+            await sbgGen.SendMessageAsync(embed: tweetEmbed);
             this.twitterService.LikeAndFavouriteThisShit(tweet);
             this.SendToReddit(tweet);
             Log.Information("Finished Twitter Scraping");

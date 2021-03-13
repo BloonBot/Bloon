@@ -19,10 +19,10 @@ namespace Bloon.Core
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             await this.featureManager.InitializeAsync()
-                .ConfigureAwait(false);
+                ;
 
             await this.featureManager.Start()
-                .ConfigureAwait(false);
+                ;
 
             this.jobManager.Start();
         }

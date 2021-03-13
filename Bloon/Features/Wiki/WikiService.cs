@@ -28,7 +28,6 @@ namespace Bloon.Features.Wiki
         // Last 35 Recent Changes
         private const string RecentChangesthreefive = "action=query&list=recentchanges&rcprop=title|ids|sizes|flags|user|timestamp&rclimit=35&format=json";
 
-
         private const string RevisionParams = "action=query&format=json&prop=revisions&rvprop=timestamp";
 
         private const string ActiveUsers = "action=query&list=allusers&auactiveusers&format=json";
@@ -48,7 +47,7 @@ namespace Bloon.Features.Wiki
 
         public async Task<List<string>> GetSuggestedPagesAsync(string searchTerm)
         {
-            JToken response = await this.Query($"{SuggestionParams}&search={searchTerm}").ConfigureAwait(false);
+            JToken response = await this.Query($"{SuggestionParams}&search={searchTerm}");
 
             if (response == null)
             {
@@ -58,12 +57,12 @@ namespace Bloon.Features.Wiki
             return response[1].Select(x => x.ToString()).ToList();
         }
 
-        public async Task<List<RecentChanges>> GetRecentChanges()
+        public async Task<List<RecentChange>> GetRecentChanges()
         {
-            JToken response = await this.Query(RecentChangesParams).ConfigureAwait(false);
+            JToken response = await this.Query(RecentChangesParams);
             RootAPIObject rootObj = JsonConvert.DeserializeObject<RootAPIObject>(response.ToString());
-            List<RecentChanges> rc = new List<RecentChanges>();
-            foreach (RecentChanges recent in rootObj.query.recentchanges)
+            List<RecentChange> rc = new List<RecentChange>();
+            foreach (RecentChange recent in rootObj.Query.RecentChanges)
             {
                 rc.Add(recent);
             }
@@ -74,7 +73,7 @@ namespace Bloon.Features.Wiki
         public async Task<List<WikiUser>> GetActiveUsers()
         {
             List<WikiUser> users = new List<WikiUser>();
-            JToken response = await this.Query(ActiveUsers).ConfigureAwait(false);
+            JToken response = await this.Query(ActiveUsers);
 
             if (response == null)
             {
@@ -97,12 +96,12 @@ namespace Bloon.Features.Wiki
             return users;
         }
 
-        public async Task<List<RecentChanges>> GetAllRecentChanges()
+        public async Task<List<RecentChange>> GetAllRecentChanges()
         {
-            JToken response = await this.Query(RecentChangesthreefive).ConfigureAwait(false);
+            JToken response = await this.Query(RecentChangesthreefive);
             RootAPIObject rootObj = JsonConvert.DeserializeObject<RootAPIObject>(response.ToString());
-            List<RecentChanges> rc = new List<RecentChanges>();
-            foreach (RecentChanges recent in rootObj.query.recentchanges)
+            List<RecentChange> rc = new List<RecentChange>();
+            foreach (RecentChange recent in rootObj.Query.RecentChanges)
             {
                 rc.Add(recent);
             }
@@ -115,14 +114,14 @@ namespace Bloon.Features.Wiki
             Task<WikiArticle> section0 = this.GetArticleAsync(pageTitle, 0);
             Task<WikiArticle> section1 = this.GetArticleAsync(pageTitle, 1);
 
-            WikiArticle[] articles = await Task.WhenAll(section0, section1).ConfigureAwait(false);
+            WikiArticle[] articles = await Task.WhenAll(section0, section1);
 
             return articles[0] ?? articles[1];
         }
 
         public async Task<WikiArticle> GetLatestAsync(string argument = null)
         {
-            JToken response = await this.Query(LatestRevisionParams).ConfigureAwait(false);
+            JToken response = await this.Query(LatestRevisionParams);
 
             if (response == null)
             {
@@ -165,7 +164,7 @@ namespace Bloon.Features.Wiki
             Log.Information("[WIKI] Post Found!");
 
             db.WikiArticles.Add(entry);
-            await db.SaveChangesAsync().ConfigureAwait(false);
+            await db.SaveChangesAsync();
 
             return true;
         }
@@ -181,7 +180,7 @@ namespace Bloon.Features.Wiki
         {
             try
             {
-                string rawJson = await this.httpClient.GetStringAsync(new Uri(BaseUrl + path)).ConfigureAwait(false);
+                string rawJson = await this.httpClient.GetStringAsync(new Uri(BaseUrl + path));
                 return string.IsNullOrEmpty(rawJson) ? null : JToken.Parse(rawJson);
             }
             catch (HttpRequestException e)
@@ -193,7 +192,7 @@ namespace Bloon.Features.Wiki
 
         private async Task<WikiArticle> GetArticleAsync(string pageTitle, int section)
         {
-            JToken response = await this.Query($"{SearchParams}&page={pageTitle}&section={section}").ConfigureAwait(false);
+            JToken response = await this.Query($"{SearchParams}&page={pageTitle}&section={section}");
 
             if (response == null || !IsValidArticle(response as JObject))
             {
@@ -205,7 +204,7 @@ namespace Bloon.Features.Wiki
                 Title = response["parse"]["title"].ToString(),
                 Body = WikiUtils.ToMarkdown(response["parse"]["wikitext"]["*"].ToString()),
                 Url = WikiUtils.GetUrlFromTitle(pageTitle),
-                Timestamp = await this.GetLatestRevisionTimestamp(int.Parse(response["parse"]["revid"].ToString(), CultureInfo.InvariantCulture)).ConfigureAwait(false),
+                Timestamp = await this.GetLatestRevisionTimestamp(int.Parse(response["parse"]["revid"].ToString(), CultureInfo.InvariantCulture)),
             };
 
             return article;
@@ -213,7 +212,7 @@ namespace Bloon.Features.Wiki
 
         private async Task<DateTime> GetLatestRevisionTimestamp(int revId)
         {
-            JToken response = await this.Query($"{RevisionParams}&revids={revId}").ConfigureAwait(false);
+            JToken response = await this.Query($"{RevisionParams}&revids={revId}");
 
             if (response == null)
             {

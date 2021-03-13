@@ -7,29 +7,24 @@ namespace Bloon.Features.IntruderBackend.Agents
     using System.Text;
     using System.Threading.Tasks;
     using Bloon.Core.Database;
-    using Bloon.Features.IntruderBackend.Levels;
     using Bloon.Features.PackageAccounts;
-    using Bloon.Core.Discord;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Serilog;
-    using Bloon.Commands;
-    using System.Security.Cryptography.X509Certificates;
-    using Microsoft.EntityFrameworkCore;
 
     public class AgentService
     {
-        private const string BaseUrl = "https://api.intruderfps.com/agents";
-        private const string StatsEndpoint = "/stats";
-        private const string VotesEndpoint = "/votes";
-        private const string MapsEndpoint = "/maps";
-
         public const string Q = "Q=";
         public const string OrderBy = "&OrderBy=";
         public const string OnlineOnly = "&OnlineOnly=true";
         public const string Page = "&Page=";
         public const string PerPage = "&PerPage=";
+
+        private const string BaseUrl = "https://api.intruderfps.com/agents";
+        private const string StatsEndpoint = "/stats";
+        private const string VotesEndpoint = "/votes";
 
         private readonly IServiceScopeFactory scopeFactory;
         private readonly HttpClient httpClient;
@@ -53,7 +48,7 @@ namespace Bloon.Features.IntruderBackend.Agents
         /// <returns>All agents.</returns>
         public async Task<List<Agent>> GetAgents(string? q, string? orderBy, bool? onlineOnly, int? page, int? perPage)
         {
-            JToken queryResponse = await this.QueryAgents(q, orderBy, onlineOnly, page, perPage).ConfigureAwait(false);
+            JToken queryResponse = await this.QueryAgents(q, orderBy, onlineOnly, page, perPage);
 
             AgentsObject agentsObject = JsonConvert.DeserializeObject<AgentsObject>(queryResponse.ToString());
 
@@ -74,7 +69,7 @@ namespace Bloon.Features.IntruderBackend.Agents
         /// <returns>Lists of matched Agents.</returns>
         public async Task<List<Agent>> SearchAgent(string? usernameOrID)
         {
-            JToken queryResponse = await this.QueryAgents(usernameOrID, null, null, null, null).ConfigureAwait(false);
+            JToken queryResponse = await this.QueryAgents(usernameOrID, null, null, null, null);
             AgentsObject agentsObject = JsonConvert.DeserializeObject<AgentsObject>(queryResponse.ToString());
             List<Agent> agents = new List<Agent>();
 
@@ -99,19 +94,19 @@ namespace Bloon.Features.IntruderBackend.Agents
             List<Agent> agents = new List<Agent>();
             foreach (PackageAccount account in packageAccounts)
             {
-                agents.Add(await this.GetAgentProfileAsync(account.SteamID).ConfigureAwait(false));
+                agents.Add(await this.GetAgentProfileAsync(account.SteamID));
             }
 
             foreach (Agent dbAgent in agents)
             {
                 // Collect Agent Stats
-                AgentStats statsResponse = await this.GetAgentStatsAsync(dbAgent.SteamID).ConfigureAwait(false);
+                AgentStats statsResponse = await this.GetAgentStatsAsync(dbAgent.SteamID);
 
                 // Collect Agent Votes
-                List<AgentVotes> votesResponse = await this.QueryAgentVotes(dbAgent.SteamID).ConfigureAwait(false);
+                List<AgentVotes> votesResponse = await this.QueryAgentVotes(dbAgent.SteamID);
 
                 // Collect Profile Information
-                Agent agentResponse = await this.GetAgentProfileAsync(dbAgent.SteamID).ConfigureAwait(false);
+                Agent agentResponse = await this.GetAgentProfileAsync(dbAgent.SteamID);
 
                 // If the player's latest lastUpdate value is greater than what we have stored in the database
                 if (statsResponse.LastUpdate > dbAgent.LastUpdate && agentResponse.LoginCount > dbAgent.LoginCount)
@@ -159,7 +154,7 @@ namespace Bloon.Features.IntruderBackend.Agents
                     try
                     {
                         db.AgentHistory.Add(agentHistory);
-                        await db.SaveChangesAsync().ConfigureAwait(false);
+                        await db.SaveChangesAsync();
                     }
                     catch (Exception e)
                     {
@@ -167,17 +162,17 @@ namespace Bloon.Features.IntruderBackend.Agents
                     }
 
                     // Update Agent to include most recent XP.
-                    //dbAgent.LastUpdate = DateTime.Now;
-                    //dbAgent.XP = statsResponse.TotalXP;
-                    //try
-                    //{
+                    // dbAgent.LastUpdate = DateTime.Now;
+                    // dbAgent.XP = statsResponse.TotalXP;
+                    // try
+                    // {
                     //    db.Agents.Update(dbAgent);
-                    //    await db.SaveChangesAsync().ConfigureAwait(false);
-                    //}
-                    //catch (Exception e)
-                    //{
+                    //    await db.SaveChangesAsync();
+                    // }
+                    // catch (Exception e)
+                    // {
                     //    Log.Error(e, $"Failed to update agent details in database. Agent: {dbAgent.Name} | ID: {dbAgent.SteamID}");
-                    //}
+                    // }
                 }
             }
         }
@@ -188,9 +183,8 @@ namespace Bloon.Features.IntruderBackend.Agents
         /// <returns>Jack shit.</returns>
         public async Task PopulateAgentTableAsync()
         {
-
             // Convert SteamIDs from PackageAccounts to Agents using DB.
-            List<Agent> agents = await this.GetAllAgents(null, null, null, 101, 100).ConfigureAwait(false);
+            List<Agent> agents = await this.GetAllAgents(null, null, null, 101, 100);
 
             using IServiceScope scope = this.scopeFactory.CreateScope();
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
@@ -200,10 +194,10 @@ namespace Bloon.Features.IntruderBackend.Agents
                 if (db.Agents.Where(x => x.SteamID == dbAgent.SteamID).AsNoTracking().FirstOrDefault() == null || db.Agents.Any(x => x.SteamID != dbAgent.SteamID) || db.Agents.Any(x => x.ID != dbAgent.IntruderID))
                 {
                     // Collect Agent Stats
-                    AgentStats statsResponse = await this.GetAgentStatsAsync(dbAgent.SteamID).ConfigureAwait(false);
+                    AgentStats statsResponse = await this.GetAgentStatsAsync(dbAgent.SteamID);
 
                     // Collect Agent Votes
-                    List<AgentVotes> votesResponse = await this.QueryAgentVotes(dbAgent.SteamID).ConfigureAwait(false);
+                    List<AgentVotes> votesResponse = await this.QueryAgentVotes(dbAgent.SteamID);
 
                     AgentsDB agentsDB = new AgentsDB
                     {
@@ -217,7 +211,7 @@ namespace Bloon.Features.IntruderBackend.Agents
                         FirstLogin = dbAgent.FirstLogin,
                         LastLogin = dbAgent.LastLogin,
                         LastUpdate = dbAgent.LastUpdate,
-                        // END PROFILE INFO
+
                         // BEGIN STATS INFO
                         MatchesWon = statsResponse.MatchesWon,
                         MatchesLost = statsResponse.MatchesLost,
@@ -247,7 +241,7 @@ namespace Bloon.Features.IntruderBackend.Agents
                         LevelXP = statsResponse.LevelXP,
                         LevelXPRequired = statsResponse.LevelXPRequired,
                         TotalXP = statsResponse.TotalXP,
-                        // END STATS INFO
+
                         // BEGIN VOTES
                         PositiveVotes = votesResponse.ElementAt(0).PositiveVotes,
                         NegativeVotes = votesResponse.ElementAt(0).NegativeVotes,
@@ -257,12 +251,12 @@ namespace Bloon.Features.IntruderBackend.Agents
                     try
                     {
                         db.Agents.Add(agentsDB);
-                        await db.SaveChangesAsync().ConfigureAwait(false);
+                        await db.SaveChangesAsync();
                     }
-                    catch (DbUpdateException e1)
+                    catch (DbUpdateException)
                     {
                         db.Agents.Update(agentsDB);
-                        await db.SaveChangesAsync().ConfigureAwait(false);
+                        await db.SaveChangesAsync();
                     }
                 }
                 else
@@ -272,89 +266,9 @@ namespace Bloon.Features.IntruderBackend.Agents
             }
         }
 
-        /// <summary>
-        /// Quries the Intruder API endpoint for agents.
-        /// https://api.intruderfps.com/agents.
-        /// </summary>
-        /// <param name="q">Gets or sets the (partial) agent name or Steam ID filter.</param>
-        /// <param name="orderBy">Gets or sets the result set ordering using property:direction.</param>
-        /// <param name="onlineOnly">Gets or sets a value indicating whether only online agents should be retrieved.</param>
-        /// <param name="page">Gets or sets the current pagination page.</param>
-        /// <param name="perPage">Gets or sets the amount of entries per page.</param>
-        /// <returns>JToken.</returns>
-        private async Task<JToken> QueryAgents(string? q, string? orderBy, bool? onlineOnly, int? page, int? perPage)
-        {
-            // https://api.intruderfps.com/agents?
-            // if i want numbers in my damn variables i'm gonna put numbers in my variables.
-            StringBuilder urlBuilder3000 = new StringBuilder(BaseUrl);
-
-            if (q != null)
-            {
-                // https://api.intruderfps.com/agents?Q=XXXXXXXXX
-                urlBuilder3000.Append($"?Q={q}");
-            }
-
-            if (orderBy != null)
-            {
-                // https://api.intruderfps.com/agents?Q=XXXXXXXXX&OrderBy=XXXX:XXXX
-                // https://api.intruderfps.com/agents?&OrderBy=XXXX:XXXX
-                urlBuilder3000.Append($"?OrderBy={orderBy}");
-            }
-
-            if (onlineOnly != null)
-            {
-                // https://api.intruderfps.com/agents?Q=XXXXXXXXX&OrderBy=XXXX:XXXX&OnlineOnly=XXXXX
-                // https://api.intruderfps.com/agents?&OnlineOnly=XXXXX
-                urlBuilder3000.Append($"&OnlineOnly={onlineOnly}");
-            }
-
-            if (page != null)
-            {
-                if (page == 0)
-                {
-                    page = 1;
-                }
-
-                // https://api.intruderfps.com/agents?Q=XXXXXXXXX&OrderBy=XXXX:XXXX&OnlineOnly=XXXXX&Page=X
-                // https://api.intruderfps.com/agents?&Page=X
-                urlBuilder3000.Append($"?Page={page}");
-            }
-
-            if (perPage != null)
-            {
-                // if you try to query lower than 25 results per page, force it to 25 records per page.
-                if (perPage < 25)
-                {
-                }
-
-                // the limit of the API is 100.
-                if (perPage > 100)
-                {
-                }
-
-                // https://api.intruderfps.com/agents?Q=XXXXXXXXX&OrderBy=XXXX:XXXX&OnlineOnly=XXXXX&Page=X&PerPage=XX
-                // https://api.intruderfps.com/agents?&PerPage=XX
-                urlBuilder3000.Append($"&PerPage={perPage}");
-            }
-
-            // DEBUGGING
-            Console.WriteLine(urlBuilder3000.ToString());
-
-            try
-            {
-                string rawJson = await this.httpClient.GetStringAsync(new Uri(urlBuilder3000.ToString())).ConfigureAwait(false);
-                return string.IsNullOrEmpty(rawJson) ? null : JToken.Parse(rawJson);
-            }
-            catch (HttpRequestException e)
-            {
-                Log.Error(e, $"Failed to run a query for Agents. URL: {urlBuilder3000}");
-                return null;
-            }
-        }
-
         public async Task<List<Agent>> GetAllAgents(string? q, string? orderBy, bool? onlineOnly, int? page, int? perPage)
         {
-            JToken queryResponse = await this.QueryAgents(q, orderBy, onlineOnly, page, perPage).ConfigureAwait(false);
+            JToken queryResponse = await this.QueryAgents(q, orderBy, onlineOnly, page, perPage);
 
             AgentsObject agentsObject = JsonConvert.DeserializeObject<AgentsObject>(queryResponse.ToString());
 
@@ -369,7 +283,7 @@ namespace Bloon.Features.IntruderBackend.Agents
             while (page != 648)
             {
                 page++;
-                queryResponse = await this.QueryAgents(q, orderBy, onlineOnly, page, 100).ConfigureAwait(false);
+                queryResponse = await this.QueryAgents(q, orderBy, onlineOnly, page, 100);
                 agentsObject = JsonConvert.DeserializeObject<AgentsObject>(queryResponse.ToString());
                 foreach (Agent agent in agentsObject.Data)
                 {
@@ -386,21 +300,21 @@ namespace Bloon.Features.IntruderBackend.Agents
         /// </summary>
         /// <param name="steamID">Agent's Steam ID.</param>
         /// <returns>Profile JToken.</returns>
-        public async Task<Agent> GetAgentProfileAsync(ulong SteamID)
+        public async Task<Agent> GetAgentProfileAsync(ulong steamID)
         {
             StringBuilder urlBuilder3000 = new StringBuilder(BaseUrl);
 
-            urlBuilder3000.Append($"/{SteamID}");
+            urlBuilder3000.Append($"/{steamID}");
 
             string rawJson;
 
             try
             {
-                rawJson = await this.httpClient.GetStringAsync(new Uri(urlBuilder3000.ToString())).ConfigureAwait(false);
+                rawJson = await this.httpClient.GetStringAsync(new Uri(urlBuilder3000.ToString()));
             }
             catch (HttpRequestException e)
             {
-                Log.Error(e, $"Failed to obtain profile data for agent: {SteamID} | {urlBuilder3000.ToString()}");
+                Log.Error(e, $"Failed to obtain profile data for agent: {steamID} | {urlBuilder3000}");
                 return null;
             }
 
@@ -422,7 +336,7 @@ namespace Bloon.Features.IntruderBackend.Agents
 
             try
             {
-                rawJson = await this.httpClient.GetStringAsync(new Uri(urlBuilder3000.ToString())).ConfigureAwait(false);
+                rawJson = await this.httpClient.GetStringAsync(new Uri(urlBuilder3000.ToString()));
             }
             catch (HttpRequestException e)
             {
@@ -449,7 +363,7 @@ namespace Bloon.Features.IntruderBackend.Agents
 
             try
             {
-                rawJson = await this.httpClient.GetStringAsync(new Uri(urlBuilder3000.ToString())).ConfigureAwait(false);
+                rawJson = await this.httpClient.GetStringAsync(new Uri(urlBuilder3000.ToString()));
             }
             catch (HttpRequestException e)
             {
@@ -463,21 +377,21 @@ namespace Bloon.Features.IntruderBackend.Agents
         /// <summary>
         /// Return an agent that is stored in the database.
         /// </summary>
-        /// <param name="steamID"></param>
-        /// <returns></returns>
+        /// <param name="steamID">SteamID64.</param>
+        /// <returns>An awaitable Task.</returns>
         public async Task<AgentsDB> GetDBAgentAsync(ulong steamID)
         {
             AgentsDB agent = new AgentsDB();
             using IServiceScope scope = this.scopeFactory.CreateScope();
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
 
-            if (await this.CheckDBAgentAsync(steamID).ConfigureAwait(false))
+            if (this.CheckDBAgent(steamID))
             {
                 agent = db.Agents.Where(x => x.SteamID == steamID).FirstOrDefault();
             }
             else
             {
-                await this.StoreAgentDBAsync(steamID).ConfigureAwait(false);
+                await this.StoreAgentDBAsync(steamID);
             }
 
             return agent;
@@ -488,105 +402,98 @@ namespace Bloon.Features.IntruderBackend.Agents
             using IServiceScope scope = this.scopeFactory.CreateScope();
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
 
-            AgentsDB DbAgent = await this.GetDBAgentAsync(agent.SteamID).ConfigureAwait(false);
+            AgentsDB dbAgent = await this.GetDBAgentAsync(agent.SteamID);
 
-            if (await this.CheckDBAgentAsync(agent.SteamID).ConfigureAwait(false))
+            if (this.CheckDBAgent(agent.SteamID))
             {
-                if (DateTime.Compare(agent.LastLogin, DbAgent.LastLogin) == 1)
+                if (DateTime.Compare(agent.LastLogin, dbAgent.LastLogin) == 1)
                 {
                     // Agent has updated stats. lets update our DB.
 
                     // get stats
-                    AgentStats statsResponse = await this.GetAgentStatsAsync(agent.SteamID).ConfigureAwait(false);
+                    AgentStats statsResponse = await this.GetAgentStatsAsync(agent.SteamID);
 
                     // get votes
-                    List<AgentVotes> votesResponse = await this.QueryAgentVotes(agent.SteamID).ConfigureAwait(false);
+                    List<AgentVotes> votesResponse = await this.QueryAgentVotes(agent.SteamID);
 
-                    if (DbAgent.Name != agent.Name)
+                    if (dbAgent.Name != agent.Name)
                     {
-                        DbAgent.OldAgentName = DbAgent.Name;
+                        dbAgent.OldAgentName = dbAgent.Name;
                     }
 
                     // BEGIN PROFILE INFO
-                    DbAgent.SteamAvatar = agent.AvatarURL;
-                    DbAgent.Role = agent.Role;
-                    DbAgent.Name = agent.Name;
-                    DbAgent.LoginCount = agent.LoginCount;
-                    DbAgent.LastLogin = agent.LastLogin;
-                    DbAgent.LastUpdate = agent.LastUpdate;
-                    // END PROFILE INFO
-                    // BEGIN STATS INFO
-                    DbAgent.MatchesWon = statsResponse.MatchesWon;
-                    DbAgent.MatchesLost = statsResponse.MatchesLost;
-                    DbAgent.RoundsLost = statsResponse.RoundsLost;
-                    DbAgent.RoundsTied = statsResponse.RoundsTied;
-                    DbAgent.RoundsWonElim = statsResponse.RoundsWonElim;
-                    DbAgent.RoundsWonCapture = statsResponse.RoundsWonCapture;
-                    DbAgent.RoundsWonHack = statsResponse.RoundsWonHack;
-                    DbAgent.RoundsWonTimer = statsResponse.RoundsWonTimer;
-                    DbAgent.RoundsWonCustom = statsResponse.RoundsWonCustom;
-                    DbAgent.TimePlayed = statsResponse.TimePlayed;
-                    DbAgent.Kills = statsResponse.Kills;
-                    DbAgent.TeamKills = statsResponse.TeamKills;
-                    DbAgent.Deaths = statsResponse.Deaths;
-                    DbAgent.Arrests = statsResponse.Arrests;
-                    DbAgent.GotArrested = statsResponse.GotArrested;
-                    DbAgent.Captures = statsResponse.Captures;
-                    DbAgent.Pickups = statsResponse.Pickups;
-                    DbAgent.NetworkHacks = statsResponse.NetworkHacks;
-                    DbAgent.Survivals = statsResponse.Survivals;
-                    DbAgent.Suicides = statsResponse.Suicides;
-                    DbAgent.Knockdowns = statsResponse.Knockdowns;
-                    DbAgent.GotKnockedDown = statsResponse.GotKnockedDown;
-                    DbAgent.TeamKnockdowns = statsResponse.TeamKnockdowns;
-                    DbAgent.TeamDamage = statsResponse.TeamDamage;
-                    DbAgent.Level = statsResponse.Level;
-                    DbAgent.LevelXP = statsResponse.LevelXP;
-                    DbAgent.LevelXPRequired = statsResponse.LevelXPRequired;
-                    DbAgent.TotalXP = statsResponse.TotalXP;
-                    // END STATS INFO
-                    // BEGIN VOTES
-                    DbAgent.PositiveVotes = votesResponse.ElementAt(0).PositiveVotes;
-                    DbAgent.NegativeVotes = votesResponse.ElementAt(0).NegativeVotes;
-                    DbAgent.TotalVotes = votesResponse.ElementAt(0).ReceivedVotes;
-                    DbAgent.Timestamp = DateTime.Now;
+                    dbAgent.SteamAvatar = agent.AvatarURL;
+                    dbAgent.Role = agent.Role;
+                    dbAgent.Name = agent.Name;
+                    dbAgent.LoginCount = agent.LoginCount;
+                    dbAgent.LastLogin = agent.LastLogin;
+                    dbAgent.LastUpdate = agent.LastUpdate;
 
-                    db.Agents.Update(DbAgent);
+                    // BEGIN STATS INFO
+                    dbAgent.MatchesWon = statsResponse.MatchesWon;
+                    dbAgent.MatchesLost = statsResponse.MatchesLost;
+                    dbAgent.RoundsLost = statsResponse.RoundsLost;
+                    dbAgent.RoundsTied = statsResponse.RoundsTied;
+                    dbAgent.RoundsWonElim = statsResponse.RoundsWonElim;
+                    dbAgent.RoundsWonCapture = statsResponse.RoundsWonCapture;
+                    dbAgent.RoundsWonHack = statsResponse.RoundsWonHack;
+                    dbAgent.RoundsWonTimer = statsResponse.RoundsWonTimer;
+                    dbAgent.RoundsWonCustom = statsResponse.RoundsWonCustom;
+                    dbAgent.TimePlayed = statsResponse.TimePlayed;
+                    dbAgent.Kills = statsResponse.Kills;
+                    dbAgent.TeamKills = statsResponse.TeamKills;
+                    dbAgent.Deaths = statsResponse.Deaths;
+                    dbAgent.Arrests = statsResponse.Arrests;
+                    dbAgent.GotArrested = statsResponse.GotArrested;
+                    dbAgent.Captures = statsResponse.Captures;
+                    dbAgent.Pickups = statsResponse.Pickups;
+                    dbAgent.NetworkHacks = statsResponse.NetworkHacks;
+                    dbAgent.Survivals = statsResponse.Survivals;
+                    dbAgent.Suicides = statsResponse.Suicides;
+                    dbAgent.Knockdowns = statsResponse.Knockdowns;
+                    dbAgent.GotKnockedDown = statsResponse.GotKnockedDown;
+                    dbAgent.TeamKnockdowns = statsResponse.TeamKnockdowns;
+                    dbAgent.TeamDamage = statsResponse.TeamDamage;
+                    dbAgent.Level = statsResponse.Level;
+                    dbAgent.LevelXP = statsResponse.LevelXP;
+                    dbAgent.LevelXPRequired = statsResponse.LevelXPRequired;
+                    dbAgent.TotalXP = statsResponse.TotalXP;
+
+                    // BEGIN VOTES
+                    dbAgent.PositiveVotes = votesResponse.ElementAt(0).PositiveVotes;
+                    dbAgent.NegativeVotes = votesResponse.ElementAt(0).NegativeVotes;
+                    dbAgent.TotalVotes = votesResponse.ElementAt(0).ReceivedVotes;
+                    dbAgent.Timestamp = DateTime.Now;
+
+                    db.Agents.Update(dbAgent);
                 }
-                else if (DateTime.Compare(agent.LastLogin, DbAgent.LastLogin) == 0)
+                else if (DateTime.Compare(agent.LastLogin, dbAgent.LastLogin) == 0)
                 {
                     // Same date, do nothing.
                 }
             }
             else
             {
-                await this.StoreAgentDBAsync(agent.SteamID).ConfigureAwait(false);
+                await this.StoreAgentDBAsync(agent.SteamID);
             }
 
-            await db.SaveChangesAsync().ConfigureAwait(false);
+            await db.SaveChangesAsync();
         }
 
-        public async Task<bool> CheckDBAgentAsync(ulong steamID)
+        public bool CheckDBAgent(ulong steamID)
         {
             using IServiceScope scope = this.scopeFactory.CreateScope();
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
 
-            if (db.Agents.Where(x => x.SteamID == steamID).Any())
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return db.Agents.Where(x => x.SteamID == steamID).Any();
         }
 
-        public List<AgentsDB> GetDBAgentsAsync(string OrderBy)
+        public List<AgentsDB> GetDBAgentsAsync(string orderBy)
         {
             using IServiceScope scope = this.scopeFactory.CreateScope();
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
             List<AgentsDB> agentsDBs = new List<AgentsDB>();
-            switch (OrderBy)
+            switch (orderBy)
             {
                 case "match":
                 case "matches":
@@ -704,27 +611,27 @@ namespace Bloon.Features.IntruderBackend.Agents
                     agentsDBs = db.Agents.OrderByDescending(x => x.TotalXP).Take(10).ToList();
                     break;
             }
+
             return agentsDBs;
         }
-
 
         /// <summary>
         /// Stores a new Agent DB into the database. Will update if there is an existing entry, but there shouldn't be.
         /// </summary>
-        /// <param name="steamID"></param>
-        /// <returns></returns>
+        /// <param name="steamID">SteamID64.</param>
+        /// <returns>An awaitable task.</returns>
         public async Task StoreAgentDBAsync(ulong steamID)
         {
             // get profile
-            Agent profileResponse = await this.GetAgentProfileAsync(steamID).ConfigureAwait(false);
+            Agent profileResponse = await this.GetAgentProfileAsync(steamID);
 
             // get stats
-            AgentStats statsResponse = await this.GetAgentStatsAsync(steamID).ConfigureAwait(false);
+            AgentStats statsResponse = await this.GetAgentStatsAsync(steamID);
 
             // get votes
-            List<AgentVotes> votesResponse = await this.QueryAgentVotes(steamID).ConfigureAwait(false);
+            List<AgentVotes> votesResponse = await this.QueryAgentVotes(steamID);
 
-            //add to db
+            // add to db
             AgentsDB agentsDB = new AgentsDB()
             {
                 // BEGIN PROFILE INFO
@@ -737,7 +644,7 @@ namespace Bloon.Features.IntruderBackend.Agents
                 FirstLogin = profileResponse.FirstLogin,
                 LastLogin = profileResponse.LastLogin,
                 LastUpdate = profileResponse.LastUpdate,
-                // END PROFILE INFO
+
                 // BEGIN STATS INFO
                 MatchesWon = statsResponse.MatchesWon,
                 MatchesLost = statsResponse.MatchesLost,
@@ -767,7 +674,7 @@ namespace Bloon.Features.IntruderBackend.Agents
                 LevelXP = statsResponse.LevelXP,
                 LevelXPRequired = statsResponse.LevelXPRequired,
                 TotalXP = statsResponse.TotalXP,
-                // END STATS INFO
+
                 // BEGIN VOTES
                 PositiveVotes = votesResponse.ElementAt(0).PositiveVotes,
                 NegativeVotes = votesResponse.ElementAt(0).NegativeVotes,
@@ -781,15 +688,95 @@ namespace Bloon.Features.IntruderBackend.Agents
             try
             {
                 db.Agents.Add(agentsDB);
-                await db.SaveChangesAsync().ConfigureAwait(false);
+                await db.SaveChangesAsync();
             }
-            catch (DbUpdateException e1)
+            catch (DbUpdateException)
             {
                 db.Agents.Update(agentsDB);
-                await db.SaveChangesAsync().ConfigureAwait(false);
+                await db.SaveChangesAsync();
             }
 
-            await Task.CompletedTask.ConfigureAwait(false);
+            await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Quries the Intruder API endpoint for agents.
+        /// https://api.intruderfps.com/agents.
+        /// </summary>
+        /// <param name="q">Gets or sets the (partial) agent name or Steam ID filter.</param>
+        /// <param name="orderBy">Gets or sets the result set ordering using property:direction.</param>
+        /// <param name="onlineOnly">Gets or sets a value indicating whether only online agents should be retrieved.</param>
+        /// <param name="page">Gets or sets the current pagination page.</param>
+        /// <param name="perPage">Gets or sets the amount of entries per page.</param>
+        /// <returns>JToken.</returns>
+        private async Task<JToken> QueryAgents(string? q, string? orderBy, bool? onlineOnly, int? page, int? perPage)
+        {
+            // https://api.intruderfps.com/agents?
+            // if i want numbers in my damn variables i'm gonna put numbers in my variables.
+            StringBuilder urlBuilder3000 = new StringBuilder(BaseUrl);
+
+            if (q != null)
+            {
+                // https://api.intruderfps.com/agents?Q=XXXXXXXXX
+                urlBuilder3000.Append($"?Q={q}");
+            }
+
+            if (orderBy != null)
+            {
+                // https://api.intruderfps.com/agents?Q=XXXXXXXXX&OrderBy=XXXX:XXXX
+                // https://api.intruderfps.com/agents?&OrderBy=XXXX:XXXX
+                urlBuilder3000.Append($"?OrderBy={orderBy}");
+            }
+
+            if (onlineOnly != null)
+            {
+                // https://api.intruderfps.com/agents?Q=XXXXXXXXX&OrderBy=XXXX:XXXX&OnlineOnly=XXXXX
+                // https://api.intruderfps.com/agents?&OnlineOnly=XXXXX
+                urlBuilder3000.Append($"&OnlineOnly={onlineOnly}");
+            }
+
+            if (page != null)
+            {
+                if (page == 0)
+                {
+                    page = 1;
+                }
+
+                // https://api.intruderfps.com/agents?Q=XXXXXXXXX&OrderBy=XXXX:XXXX&OnlineOnly=XXXXX&Page=X
+                // https://api.intruderfps.com/agents?&Page=X
+                urlBuilder3000.Append($"?Page={page}");
+            }
+
+            if (perPage != null)
+            {
+                // if you try to query lower than 25 results per page, force it to 25 records per page.
+                if (perPage < 25)
+                {
+                }
+
+                // the limit of the API is 100.
+                if (perPage > 100)
+                {
+                }
+
+                // https://api.intruderfps.com/agents?Q=XXXXXXXXX&OrderBy=XXXX:XXXX&OnlineOnly=XXXXX&Page=X&PerPage=XX
+                // https://api.intruderfps.com/agents?&PerPage=XX
+                urlBuilder3000.Append($"&PerPage={perPage}");
+            }
+
+            // DEBUGGING
+            Console.WriteLine(urlBuilder3000.ToString());
+
+            try
+            {
+                string rawJson = await this.httpClient.GetStringAsync(new Uri(urlBuilder3000.ToString()));
+                return string.IsNullOrEmpty(rawJson) ? null : JToken.Parse(rawJson);
+            }
+            catch (HttpRequestException e)
+            {
+                Log.Error(e, $"Failed to run a query for Agents. URL: {urlBuilder3000}");
+                return null;
+            }
         }
     }
 }

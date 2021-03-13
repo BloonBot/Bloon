@@ -22,23 +22,23 @@ namespace Bloon.Features.Z26
 
         [Command("faq")]
         [Description("Retrieves a faq response")]
-        public async Task FaqAsync(CommandContext ctx, [RemainingText]string argument = null)
+        public async Task FaqAsync(CommandContext ctx, [RemainingText] string argument = null)
         {
             if (string.IsNullOrEmpty(argument))
             {
-                await ctx.Channel.SendMessageAsync("~~Oi, donkey! Maybe provide an argument the next time you use this damn command?~~ Z26, stop! No need to be so rude to the the stupid human.").ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync("~~Oi, donkey! Maybe provide an argument the next time you use this damn command?~~ Z26, stop! No need to be so rude to the the stupid human.");
                 return;
             }
 
-            Z26Faq faq = await this.db.Z26Faqs.Where(x => x.Name == argument).FirstOrDefaultAsync().ConfigureAwait(false);
+            Z26Faq faq = await this.db.Z26Faqs.Where(x => x.Name == argument).FirstOrDefaultAsync();
 
             if (faq == null)
             {
-                await ctx.RespondAsync($"Couldn't find an entry for \"{argument}\"").ConfigureAwait(false);
+                await ctx.RespondAsync($"Couldn't find an entry for \"{argument}\"");
                 return;
             }
 
-            await ctx.RespondAsync(faq.Value).ConfigureAwait(false);
+            await ctx.RespondAsync(faq.Value);
         }
     }
 }

@@ -11,8 +11,8 @@ namespace Bloon.Features.Workshop
     using Bloon.Core.Services;
     using Bloon.Features.IntruderBackend.Agents;
     using Bloon.Features.Workshop.Models;
-    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Serilog;
@@ -37,7 +37,7 @@ namespace Bloon.Features.Workshop
         /// <summary>
         /// Deprecated in favor of GetRecentlyUpdatedOrAddedAsync.
         /// </summary>
-        /// <param name="argument"></param>
+        /// <param name="argument">Ignored.</param>
         /// <returns>SocialItemWorkshop.</returns>
         public async Task<SocialItemWorkshopMap> GetLatestAsync(string argument = null)
         {
@@ -47,7 +47,7 @@ namespace Bloon.Features.Workshop
 
             try
             {
-                responseRaw = await this.httpClient.GetStringAsync(new Uri($"https://api.steampowered.com/IPublishedFileService/QueryFiles/v1/?key={this.apiKey}&query_type=1&page=1&numperpage=1&appid=518150&return_previews=true&return_short_description=true")).ConfigureAwait(false);
+                responseRaw = await this.httpClient.GetStringAsync(new Uri($"https://api.steampowered.com/IPublishedFileService/QueryFiles/v1/?key={this.apiKey}&query_type=1&page=1&numperpage=1&appid=518150&return_previews=true&return_short_description=true"));
                 JObject responseJson = JObject.Parse(responseRaw);
                 jMap = responseJson.SelectToken("response.publishedfiledetails[0]") as JObject;
             }
@@ -78,17 +78,16 @@ namespace Bloon.Features.Workshop
                 Timestamp = DateTime.UnixEpoch.AddSeconds(jMap["time_created"].ToObject<int>()),
             };
 
-            map.Creator = await this.GetWorkshopMapCreator(jMap["creator"].ToObject<ulong>()).ConfigureAwait(false);
+            map.Creator = await this.GetWorkshopMapCreator(jMap["creator"].ToObject<ulong>());
 
             Log.Debug($"[WORKSHOP]: {map.Timestamp.ToString(CultureInfo.InvariantCulture)}");
 
             return map;
         }
 
-
         public async Task<List<WorkshopMap>> GetRecentlyUpdatedOrAddedAsync()
         {
-            List<WorkshopMap> workshopMaps = await this.GetAllMapsAsync().ConfigureAwait(false);
+            List<WorkshopMap> workshopMaps = await this.GetAllMapsAsync();
 
             List<WorkshopMap> updatedMaps = new List<WorkshopMap>();
 
@@ -96,9 +95,9 @@ namespace Bloon.Features.Workshop
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
             foreach (WorkshopMap map in workshopMaps)
             {
-                map.TimeCreated = this.UnixTimeStampToDateTime(Convert.ToDouble(map.UploadDate));
-                map.TimeUpdated = this.UnixTimeStampToDateTime(Convert.ToDouble(map.MapUpdated));
-                map.CreatorSteamID = Convert.ToUInt64(map.APICreator);
+                map.TimeCreated = UnixTimeStampToDateTime(Convert.ToDouble(map.UploadDate));
+                map.TimeUpdated = UnixTimeStampToDateTime(Convert.ToDouble(map.MapUpdated));
+                map.CreatorSteamID = Convert.ToUInt64(map.APICreator, CultureInfo.CurrentCulture);
 
                 // if we have the map already stored in db, check if there is an update.
                 if (db.WorkshopMaps.Any(x => x.FileID == map.FileID))
@@ -110,7 +109,8 @@ namespace Bloon.Features.Workshop
                         updatedMaps.Add(map);
                         db.WorkshopMaps.Update(map);
                     }
-                    await db.SaveChangesAsync().ConfigureAwait(false);
+
+                    await db.SaveChangesAsync();
                 }
                 else
                 {
@@ -118,7 +118,7 @@ namespace Bloon.Features.Workshop
                     updatedMaps.Add(map);
                     db.WorkshopMaps.Add(map);
                     Log.Information("[WORKSHOP] Stored new map in database.");
-                    await db.SaveChangesAsync().ConfigureAwait(false);
+                    await db.SaveChangesAsync();
                 }
             }
 
@@ -127,7 +127,7 @@ namespace Bloon.Features.Workshop
 
         public async Task<List<WorkshopMap>> GetAllMapsAsync()
         {
-            JToken response = await this.QueryAllMaps().ConfigureAwait(false);
+            JToken response = await this.QueryAllMaps();
             WorkshopRootObject rootObject = JsonConvert.DeserializeObject<WorkshopRootObject>(response.ToString());
 
             List<WorkshopMap> maps = new List<WorkshopMap>();
@@ -141,7 +141,7 @@ namespace Bloon.Features.Workshop
             while (rootObject.Data.Total != maps.Count)
             {
                 i++;
-                response = await this.QueryAllMaps(i).ConfigureAwait(false);
+                response = await this.QueryAllMaps(i);
                 rootObject = JsonConvert.DeserializeObject<WorkshopRootObject>(response.ToString());
                 foreach (WorkshopMap map in rootObject.Data.WorkshopMaps)
                 {
@@ -158,16 +158,9 @@ namespace Bloon.Features.Workshop
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
             List<WorkshopMap> workshopMaps = new List<WorkshopMap>();
 
-            workshopMaps = await db.WorkshopMaps.OrderByDescending(x => x.Favorited).ToListAsync().ConfigureAwait(false);
+            workshopMaps = await db.WorkshopMaps.OrderByDescending(x => x.Favorited).ToListAsync();
 
             return workshopMaps;
-        }
-
-        private DateTime UnixTimeStampToDateTime(double unixTimeStamp)
-        {
-            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
-            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-            return dtDateTime;
         }
 
         public async Task StoreAllMaps(List<WorkshopMap> maps)
@@ -176,9 +169,9 @@ namespace Bloon.Features.Workshop
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
             foreach (WorkshopMap map in maps)
             {
-                map.TimeCreated = this.UnixTimeStampToDateTime(Convert.ToDouble(map.UploadDate));
-                map.TimeUpdated = this.UnixTimeStampToDateTime(Convert.ToDouble(map.MapUpdated));
-                map.CreatorSteamID = Convert.ToUInt64(map.APICreator);
+                map.TimeCreated = UnixTimeStampToDateTime(Convert.ToDouble(map.UploadDate));
+                map.TimeUpdated = UnixTimeStampToDateTime(Convert.ToDouble(map.MapUpdated));
+                map.CreatorSteamID = Convert.ToUInt64(map.APICreator, CultureInfo.CurrentCulture);
                 if (db.WorkshopMaps.Any(x => x.FileID == map.FileID))
                 {
                     db.WorkshopMaps.Update(map);
@@ -191,21 +184,7 @@ namespace Bloon.Features.Workshop
                 }
             }
 
-            await db.SaveChangesAsync().ConfigureAwait(false);
-        }
-
-        private async Task<JToken> QueryAllMaps(int page = 1)
-        {
-            try
-            {
-                string rawJson = await this.httpClient.GetStringAsync(new Uri($"https://api.steampowered.com/IPublishedFileService/QueryFiles/v1/?key={this.apiKey}&page={page}&numperpage=100&appid=518150&return_previews=true&return_short_description=true")).ConfigureAwait(false);
-                return string.IsNullOrEmpty(rawJson) ? null : JToken.Parse(rawJson);
-            }
-            catch (HttpRequestException e)
-            {
-                Log.Error(e, "Unable to get wiki article");
-                return null;
-            }
+            await db.SaveChangesAsync();
         }
 
         public async Task<bool> TryStoreNewAsync(SocialItemWorkshopMap map)
@@ -221,7 +200,7 @@ namespace Bloon.Features.Workshop
             Log.Information("[WORKSHOP] New Map!");
 
             db.SocialItemWorkshopMap.Add(map);
-            await db.SaveChangesAsync().ConfigureAwait(false);
+            await db.SaveChangesAsync();
 
             return true;
         }
@@ -233,17 +212,38 @@ namespace Bloon.Features.Workshop
 
             AgentsDB agent = new AgentsDB();
 
-            if (await this.agentService.CheckDBAgentAsync(id).ConfigureAwait(false))
+            if (this.agentService.CheckDBAgent(id))
             {
-                agent = await this.agentService.GetDBAgentAsync(id).ConfigureAwait(false);
+                agent = await this.agentService.GetDBAgentAsync(id);
             }
             else
             {
-                await this.agentService.StoreAgentDBAsync(id).ConfigureAwait(false);
-                agent = await this.agentService.GetDBAgentAsync(id).ConfigureAwait(false);
+                await this.agentService.StoreAgentDBAsync(id);
+                agent = await this.agentService.GetDBAgentAsync(id);
             }
 
             return agent.Name;
+        }
+
+        private static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
+        {
+            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dtDateTime;
+        }
+
+        private async Task<JToken> QueryAllMaps(int page = 1)
+        {
+            try
+            {
+                string rawJson = await this.httpClient.GetStringAsync(new Uri($"https://api.steampowered.com/IPublishedFileService/QueryFiles/v1/?key={this.apiKey}&page={page}&numperpage=100&appid=518150&return_previews=true&return_short_description=true"));
+                return string.IsNullOrEmpty(rawJson) ? null : JToken.Parse(rawJson);
+            }
+            catch (HttpRequestException e)
+            {
+                Log.Error(e, "Unable to get wiki article");
+                return null;
+            }
         }
 
         private async Task<WorkshopMapCreator> GetWorkshopMapCreator(ulong id)
@@ -254,7 +254,7 @@ namespace Bloon.Features.Workshop
 
             try
             {
-                responseRaw = await this.httpClient.GetStringAsync(new Uri($"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={this.apiKey}&steamids={id}")).ConfigureAwait(false);
+                responseRaw = await this.httpClient.GetStringAsync(new Uri($"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={this.apiKey}&steamids={id}"));
                 JObject responseJson = JObject.Parse(responseRaw);
                 player = responseJson.SelectToken("response.players[0]") as JObject;
             }

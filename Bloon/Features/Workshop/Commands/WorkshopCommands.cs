@@ -15,11 +15,11 @@ namespace Bloon.Features.Workshop
     [Group("maps")]
     [Aliases("workshop", "wmaps", "wmap")]
     [Description("Retrieves workshop data.")]
-    public class WorkshopCommand : BaseCommandModule
+    public class WorkshopCommands : BaseCommandModule
     {
         private readonly WorkshopService workshopService;
 
-        public WorkshopCommand(WorkshopService workshopService)
+        public WorkshopCommands(WorkshopService workshopService)
         {
             this.workshopService = workshopService;
         }
@@ -28,7 +28,7 @@ namespace Bloon.Features.Workshop
         [Description("Displays the top 5 maps on the workshop based off current subscriptions.")]
         public async Task TopWorkshopMaps(CommandContext ctx)
         {
-            List<WorkshopMap> maps = await this.workshopService.GetMapsFromDBAsync().ConfigureAwait(false);
+            List<WorkshopMap> maps = await this.workshopService.GetMapsFromDBAsync();
 
             DiscordEmbedBuilder workshopMapEmbed = new DiscordEmbedBuilder
             {
@@ -47,7 +47,7 @@ namespace Bloon.Features.Workshop
             {
                 description = description +
                     $"{DiscordEmoji.FromGuildEmote(ctx.Client, ServerEmojis.Map)} __[{maps.ElementAt(i).Title}](https://steamcommunity.com/sharedfiles/filedetails/?id={maps.ElementAt(i).FileID})__ " +
-                    $"• {DiscordEmoji.FromGuildEmote(ctx.Client, ServerEmojis.Players)} __[{await this.workshopService.GetDBWorkshopMapCreator(maps.ElementAt(i).CreatorSteamID).ConfigureAwait(false)}](https://steamcommunity.com/profiles/{maps.ElementAt(i).CreatorSteamID}/myworkshopfiles/?appid=518150)__ \n" +
+                    $"• {DiscordEmoji.FromGuildEmote(ctx.Client, ServerEmojis.Players)} __[{await this.workshopService.GetDBWorkshopMapCreator(maps.ElementAt(i).CreatorSteamID)}](https://steamcommunity.com/profiles/{maps.ElementAt(i).CreatorSteamID}/myworkshopfiles/?appid=518150)__ \n" +
                     $"{DiscordEmoji.FromName(ctx.Client, ":pushpin:")} Subscriptions: **{maps.ElementAt(i).Subscriptions}**\n" +
                     $"{DiscordEmoji.FromName(ctx.Client, ":heart:")} Favorites: **{maps.ElementAt(i).Favorited}**\n" +
                     $"{DiscordEmoji.FromGuildEmote(ctx.Client, EventEmojis.Join)} Followers: **{maps.ElementAt(i).Followers}**\n" +
@@ -55,7 +55,7 @@ namespace Bloon.Features.Workshop
             }
 
             workshopMapEmbed.Description = description;
-            await ctx.RespondAsync(embed: workshopMapEmbed).ConfigureAwait(false);
+            await ctx.RespondAsync(embed: workshopMapEmbed);
         }
 
         [OwnersExclusive]
@@ -63,9 +63,9 @@ namespace Bloon.Features.Workshop
         [Description("Populates the workshop_maps table.")]
         public async Task PopulateWorkshopMapsTable(CommandContext ctx)
         {
-            List<WorkshopMap> maps = await this.workshopService.GetAllMapsAsync().ConfigureAwait(false);
-            await this.workshopService.StoreAllMaps(maps).ConfigureAwait(false);
-            await ctx.RespondAsync($"Finished repopulating table. Found {maps.Count} workshop maps.").ConfigureAwait(false);
+            List<WorkshopMap> maps = await this.workshopService.GetAllMapsAsync();
+            await this.workshopService.StoreAllMaps(maps);
+            await ctx.RespondAsync($"Finished repopulating table. Found {maps.Count} workshop maps.");
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Bloon.Features.PackageAccounts
                 using IServiceScope scope = this.scopeFactory.CreateScope();
                 using AccountsContext db = scope.ServiceProvider.GetRequiredService<AccountsContext>();
                 db.Accounts.Add(account);
-                await db.SaveChangesAsync().ConfigureAwait(false);
+                await db.SaveChangesAsync();
 
                 Log.Debug($"Added new account to Database: {user.Username}#{user.Discriminator} | {user.Id}");
             }

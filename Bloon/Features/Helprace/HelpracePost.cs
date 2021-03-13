@@ -14,15 +14,9 @@ namespace Bloon.Features.Helprace
         [NotMapped]
         public string Channel
         {
-            get
-            {
-                return this.Additional["channel"]?.ToString() ?? null;
-            }
+            get => this.Additional["channel"]?.ToString() ?? null;
 
-            set
-            {
-                this.Additional["channel"] = value;
-            }
+            set => this.Additional["channel"] = value;
         }
     }
 }

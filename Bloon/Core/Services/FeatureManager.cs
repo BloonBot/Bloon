@@ -35,7 +35,7 @@ namespace Bloon.Core.Services
             using BloonContext db = scope.ServiceProvider.GetRequiredService<BloonContext>();
             List<FeatureStatus> featureStatuses = await db.FeatureStatuses
                 .ToListAsync()
-                .ConfigureAwait(false);
+                ;
 
             foreach (Type type in Assembly.GetEntryAssembly()
                 .GetTypes()
@@ -70,7 +70,7 @@ namespace Bloon.Core.Services
                 Log.Information("Loaded feature {0} - {1}", feature.Name.PadRight(32), featureStatus.Enabled);
 
                 await feature.Initialize()
-                    .ConfigureAwait(false);
+                    ;
 
                 if (featureStatus.Enabled)
                 {
@@ -81,7 +81,7 @@ namespace Bloon.Core.Services
             }
 
             await db.SaveChangesAsync()
-                .ConfigureAwait(false);
+                ;
         }
 
         public async Task Start()
@@ -89,7 +89,7 @@ namespace Bloon.Core.Services
             for (int i = 0; i < this.featuresToEnable.Count; i++)
             {
                 await this.featuresToEnable[i].Enable()
-                    .ConfigureAwait(false);
+                    ;
             }
         }
 
@@ -100,7 +100,7 @@ namespace Bloon.Core.Services
             FeatureStatus featureStatus = await db.FeatureStatuses
                 .Where(m => m.Name == featureName)
                 .FirstOrDefaultAsync()
-                .ConfigureAwait(false);
+                ;
 
             if (featureStatus == null)
             {
@@ -115,7 +115,7 @@ namespace Bloon.Core.Services
             featureStatus.Enabled = enabled;
 
             await db.SaveChangesAsync()
-                .ConfigureAwait(false);
+                ;
         }
     }
 }

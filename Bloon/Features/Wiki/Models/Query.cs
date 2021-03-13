@@ -1,13 +1,11 @@
 namespace Bloon.Features.Wiki.Models
 {
+    using System.Collections.Generic;
+    using Newtonsoft.Json;
+
     public class Query
     {
-        public RecentChanges[] recentchanges { get; set; }
-
-        public Pages pages { get; set; }
-
-        public Allusers[] allusers { get; set; }
-
-        public Allcategory[] allcategories { get; set; }
+        [JsonProperty("recentchanges")]
+        public List<RecentChange> RecentChanges { get; set; }
     }
 }

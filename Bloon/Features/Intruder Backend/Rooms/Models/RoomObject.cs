@@ -1,5 +1,6 @@
 namespace Bloon.Features.IntruderBackend.Rooms
 {
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
     using Newtonsoft.Json;
 
@@ -9,7 +10,7 @@ namespace Bloon.Features.IntruderBackend.Rooms
         [JsonProperty("totalCount")]
         public int TotalCount { get; set; }
 
-        public Rooms[] Data { get; set; }
+        public List<Rooms> Data { get; set; }
 
         [JsonProperty("page")]
         public int Page { get; set; }

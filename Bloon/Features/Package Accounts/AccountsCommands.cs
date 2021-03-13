@@ -44,11 +44,11 @@ namespace Bloon.Features.PackageAccounts
                 accountEmbed.AddField($"**Edit my Profile**", $"You can edit your profile *or delete* via the website or by using `.package -pe`. - This feature is not complete yet.", false);
                 accountEmbed.AddField($"**FAQ**", $"To see FAQ use `.package -faq`. Your question might be answered there. If not, try one of the bot admins.", false);
 
-                await ctx.Channel.SendMessageAsync(string.Empty, embed: accountEmbed.Build()).ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync(string.Empty, embed: accountEmbed.Build());
             }
             else
             {
-                await ctx.Channel.SendMessageAsync($"This command may only be ran within a DM.").ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync($"This command may only be ran within a DM.");
             }
         }
 
@@ -59,12 +59,12 @@ namespace Bloon.Features.PackageAccounts
         {
             if (this.CheckBasics(ctx) == true)
             {
-                await this.PackagAccountsGeneral(ctx).ConfigureAwait(false);
+                await this.PackagAccountsGeneral(ctx);
                 return;
             }
             else
             {
-                await ctx.Channel.SendMessageAsync($"This command may only be ran within a DM.").ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync($"This command may only be ran within a DM.");
             }
         }
 
@@ -90,25 +90,15 @@ namespace Bloon.Features.PackageAccounts
                         Url = ctx.User.AvatarUrl,
                     },
                 };
-                if (account.SteamID != null)
-                {
-                    accountEmbed.AddField($"**Discord ID**", $"`{account.DiscordID}`", false);
-                    accountEmbed.AddField($"**Steam ID**", $"`{account.SteamID}`", false);
-                    accountEmbed.AddField($"**Private Profile**", $"`{account.PrivateProfile}`", false);
-                    accountEmbed.AddField($"**Account Permission**", $"`{account.Type}`", false);
-                }
 
-                if (account.SteamID == null)
-                {
-                    accountEmbed.AddField($"**Discord ID**", $"`{account.DiscordID}`", false);
-                    accountEmbed.AddField($"**Steam ID**", $"***You need to finish setting up your account***", false);
-                    accountEmbed.AddField($"**Private Profile**", $"`{account.PrivateProfile}`", false);
-                    accountEmbed.AddField($"**Account Permission**", $"`{account.Type}`", false);
-                }
+                accountEmbed.AddField($"**Discord ID**", $"`{account.DiscordID}`", false);
+                accountEmbed.AddField($"**Steam ID**", $"`{account.SteamID}`", false);
+                accountEmbed.AddField($"**Private Profile**", $"`{account.PrivateProfile}`", false);
+                accountEmbed.AddField($"**Account Permission**", $"`{account.Type}`", false);
             }
             else
             {
-                await ctx.Channel.SendMessageAsync($"This command can only be run within a DM channel or you do not have an account setup.").ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync($"This command can only be run within a DM channel or you do not have an account setup.");
                 return;
             }
         }
@@ -140,16 +130,16 @@ namespace Bloon.Features.PackageAccounts
                 accountEmbed.AddField($"**Username**", $"`{ctx.User.Id}`", true);
                 accountEmbed.AddField($"**Website**", $"[**Login Here**](https://bloon.info/login.php)", true);
 
-                await this.accountService.AddAsync(ctx.User, accountCreated).ConfigureAwait(false);
+                await this.accountService.AddAsync(ctx.User, accountCreated);
 
                 await ctx.Channel.SendMessageAsync(
                     "This message contains *your* **private** information. " +
                     "Pin this message for quick access to these details. " +
-                    "We are not responsible for stolen accounts due to your lack of privacy.", embed: accountEmbed.Build()).ConfigureAwait(false);
+                    "We are not responsible for stolen accounts due to your lack of privacy.", embed: accountEmbed.Build());
             }
             else
             {
-                await ctx.Channel.SendMessageAsync($"This command may only be ran within a DM or you already have an account.").ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync($"This command may only be ran within a DM or you already have an account.");
             }
         }
 
