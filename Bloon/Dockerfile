@@ -1,0 +1,17 @@
+# https://hub.docker.com/_/microsoft-dotnet-core
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+WORKDIR /source
+
+# copy csproj and restore as distinct layers
+COPY *.csproj .
+RUN dotnet restore -s https://nuget.emzi0767.com/api/v3/index.json -s https://api.nuget.org/v3/index.json
+
+# copy and publish app and libraries
+COPY . .
+RUN dotnet publish -c release -o /app -v d
+
+# final stage/image
+FROM mcr.microsoft.com/dotnet/core/runtime:3.1
+WORKDIR /app
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "bloon.dll"]
