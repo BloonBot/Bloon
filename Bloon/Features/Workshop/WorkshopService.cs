@@ -132,6 +132,11 @@ namespace Bloon.Features.Workshop
 
             List<WorkshopMap> maps = new List<WorkshopMap>();
 
+            if (rootObject == null || rootObject.Data == null || rootObject.Data.WorkshopMaps == null)
+            {
+                return maps;
+            }
+
             foreach (WorkshopMap map in rootObject.Data.WorkshopMaps)
             {
                 maps.Add(map);
