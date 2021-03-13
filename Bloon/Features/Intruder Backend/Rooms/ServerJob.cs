@@ -1,9 +1,9 @@
 namespace Bloon.Features.IntruderBackend.Servers
 {
     using System;
-    using System.Collections.Generic;
     using System.Text;
     using System.Threading.Tasks;
+    using Bloon.Core.Discord;
     using Bloon.Core.Services;
     using Bloon.Features.IntruderBackend.Rooms;
     using Bloon.Variables.Channels;
@@ -15,11 +15,13 @@ namespace Bloon.Features.IntruderBackend.Servers
     public class ServerJob : ITimedJob
     {
         private readonly DiscordClient dClient;
+        private readonly ActivityManager activityManager;
         private readonly RoomService roomService;
 
-        public ServerJob(DiscordClient dClient, RoomService roomService)
+        public ServerJob(DiscordClient dClient, ActivityManager activityManager, RoomService roomService)
         {
             this.dClient = dClient;
+            this.activityManager = activityManager;
             this.roomService = roomService;
         }
 
@@ -90,7 +92,6 @@ namespace Bloon.Features.IntruderBackend.Servers
                 $"Players: **{csi.PlayerCount}** | Servers: **{csi.Rooms.Count}**\n", true);
 #pragma warning restore SA1118 // Parameter should not span multiple lines
 
-
             string extensions = $"{DiscordEmoji.FromGuildEmote(this.dClient, BrowserEmojis.Chrome)} [**Chrome**](https://chrome.google.com/webstore/detail/intruder-notifications/aoebpknpfcepopfgnbnikaipjeekalim) | "
                 + $"[**Firefox**](https://addons.mozilla.org/en-US/firefox/addon/intruder-notifications/) {DiscordEmoji.FromGuildEmote(this.dClient, BrowserEmojis.Firefox)}";
 
@@ -100,6 +101,9 @@ namespace Bloon.Features.IntruderBackend.Servers
             serverEmbed.Footer.IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial).Url;
             serverEmbed.Color = new DiscordColor(217, 187, 19);
             serverEmbed.Timestamp = DateTime.UtcNow;
+
+            await this.activityManager.TrySetActivityAsync($"{csi.PlayerCount} agents ", ActivityType.Watching)
+                .ConfigureAwait(false);
 
             try
             {

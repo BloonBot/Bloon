@@ -8,9 +8,6 @@ namespace Bloon.Core.Services
     using Bloon.Core.Database;
     using Bloon.Core.Discord;
     using Bloon.Utils;
-    using Bloon.Variables.Emojis;
-    using DSharpPlus;
-    using DSharpPlus.Entities;
     using Microsoft.Extensions.DependencyInjection;
     using Serilog;
 
@@ -19,18 +16,14 @@ namespace Bloon.Core.Services
         // 300,000 = 5 minutes. 60,000 = 1 minute. Useful for debugging Jobs
         private const int IntervalMs = 300000;
 
-        private readonly ActivityManager activityManager;
         private readonly BloonLog bloonLog;
         private readonly IServiceScopeFactory factory;
-        private readonly DiscordClient dClient;
         private readonly HashSet<ITimedJob> jobs;
         private Timer timer;
 
-        public JobManager(IServiceScopeFactory factory, DiscordClient dClient, ActivityManager activityManager, BloonLog bloonLog)
+        public JobManager(IServiceScopeFactory factory, BloonLog bloonLog)
         {
             this.factory = factory;
-            this.dClient = dClient;
-            this.activityManager = activityManager;
             this.bloonLog = bloonLog;
             this.jobs = new HashSet<ITimedJob>();
         }
@@ -110,8 +103,6 @@ namespace Bloon.Core.Services
 
             if (timedJobs.Count > 0)
             {
-                await this.activityManager.TrySetActivityAsync($"{timedJobs.Count} job(s)", ActivityType.Watching, true).ConfigureAwait(false);
-
                 Task jobs = Task.WhenAll(timedJobs.Select(t => t.Execute()));
 
                 try

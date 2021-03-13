@@ -14,7 +14,7 @@ namespace Bloon.Core.Discord
     public class ActivityManager
     {
         private const int AutoResetMs = 3000;
-        private const string DefaultActivity = "Intruder on Steam!";
+        private const string DefaultActivity = "you through my camera";
 
         private readonly DiscordClient dClient;
 
@@ -50,7 +50,7 @@ namespace Bloon.Core.Discord
         /// Resets Bloon's activity to <see cref="DefaultActivity"/>.
         /// </summary>
         /// <returns>Awaitable task.</returns>
-        public Task ResetActivityAsync() => this.TrySetActivityAsync(DefaultActivity);
+        public Task ResetActivityAsync() => this.TrySetActivityAsync(DefaultActivity, ActivityType.Watching);
 
         /// <summary>
         /// Advertises/Shares a stream. '<paramref name="force"/>' overrides any current stream.
@@ -101,7 +101,7 @@ namespace Bloon.Core.Discord
         /// <param name="activityType">Activity type.</param>
         /// <param name="autoReset">Automatically switch back to <see cref="DefaultActivity"/> after <see cref="AutoResetMs"/>.</param>
         /// <returns>Awaitable task.</returns>
-        public async Task TrySetActivityAsync(string activity, ActivityType activityType = ActivityType.Playing, bool autoReset = false)
+        public async Task TrySetActivityAsync(string activity, ActivityType activityType, bool autoReset = false)
         {
             if ((this.dClient.CurrentUser.Presence.Activity.ActivityType == ActivityType.Streaming && activity != DefaultActivity)
                 || Bot.SocketState != WebSocketState.Open)
