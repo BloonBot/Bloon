@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 13, 2021 at 02:08 AM
+-- Generation Time: Mar 17, 2021 at 03:47 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.4
 
@@ -137,7 +137,7 @@ CREATE TABLE `workshop_maps` (
   `file_id` varchar(11) NOT NULL,
   `creator_steam_id` bigint(20) NOT NULL,
   `creator_appid` int(11) NOT NULL,
-  `file_size` varchar(512) NOT NULL,
+  `file_size` varchar(512) DEFAULT NULL,
   `preview_url` varchar(256) NOT NULL,
   `title` varchar(128) NOT NULL,
   `short_description` varchar(256) DEFAULT NULL,
