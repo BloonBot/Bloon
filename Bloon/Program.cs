@@ -18,7 +18,7 @@ namespace Bloon
     /// </summary>
     internal class Program
     {
-        private static readonly SystemConsoleTheme BloonConsoleTheme = new SystemConsoleTheme(
+        private static readonly SystemConsoleTheme BloonConsoleTheme = new (
             new Dictionary<ConsoleThemeStyle, SystemConsoleThemeStyle>
             {
                 [ConsoleThemeStyle.Text] = new SystemConsoleThemeStyle { Foreground = ConsoleColor.Gray },

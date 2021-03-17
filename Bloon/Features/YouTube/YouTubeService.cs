@@ -42,7 +42,7 @@ namespace Bloon.Features.Youtube
             JObject jObject = JObject.Parse(rawJson);
             JToken yVideo = jObject["items"][0];
 
-            YouTubeVideo video = new YouTubeVideo()
+            YouTubeVideo video = new ()
             {
                 UID = yVideo["id"]["videoId"].ToString(),
                 Title = HttpUtility.HtmlDecode(yVideo["snippet"]["title"].ToString()),

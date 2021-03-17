@@ -45,7 +45,7 @@ namespace Bloon.Features.RandomResponses
                 return;
             }
 
-            Random random = new Random();
+            Random random = new ();
             int randomValue = random.Next(0, 10);
 
             // 10% chance of flipping out...I mean flipping tables

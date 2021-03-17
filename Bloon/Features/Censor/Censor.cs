@@ -49,7 +49,7 @@ namespace Bloon.Features.Censor
             return false;
         }
 
-        private static string StarCensoredMatch(Match m) => new string('*', m.Captures[0].Value.Length);
+        private static string StarCensoredMatch(Match m) => new ('*', m.Captures[0].Value.Length);
 
         private static string ToRegexPattern(string wordRegex) => @"\b" + wordRegex + @"\b";
     }

@@ -70,7 +70,7 @@ namespace Bloon.Core.Services
 
         private async void TimerElapsed(object sender, ElapsedEventArgs e)
         {
-            List<ITimedJob> timedJobs = new List<ITimedJob>();
+            List<ITimedJob> timedJobs = new ();
             using IServiceScope scope = this.factory.CreateScope();
             using BloonContext db = scope.ServiceProvider.GetRequiredService<BloonContext>();
             List<Job> dbJobs = db.Jobs.ToList();

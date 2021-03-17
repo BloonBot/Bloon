@@ -19,7 +19,7 @@ namespace Bloon.Features.Workshop
 
     public class WorkshopService : ISocialService<SocialItemWorkshopMap>
     {
-        private static readonly Regex BBCodeRegex = new Regex("\\[\\/?.+?\\]", RegexOptions.Compiled);
+        private static readonly Regex BBCodeRegex = new ("\\[\\/?.+?\\]", RegexOptions.Compiled);
 
         private readonly string apiKey;
         private readonly AgentService agentService;
@@ -68,7 +68,7 @@ namespace Bloon.Features.Workshop
                 return null;
             }
 
-            SocialItemWorkshopMap map = new SocialItemWorkshopMap()
+            SocialItemWorkshopMap map = new ()
             {
                 UID = jMap["publishedfileid"].ToString(),
                 Title = jMap["title"].ToString(),
@@ -89,7 +89,7 @@ namespace Bloon.Features.Workshop
         {
             List<WorkshopMap> workshopMaps = await this.GetAllMapsAsync();
 
-            List<WorkshopMap> updatedMaps = new List<WorkshopMap>();
+            List<WorkshopMap> updatedMaps = new ();
 
             using IServiceScope scope = this.scopeFactory.CreateScope();
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
@@ -130,7 +130,7 @@ namespace Bloon.Features.Workshop
             JToken response = await this.QueryAllMaps();
             WorkshopRootObject rootObject = JsonConvert.DeserializeObject<WorkshopRootObject>(response.ToString());
 
-            List<WorkshopMap> maps = new List<WorkshopMap>();
+            List<WorkshopMap> maps = new ();
 
             if (rootObject == null || rootObject.Data == null || rootObject.Data.WorkshopMaps == null)
             {
@@ -161,7 +161,7 @@ namespace Bloon.Features.Workshop
         {
             using IServiceScope scope = this.scopeFactory.CreateScope();
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
-            List<WorkshopMap> workshopMaps = new List<WorkshopMap>();
+            List<WorkshopMap> workshopMaps = new ();
 
             workshopMaps = await db.WorkshopMaps.OrderByDescending(x => x.Favorited).ToListAsync();
 
@@ -215,7 +215,7 @@ namespace Bloon.Features.Workshop
             using IServiceScope scope = this.scopeFactory.CreateScope();
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
 
-            AgentsDB agent = new AgentsDB();
+            AgentsDB agent = new ();
 
             if (this.agentService.CheckDBAgent(id))
             {
@@ -232,7 +232,7 @@ namespace Bloon.Features.Workshop
 
         private static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {
-            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            DateTime dtDateTime = new (1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dtDateTime;
         }

@@ -7,10 +7,10 @@ namespace Bloon.Features.Wiki
 
     public static class WikiUtils
     {
-        private static readonly Regex SectionHeaderRegex = new Regex(@"==[A-Za-z\s]+==", RegexOptions.Compiled);
-        private static readonly Regex WikiLinkRegex = new Regex(@"\[{2}([A-Za-z0-9\s]+)\]{2}", RegexOptions.Compiled);
+        private static readonly Regex SectionHeaderRegex = new (@"==[A-Za-z\s]+==", RegexOptions.Compiled);
+        private static readonly Regex WikiLinkRegex = new (@"\[{2}([A-Za-z0-9\s]+)\]{2}", RegexOptions.Compiled);
 
-        public static Uri GetUrlFromTitle(string pageTitle) => new Uri($"https://wiki.superbossgames.com/wiki/index.php?title={GetWikifiedTitle(pageTitle)}");
+        public static Uri GetUrlFromTitle(string pageTitle) => new ($"https://wiki.superbossgames.com/wiki/index.php?title={GetWikifiedTitle(pageTitle)}");
 
         public static string GetWikifiedTitle(string pageTitle) => string.Join("_", pageTitle.Split(' ').Select(x => x.Capitalize()));
 

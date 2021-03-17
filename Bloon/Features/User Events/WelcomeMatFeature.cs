@@ -39,7 +39,7 @@ namespace Bloon.Features.Doorman
         private async Task OnGuildMemberAddedAsync(DiscordClient dClient, GuildMemberAddEventArgs args)
         {
             DiscordChannel sbgChannel = await this.dClient.GetChannelAsync(SBGChannels.Bloonside);
-            DiscordColor colorDate = new DiscordColor(95, 95, 95);
+            DiscordColor colorDate = new (95, 95, 95);
 
             // If guild isn't SBG, just ignore this user join event.
             if (args.Guild.Id != Variables.Guilds.SBG)

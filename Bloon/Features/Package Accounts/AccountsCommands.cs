@@ -24,7 +24,7 @@ namespace Bloon.Features.PackageAccounts
         {
             if (this.CheckBasics(ctx) == true)
             {
-                DiscordEmbedBuilder accountEmbed = new DiscordEmbedBuilder
+                DiscordEmbedBuilder accountEmbed = new ()
                 {
                     Footer = new DiscordEmbedBuilder.EmbedFooter
                     {
@@ -76,7 +76,7 @@ namespace Bloon.Features.PackageAccounts
             if (this.CheckBasics(ctx) == true)
             {
                 PackageAccount account = this.accountService.FindAccount(ctx.User.Id);
-                DiscordEmbedBuilder accountEmbed = new DiscordEmbedBuilder
+                DiscordEmbedBuilder accountEmbed = new ()
                 {
                     Footer = new DiscordEmbedBuilder.EmbedFooter
                     {
@@ -110,7 +110,7 @@ namespace Bloon.Features.PackageAccounts
         {
             if (this.CheckBasics(ctx) == true)
             {
-                DiscordEmbedBuilder accountEmbed = new DiscordEmbedBuilder
+                DiscordEmbedBuilder accountEmbed = new ()
                 {
                     Footer = new DiscordEmbedBuilder.EmbedFooter
                     {

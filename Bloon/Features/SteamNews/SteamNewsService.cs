@@ -14,9 +14,9 @@ namespace Bloon.Features.SteamNews
 
     public class SteamNewsService : ISocialService<SteamNewsPost>
     {
-        private static readonly Regex BBCodeRegex = new Regex("\\[\\/?.+?\\]", RegexOptions.Compiled);
-        private static readonly Regex ImageRegex = new Regex(@"({STEAM_CLAN_IMAGE}\/\d+\/\w+\.\w+)", RegexOptions.Compiled);
-        private static readonly Regex SteamClanImageRegex = new Regex(@"{STEAM_CLAN(?:_LOC)?_IMAGE}", RegexOptions.Compiled);
+        private static readonly Regex BBCodeRegex = new ("\\[\\/?.+?\\]", RegexOptions.Compiled);
+        private static readonly Regex ImageRegex = new (@"({STEAM_CLAN_IMAGE}\/\d+\/\w+\.\w+)", RegexOptions.Compiled);
+        private static readonly Regex SteamClanImageRegex = new (@"{STEAM_CLAN(?:_LOC)?_IMAGE}", RegexOptions.Compiled);
 
         private readonly string apiKey;
         private readonly IServiceScopeFactory scopeFactory;
@@ -56,7 +56,7 @@ namespace Bloon.Features.SteamNews
 
             Match imageMatch = ImageRegex.Match(jPost["contents"].ToString());
 
-            SteamNewsPost post = new SteamNewsPost()
+            SteamNewsPost post = new ()
             {
                 UID = jPost["gid"].ToString(),
                 Title = jPost["title"].ToString(),

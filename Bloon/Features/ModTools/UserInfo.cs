@@ -63,7 +63,7 @@ namespace Bloon.Features.ModTools
 
             Permissions memberPerms = member.PermissionsIn(guild.GetDefaultChannel());
 
-            DiscordEmbedBuilder userDetails = new DiscordEmbedBuilder
+            DiscordEmbedBuilder userDetails = new ()
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
@@ -172,7 +172,7 @@ namespace Bloon.Features.ModTools
                 timestamps += $"{events.Timestamp.ToString("ddd, MMM d, yyyy", CultureInfo.CurrentCulture)}\n";
             }
 
-            DiscordEmbedBuilder userDetails = new DiscordEmbedBuilder
+            DiscordEmbedBuilder userDetails = new ()
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter()
                 {

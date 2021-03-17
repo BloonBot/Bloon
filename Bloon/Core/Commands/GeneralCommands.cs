@@ -14,7 +14,7 @@ namespace Bloon.Core.Commands
     [ModuleLifespan(ModuleLifespan.Transient)]
     public class GeneralCommands : BaseCommandModule
     {
-        private readonly Dictionary<char, char> vecishMapping = new Dictionary<char, char>()
+        private readonly Dictionary<char, char> vecishMapping = new ()
         {
             { 'Q', 'W' },
             { 'W', 'E' },

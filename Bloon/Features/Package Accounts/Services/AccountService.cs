@@ -21,7 +21,7 @@ namespace Bloon.Features.PackageAccounts
         public async Task AddAsync(DiscordUser user, DateTime accountCreated)
         {
             // Before adding the user into the database, we want to give that user some base properties.
-            PackageAccount account = new PackageAccount()
+            PackageAccount account = new ()
             {
                 DiscordID = user.Id,
                 LastLogin = DateTime.Now,
@@ -52,7 +52,7 @@ namespace Bloon.Features.PackageAccounts
         /// <returns>All Package Accounts.</returns>
         public List<PackageAccount> QueryAccounts()
         {
-            List<PackageAccount> dbAccounts = new List<PackageAccount>();
+            List<PackageAccount> dbAccounts = new ();
 
             using IServiceScope scope = this.scopeFactory.CreateScope();
             using AccountsContext db = scope.ServiceProvider.GetRequiredService<AccountsContext>();

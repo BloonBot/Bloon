@@ -26,7 +26,7 @@ namespace Bloon.Features.Twitter
         public async void Authenticate()
         {
             // Keys and secrets could be moved to an external config file
-            SingleUserAuthorizer auth = new SingleUserAuthorizer
+            SingleUserAuthorizer auth = new ()
             {
                 CredentialStore = new InMemoryCredentialStore()
                 {

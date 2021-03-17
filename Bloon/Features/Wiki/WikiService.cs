@@ -61,7 +61,7 @@ namespace Bloon.Features.Wiki
         {
             JToken response = await this.Query(RecentChangesParams);
             RootAPIObject rootObj = JsonConvert.DeserializeObject<RootAPIObject>(response.ToString());
-            List<RecentChange> rc = new List<RecentChange>();
+            List<RecentChange> rc = new ();
             foreach (RecentChange recent in rootObj.Query.RecentChanges)
             {
                 rc.Add(recent);
@@ -72,7 +72,7 @@ namespace Bloon.Features.Wiki
 
         public async Task<List<WikiUser>> GetActiveUsers()
         {
-            List<WikiUser> users = new List<WikiUser>();
+            List<WikiUser> users = new ();
             JToken response = await this.Query(ActiveUsers);
 
             if (response == null)
@@ -84,7 +84,7 @@ namespace Bloon.Features.Wiki
 
             for (int i = 0; i < jArticle.Count(); i++)
             {
-                WikiUser activeUser = new WikiUser()
+                WikiUser activeUser = new ()
                 {
                     Id = int.Parse(jArticle[i]["userid"].ToString(), CultureInfo.InvariantCulture),
                     Name = jArticle[i]["name"].ToString(),
@@ -100,7 +100,7 @@ namespace Bloon.Features.Wiki
         {
             JToken response = await this.Query(RecentChangesthreefive);
             RootAPIObject rootObj = JsonConvert.DeserializeObject<RootAPIObject>(response.ToString());
-            List<RecentChange> rc = new List<RecentChange>();
+            List<RecentChange> rc = new ();
             foreach (RecentChange recent in rootObj.Query.RecentChanges)
             {
                 rc.Add(recent);
@@ -130,7 +130,7 @@ namespace Bloon.Features.Wiki
 
             JToken jArticle = response["query"]["recentchanges"][0];
 
-            WikiArticle article = new WikiArticle()
+            WikiArticle article = new ()
             {
                 UID = jArticle["rcid"].ToString(),
                 Author = jArticle["user"].ToString(),
@@ -199,7 +199,7 @@ namespace Bloon.Features.Wiki
                 return null;
             }
 
-            WikiArticle article = new WikiArticle()
+            WikiArticle article = new ()
             {
                 Title = response["parse"]["title"].ToString(),
                 Body = WikiUtils.ToMarkdown(response["parse"]["wikitext"]["*"].ToString()),

@@ -43,7 +43,7 @@ namespace Bloon.Features.Workshop
             DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General);
             DiscordChannel sbgMM = await this.dClient.GetChannelAsync(SBGChannels.MapMakerShowcase);
 
-            DiscordEmbedBuilder workshopMapEmbed = new DiscordEmbedBuilder
+            DiscordEmbedBuilder workshopMapEmbed = new ()
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {

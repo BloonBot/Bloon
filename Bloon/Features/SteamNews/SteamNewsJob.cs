@@ -46,7 +46,7 @@ namespace Bloon.Features.SteamNews
 
             DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General);
 
-            DiscordEmbedBuilder mapEmbed = new DiscordEmbedBuilder
+            DiscordEmbedBuilder mapEmbed = new ()
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {

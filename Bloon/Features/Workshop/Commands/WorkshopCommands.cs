@@ -30,7 +30,7 @@ namespace Bloon.Features.Workshop
         {
             List<WorkshopMap> maps = await this.workshopService.GetMapsFromDBAsync();
 
-            DiscordEmbedBuilder workshopMapEmbed = new DiscordEmbedBuilder
+            DiscordEmbedBuilder workshopMapEmbed = new ()
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {

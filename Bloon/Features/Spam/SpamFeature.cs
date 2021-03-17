@@ -60,7 +60,7 @@ namespace Bloon.Features.Spam
 
             if (this.messageCounter >= AdvertThreshold)
             {
-                Random rnd = new Random();
+                Random rnd = new ();
 
                 using IServiceScope scope = this.scopeFactory.CreateScope();
                 using BloonContext db = scope.ServiceProvider.GetRequiredService<BloonContext>();

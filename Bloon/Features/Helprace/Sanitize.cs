@@ -5,7 +5,7 @@ namespace Bloon.Features.Helprace
 
     public static class Sanitize
     {
-        private static readonly Regex HtmlTagRegex = new Regex("<.*?>", RegexOptions.Compiled);
+        private static readonly Regex HtmlTagRegex = new ("<.*?>", RegexOptions.Compiled);
 
         /// <summary>
         /// Removes page breaks or line breaks given HTML.

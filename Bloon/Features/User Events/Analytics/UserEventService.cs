@@ -21,7 +21,7 @@ namespace Bloon.Features.Analytics
 
         public async Task AddUserJoinedEventAsync(GuildMemberAddEventArgs args)
         {
-            UserEvent userEvent = new UserEvent()
+            UserEvent userEvent = new ()
             {
                 UserId = args.Member.Id,
                 Username = args.Member.Username,
@@ -50,7 +50,7 @@ namespace Bloon.Features.Analytics
 
         public async Task AddUserLeftEventAsync(GuildMemberRemoveEventArgs args)
         {
-            UserEvent userEvent = new UserEvent()
+            UserEvent userEvent = new ()
             {
                 UserId = args.Member.Id,
                 Username = args.Member.Username,
@@ -79,7 +79,7 @@ namespace Bloon.Features.Analytics
 
         public async Task AddUserBannedEventAsync(GuildBanAddEventArgs args)
         {
-            UserEvent userEvent = new UserEvent()
+            UserEvent userEvent = new ()
             {
                 UserId = args.Member.Id,
                 Username = args.Member.Username,
@@ -108,7 +108,7 @@ namespace Bloon.Features.Analytics
 
         public async Task AddUserUnBannedEventAsync(GuildBanRemoveEventArgs args)
         {
-            UserEvent userEvent = new UserEvent()
+            UserEvent userEvent = new ()
             {
                 UserId = args.Member.Id,
                 Username = args.Member.Username,
@@ -137,7 +137,7 @@ namespace Bloon.Features.Analytics
 
         public List<UserEvent> QueryEventReportAsync(ulong discordId)
         {
-            List<UserEvent> dbUserEvents = new List<UserEvent>();
+            List<UserEvent> dbUserEvents = new ();
 
             using IServiceScope scope = this.scopeFactory.CreateScope();
             using AnalyticsContext db = scope.ServiceProvider.GetRequiredService<AnalyticsContext>();

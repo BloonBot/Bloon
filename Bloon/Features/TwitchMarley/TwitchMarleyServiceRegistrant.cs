@@ -11,7 +11,7 @@ namespace Bloon.Features.TwitchMarley
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            TwitchAPI twitchAPI = new TwitchAPI(settings: new ApiSettings()
+            TwitchAPI twitchAPI = new (settings: new ApiSettings()
             {
                 ClientId = Environment.GetEnvironmentVariable("TWITCH_CLIENT_ID"),
                 Secret = Environment.GetEnvironmentVariable("TWITCH_CLIENT_SECRET"),

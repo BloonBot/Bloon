@@ -16,7 +16,7 @@ namespace Bloon.Features.RolePersistence
 
     public class RolePersistenceFeature : Feature
     {
-        private static readonly HashSet<ulong> Blacklist = new HashSet<ulong>
+        private static readonly HashSet<ulong> Blacklist = new ()
         {
             SBGRoles.LookingToPlay,
             SBGRoles.NowPlaying,
@@ -91,7 +91,7 @@ namespace Bloon.Features.RolePersistence
                 .ToListAsync()
                 ;
 
-            List<string> addedRoleNames = new List<string>();
+            List<string> addedRoleNames = new ();
 
             for (int i = 0; i < roleIds.Count; i++)
             {

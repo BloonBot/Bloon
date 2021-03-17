@@ -40,7 +40,7 @@ namespace Bloon.Core.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            JsonSerializerSettings settings = new JsonSerializerSettings()
+            JsonSerializerSettings settings = new ()
             {
                 Formatting = Formatting.None,
             };

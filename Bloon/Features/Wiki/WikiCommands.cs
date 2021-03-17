@@ -45,7 +45,7 @@ namespace Bloon.Features.Wiki
             // }
 
             // Base embed
-            DiscordEmbedBuilder wikiEmbed = new DiscordEmbedBuilder
+            DiscordEmbedBuilder wikiEmbed = new ()
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
@@ -136,7 +136,7 @@ namespace Bloon.Features.Wiki
         {
             List<WikiUser> activeUsers = await this.wikiService.GetActiveUsers();
 
-            DiscordEmbedBuilder wikiEmbed = new DiscordEmbedBuilder
+            DiscordEmbedBuilder wikiEmbed = new ()
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {

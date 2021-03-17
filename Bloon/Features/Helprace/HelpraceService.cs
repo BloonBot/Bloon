@@ -24,7 +24,7 @@ namespace Bloon.Features.Helprace
         /// <summary>
         /// This list relates to the different types of helprace posts.
         /// </summary>
-        private readonly List<string> permittedArguments = new List<string>()
+        private readonly List<string> permittedArguments = new ()
         {
             "updates", "ideas", "knowledgebase", "praise", "problems", "questions", "all_topics",
         };
@@ -76,7 +76,7 @@ namespace Bloon.Features.Helprace
             JObject jObject = JObject.Parse(rawHelprace);
             JToken jPost = jObject["topics"]["data"][0];
 
-            HelpracePost post = new HelpracePost()
+            HelpracePost post = new ()
             {
                 UID = jPost["id"].ToString(),
                 Channel = jPost["channel"].ToString(),
@@ -123,7 +123,7 @@ namespace Bloon.Features.Helprace
 
             for (int i = 0; i < jPosts.Count; i++)
             {
-                HelpracePost post = new HelpracePost()
+                HelpracePost post = new ()
                 {
                     Author = jPosts[i]["author"]["name"].ToString(),
                     Body = Sanitize.RemoveBreaks(jPosts[i]["body"].ToString().Truncate(256)),
