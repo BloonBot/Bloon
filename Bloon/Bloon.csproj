@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>Bloon</AssemblyName>
     <RootNamespace>Bloon</RootNamespace>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <Version>3.0.0</Version>
     <StartupObject>Bloon.Program</StartupObject>
     <AssemblyVersion>3.0.0.7</AssemblyVersion>
