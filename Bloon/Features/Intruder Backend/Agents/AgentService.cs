@@ -3,82 +3,27 @@ namespace Bloon.Features.IntruderBackend.Agents
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net.Http;
-    using System.Text;
     using System.Threading.Tasks;
     using Bloon.Core.Database;
     using Bloon.Features.PackageAccounts;
+    using IntruderLib;
+    using IntruderLib.Models;
+    using IntruderLib.Models.Agents;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using Serilog;
 
     public class AgentService
     {
-        public const string Q = "Q=";
-        public const string OrderBy = "&OrderBy=";
-        public const string OnlineOnly = "&OnlineOnly=true";
-        public const string Page = "&Page=";
-        public const string PerPage = "&PerPage=";
-
-        private const string BaseUrl = "https://api.intruderfps.com/agents";
-        private const string StatsEndpoint = "/stats";
-        private const string VotesEndpoint = "/votes";
-
         private readonly IServiceScopeFactory scopeFactory;
-        private readonly HttpClient httpClient;
+        private readonly IntruderAPI intruderAPI;
         private readonly AccountService accountService;
 
-        public AgentService(IServiceScopeFactory scopeFactory, HttpClient httpClient, AccountService accountService)
+        public AgentService(IServiceScopeFactory scopeFactory, IntruderAPI intruderAPI, AccountService accountService)
         {
             this.scopeFactory = scopeFactory;
-            this.httpClient = httpClient;
+            this.intruderAPI = intruderAPI;
             this.accountService = accountService;
-        }
-
-        /// <summary>
-        /// For use in searching https://api.intruderfps.com/agents.
-        /// </summary>
-        /// <param name="q">Gets or sets the (partial) agent name or Steam ID filter.</param>
-        /// <param name="orderBy">Gets or sets the result set ordering using property:direction.</param>
-        /// <param name="onlineOnly">Gets or sets a value indicating whether only online agents should be retrieved.</param>
-        /// <param name="page">Gets or sets the current pagination page.</param>
-        /// <param name="perPage">Gets or sets the amount of entries per page.</param>
-        /// <returns>All agents.</returns>
-        public async Task<List<Agent>> GetAgents(string? q, string? orderBy, bool? onlineOnly, int? page, int? perPage)
-        {
-            JToken queryResponse = await this.QueryAgents(q, orderBy, onlineOnly, page, perPage);
-
-            AgentsObject agentsObject = JsonConvert.DeserializeObject<AgentsObject>(queryResponse.ToString());
-
-            List<Agent> agents = new List<Agent>();
-
-            foreach (Agent agent in agentsObject.Data)
-            {
-                agents.Add(agent);
-            }
-
-            return agents;
-        }
-
-        /// <summary>
-        /// Searches the Intruder API for a single or list of agents.
-        /// </summary>
-        /// <param name="usernameOrID">Can be the Steam Username or Steam ID of an agent.</param>
-        /// <returns>Lists of matched Agents.</returns>
-        public async Task<List<Agent>> SearchAgent(string? usernameOrID)
-        {
-            JToken queryResponse = await this.QueryAgents(usernameOrID, null, null, null, null);
-            AgentsObject agentsObject = JsonConvert.DeserializeObject<AgentsObject>(queryResponse.ToString());
-            List<Agent> agents = new List<Agent>();
-
-            foreach (Agent agent in agentsObject.Data)
-            {
-                agents.Add(agent);
-            }
-
-            return agents;
         }
 
         /// <summary>
@@ -91,7 +36,7 @@ namespace Bloon.Features.IntruderBackend.Agents
             List<PackageAccount> packageAccounts = this.accountService.QueryAccounts();
 
             // Convert SteamIDs from PackageAccounts to Agents using DB.
-            List<Agent> agents = new List<Agent>();
+            List<Agent> agents = new ();
             foreach (PackageAccount account in packageAccounts)
             {
                 agents.Add(await this.GetAgentProfileAsync(account.SteamID));
@@ -100,25 +45,25 @@ namespace Bloon.Features.IntruderBackend.Agents
             foreach (Agent dbAgent in agents)
             {
                 // Collect Agent Stats
-                AgentStats statsResponse = await this.GetAgentStatsAsync(dbAgent.SteamID);
+                Stats statsResponse = await this.GetAgentStatsAsync(dbAgent.SteamId);
 
                 // Collect Agent Votes
-                List<AgentVotes> votesResponse = await this.QueryAgentVotes(dbAgent.SteamID);
+                List<VoteSummary> votesResponse = await this.QueryAgentVotes(dbAgent.SteamId);
 
                 // Collect Profile Information
-                Agent agentResponse = await this.GetAgentProfileAsync(dbAgent.SteamID);
+                Agent agentResponse = await this.GetAgentProfileAsync(dbAgent.SteamId);
 
                 // If the player's latest lastUpdate value is greater than what we have stored in the database
                 if (statsResponse.LastUpdate > dbAgent.LastUpdate && agentResponse.LoginCount > dbAgent.LoginCount)
                 {
-                    AgentHistory agentHistory = new AgentHistory()
+                    AgentHistory agentHistory = new ()
                     {
-                        SteamID = dbAgent.SteamID,
+                        SteamID = dbAgent.SteamId,
                         MatchesWon = statsResponse.MatchesWon,
                         MatchesLost = statsResponse.MatchesLost,
                         RoundsLost = statsResponse.RoundsLost,
                         RoundsTied = statsResponse.RoundsTied,
-                        RoundsWonElim = statsResponse.RoundsWonElim,
+                        RoundsWonElim = statsResponse.RoundsWonElimination,
                         RoundsWonCapture = statsResponse.RoundsWonCapture,
                         RoundsWonHack = statsResponse.RoundsWonHack,
                         RoundsWonTimer = statsResponse.RoundsWonTimer,
@@ -137,12 +82,12 @@ namespace Bloon.Features.IntruderBackend.Agents
                         GotKnockedDown = statsResponse.GotKnockedDown,
                         TeamKnockdowns = statsResponse.TeamKnockdowns,
                         TeamDamage = statsResponse.TeamDamage,
-                        LevelXP = statsResponse.LevelXP,
-                        TotalXP = statsResponse.TotalXP,
+                        LevelXP = statsResponse.LevelXp,
+                        TotalXP = statsResponse.TotalXp,
                         Level = statsResponse.Level,
-                        PositiveVotes = votesResponse.FirstOrDefault().PositiveVotes,
-                        NegativeVotes = votesResponse.FirstOrDefault().NegativeVotes,
-                        TotalVotes = votesResponse.FirstOrDefault().ReceivedVotes,
+                        PositiveVotes = votesResponse.FirstOrDefault().Positive,
+                        NegativeVotes = votesResponse.FirstOrDefault().Negative,
+                        TotalVotes = votesResponse.FirstOrDefault().Received,
                         LoginCount = dbAgent.LoginCount,
                         LastLogin = dbAgent.LastLogin,
                         Timestamp = DateTime.Now,
@@ -184,40 +129,44 @@ namespace Bloon.Features.IntruderBackend.Agents
         public async Task PopulateAgentTableAsync()
         {
             // Convert SteamIDs from PackageAccounts to Agents using DB.
-            List<Agent> agents = await this.GetAllAgents(null, null, null, 101, 100);
+            List<LeveledAgent> agents = await this.GetAllAgents(new AgentListFilter
+            {
+                Page = 101,
+                PerPage = 100,
+            });
 
             using IServiceScope scope = this.scopeFactory.CreateScope();
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
 
-            foreach (Agent dbAgent in agents)
+            foreach (Agent agent in agents)
             {
-                if (db.Agents.Where(x => x.SteamID == dbAgent.SteamID).AsNoTracking().FirstOrDefault() == null || db.Agents.Any(x => x.SteamID != dbAgent.SteamID) || db.Agents.Any(x => x.ID != dbAgent.IntruderID))
+                if (db.Agents.Where(x => x.SteamID == agent.SteamId).AsNoTracking().FirstOrDefault() == null || db.Agents.Any(x => x.SteamID != agent.SteamId) || db.Agents.Any(x => x.ID != agent.Id))
                 {
                     // Collect Agent Stats
-                    AgentStats statsResponse = await this.GetAgentStatsAsync(dbAgent.SteamID);
+                    Stats statsResponse = await this.GetAgentStatsAsync(agent.SteamId);
 
                     // Collect Agent Votes
-                    List<AgentVotes> votesResponse = await this.QueryAgentVotes(dbAgent.SteamID);
+                    List<VoteSummary> votesResponse = await this.QueryAgentVotes(agent.SteamId);
 
-                    AgentsDB agentsDB = new AgentsDB
+                    AgentsDB agentsDB = new ()
                     {
                         // BEGIN PROFILE INFO
-                        SteamID = dbAgent.SteamID,
-                        SteamAvatar = dbAgent.AvatarURL,
-                        ID = dbAgent.IntruderID,
-                        Role = dbAgent.Role,
-                        Name = dbAgent.Name,
-                        LoginCount = dbAgent.LoginCount,
-                        FirstLogin = dbAgent.FirstLogin,
-                        LastLogin = dbAgent.LastLogin,
-                        LastUpdate = dbAgent.LastUpdate,
+                        SteamID = agent.SteamId,
+                        SteamAvatar = agent.AvatarUrl,
+                        ID = agent.Id,
+                        Role = agent.Role,
+                        Name = agent.Name,
+                        LoginCount = agent.LoginCount,
+                        FirstLogin = agent.FirstLogin,
+                        LastLogin = agent.LastLogin,
+                        LastUpdate = agent.LastUpdate,
 
                         // BEGIN STATS INFO
                         MatchesWon = statsResponse.MatchesWon,
                         MatchesLost = statsResponse.MatchesLost,
                         RoundsLost = statsResponse.RoundsLost,
                         RoundsTied = statsResponse.RoundsTied,
-                        RoundsWonElim = statsResponse.RoundsWonElim,
+                        RoundsWonElim = statsResponse.RoundsWonElimination,
                         RoundsWonCapture = statsResponse.RoundsWonCapture,
                         RoundsWonHack = statsResponse.RoundsWonHack,
                         RoundsWonTimer = statsResponse.RoundsWonTimer,
@@ -238,14 +187,14 @@ namespace Bloon.Features.IntruderBackend.Agents
                         TeamKnockdowns = statsResponse.TeamKnockdowns,
                         TeamDamage = statsResponse.TeamDamage,
                         Level = statsResponse.Level,
-                        LevelXP = statsResponse.LevelXP,
-                        LevelXPRequired = statsResponse.LevelXPRequired,
-                        TotalXP = statsResponse.TotalXP,
+                        LevelXP = statsResponse.LevelXp,
+                        LevelXPRequired = statsResponse.LevelXpRequired,
+                        TotalXP = statsResponse.TotalXp,
 
                         // BEGIN VOTES
-                        PositiveVotes = votesResponse.ElementAt(0).PositiveVotes,
-                        NegativeVotes = votesResponse.ElementAt(0).NegativeVotes,
-                        TotalVotes = votesResponse.ElementAt(0).ReceivedVotes,
+                        PositiveVotes = votesResponse.ElementAt(0).Positive,
+                        NegativeVotes = votesResponse.ElementAt(0).Negative,
+                        TotalVotes = votesResponse.ElementAt(0).Received,
                         Timestamp = DateTime.Now,
                     };
                     try
@@ -261,34 +210,23 @@ namespace Bloon.Features.IntruderBackend.Agents
                 }
                 else
                 {
-                    Console.WriteLine($"{dbAgent.Name} IS ALREADY STORED. INTRUDER ID: {dbAgent.IntruderID}");
+                    Console.WriteLine($"{agent.Name} IS ALREADY STORED. INTRUDER ID: {agent.Id}");
                 }
             }
         }
 
-        public async Task<List<Agent>> GetAllAgents(string? q, string? orderBy, bool? onlineOnly, int? page, int? perPage)
+        public async Task<List<LeveledAgent>> GetAllAgents(AgentListFilter filter)
         {
-            JToken queryResponse = await this.QueryAgents(q, orderBy, onlineOnly, page, perPage);
-
-            AgentsObject agentsObject = JsonConvert.DeserializeObject<AgentsObject>(queryResponse.ToString());
-
-            List<Agent> agents = new List<Agent>();
-
-            foreach (Agent agent in agentsObject.Data)
-            {
-                agents.Add(agent);
-            }
+            PaginatedResult<LeveledAgent> results = await this.intruderAPI.GetAgentsAsync(filter);
+            List<LeveledAgent> agents = new ();
+            agents.AddRange(results.Data);
 
             // agents.Count <= agentsObject.TotalCount
-            while (page != 648)
+            while (results.Page != 648)
             {
-                page++;
-                queryResponse = await this.QueryAgents(q, orderBy, onlineOnly, page, 100);
-                agentsObject = JsonConvert.DeserializeObject<AgentsObject>(queryResponse.ToString());
-                foreach (Agent agent in agentsObject.Data)
-                {
-                    agents.Add(agent);
-                }
+                filter.Page++;
+                results = await this.intruderAPI.GetAgentsAsync(filter);
+                agents.AddRange(results.Data);
             }
 
             return agents;
@@ -300,25 +238,20 @@ namespace Bloon.Features.IntruderBackend.Agents
         /// </summary>
         /// <param name="steamID">Agent's Steam ID.</param>
         /// <returns>Profile JToken.</returns>
-        public async Task<Agent> GetAgentProfileAsync(ulong steamID)
+        public async Task<LeveledAgent> GetAgentProfileAsync(ulong steamID)
         {
-            StringBuilder urlBuilder3000 = new StringBuilder(BaseUrl);
-
-            urlBuilder3000.Append($"/{steamID}");
-
-            string rawJson;
+            LeveledAgent agent = null;
 
             try
             {
-                rawJson = await this.httpClient.GetStringAsync(new Uri(urlBuilder3000.ToString()));
+                agent = await this.intruderAPI.GetAgentAsync(steamID);
             }
-            catch (HttpRequestException e)
+            catch (APIException e)
             {
-                Log.Error(e, $"Failed to obtain profile data for agent: {steamID} | {urlBuilder3000}");
-                return null;
+                Log.Error(e, $"Failed to obtain profile data for agent: {steamID}");
             }
 
-            return JsonConvert.DeserializeObject<Agent>(rawJson);
+            return agent;
         }
 
         /// <summary>
@@ -327,24 +260,20 @@ namespace Bloon.Features.IntruderBackend.Agents
         /// </summary>
         /// <param name="steamID">Agent's Steam ID.</param>
         /// <returns>AgentStats.</returns>
-        public async Task<AgentStats> GetAgentStatsAsync(ulong steamID)
+        public async Task<Stats> GetAgentStatsAsync(ulong steamID)
         {
-            StringBuilder urlBuilder3000 = new StringBuilder(BaseUrl);
-            urlBuilder3000.Append($"/{steamID}{StatsEndpoint}");
-
-            string rawJson;
+            Stats stats = null;
 
             try
             {
-                rawJson = await this.httpClient.GetStringAsync(new Uri(urlBuilder3000.ToString()));
+                stats = await this.intruderAPI.GetAgentStatsAsync(steamID);
             }
-            catch (HttpRequestException e)
+            catch (APIException e)
             {
-                Log.Error(e, $"Failed to run a query for Agents. URL: {urlBuilder3000}");
-                return null;
+                Log.Error(e, $"Failed to fetch stats for: {steamID}");
             }
 
-            return JsonConvert.DeserializeObject<AgentStats>(rawJson);
+            return stats;
         }
 
         /// <summary>
@@ -353,25 +282,20 @@ namespace Bloon.Features.IntruderBackend.Agents
         /// </summary>
         /// <param name="steamID">Agent's Steam ID.</param>
         /// <returns>Votes JToken.</returns>
-        public async Task<List<AgentVotes>> QueryAgentVotes(ulong steamID)
+        public async Task<List<VoteSummary>> QueryAgentVotes(ulong steamID)
         {
-            StringBuilder urlBuilder3000 = new StringBuilder(BaseUrl);
-
-            urlBuilder3000.Append($"/{steamID}{VotesEndpoint}");
-
-            string rawJson;
+            List<VoteSummary> votes = null;
 
             try
             {
-                rawJson = await this.httpClient.GetStringAsync(new Uri(urlBuilder3000.ToString()));
+                votes = await this.intruderAPI.GetAgentVotesAsync(steamID);
             }
-            catch (HttpRequestException e)
+            catch (APIException e)
             {
-                Log.Error(e, $"Failed to obtain votes for Steam ID: {steamID} | {urlBuilder3000}");
-                return null;
+                Log.Error(e, $"Failed to obtain votes for Steam ID: {steamID}");
             }
 
-            return JsonConvert.DeserializeObject<List<AgentVotes>>(rawJson);
+            return votes;
         }
 
         /// <summary>
@@ -381,7 +305,7 @@ namespace Bloon.Features.IntruderBackend.Agents
         /// <returns>An awaitable Task.</returns>
         public async Task<AgentsDB> GetDBAgentAsync(ulong steamID)
         {
-            AgentsDB agent = new AgentsDB();
+            AgentsDB agent = new ();
             using IServiceScope scope = this.scopeFactory.CreateScope();
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
 
@@ -402,19 +326,19 @@ namespace Bloon.Features.IntruderBackend.Agents
             using IServiceScope scope = this.scopeFactory.CreateScope();
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
 
-            AgentsDB dbAgent = await this.GetDBAgentAsync(agent.SteamID);
+            AgentsDB dbAgent = await this.GetDBAgentAsync(agent.SteamId);
 
-            if (this.CheckDBAgent(agent.SteamID))
+            if (this.CheckDBAgent(agent.SteamId))
             {
                 if (DateTime.Compare(agent.LastLogin, dbAgent.LastLogin) == 1)
                 {
                     // Agent has updated stats. lets update our DB.
 
                     // get stats
-                    AgentStats statsResponse = await this.GetAgentStatsAsync(agent.SteamID);
+                    Stats statsResponse = await this.GetAgentStatsAsync(agent.SteamId);
 
                     // get votes
-                    List<AgentVotes> votesResponse = await this.QueryAgentVotes(agent.SteamID);
+                    List<VoteSummary> votesResponse = await this.QueryAgentVotes(agent.SteamId);
 
                     if (dbAgent.Name != agent.Name)
                     {
@@ -422,7 +346,7 @@ namespace Bloon.Features.IntruderBackend.Agents
                     }
 
                     // BEGIN PROFILE INFO
-                    dbAgent.SteamAvatar = agent.AvatarURL;
+                    dbAgent.SteamAvatar = agent.AvatarUrl;
                     dbAgent.Role = agent.Role;
                     dbAgent.Name = agent.Name;
                     dbAgent.LoginCount = agent.LoginCount;
@@ -434,7 +358,7 @@ namespace Bloon.Features.IntruderBackend.Agents
                     dbAgent.MatchesLost = statsResponse.MatchesLost;
                     dbAgent.RoundsLost = statsResponse.RoundsLost;
                     dbAgent.RoundsTied = statsResponse.RoundsTied;
-                    dbAgent.RoundsWonElim = statsResponse.RoundsWonElim;
+                    dbAgent.RoundsWonElim = statsResponse.RoundsWonElimination;
                     dbAgent.RoundsWonCapture = statsResponse.RoundsWonCapture;
                     dbAgent.RoundsWonHack = statsResponse.RoundsWonHack;
                     dbAgent.RoundsWonTimer = statsResponse.RoundsWonTimer;
@@ -455,14 +379,14 @@ namespace Bloon.Features.IntruderBackend.Agents
                     dbAgent.TeamKnockdowns = statsResponse.TeamKnockdowns;
                     dbAgent.TeamDamage = statsResponse.TeamDamage;
                     dbAgent.Level = statsResponse.Level;
-                    dbAgent.LevelXP = statsResponse.LevelXP;
-                    dbAgent.LevelXPRequired = statsResponse.LevelXPRequired;
-                    dbAgent.TotalXP = statsResponse.TotalXP;
+                    dbAgent.LevelXP = statsResponse.LevelXp;
+                    dbAgent.LevelXPRequired = statsResponse.LevelXpRequired;
+                    dbAgent.TotalXP = statsResponse.TotalXp;
 
                     // BEGIN VOTES
-                    dbAgent.PositiveVotes = votesResponse.ElementAt(0).PositiveVotes;
-                    dbAgent.NegativeVotes = votesResponse.ElementAt(0).NegativeVotes;
-                    dbAgent.TotalVotes = votesResponse.ElementAt(0).ReceivedVotes;
+                    dbAgent.PositiveVotes = votesResponse.ElementAt(0).Positive;
+                    dbAgent.NegativeVotes = votesResponse.ElementAt(0).Negative;
+                    dbAgent.TotalVotes = votesResponse.ElementAt(0).Received;
                     dbAgent.Timestamp = DateTime.Now;
 
                     db.Agents.Update(dbAgent);
@@ -474,7 +398,7 @@ namespace Bloon.Features.IntruderBackend.Agents
             }
             else
             {
-                await this.StoreAgentDBAsync(agent.SteamID);
+                await this.StoreAgentDBAsync(agent.SteamId);
             }
 
             await db.SaveChangesAsync();
@@ -492,126 +416,38 @@ namespace Bloon.Features.IntruderBackend.Agents
         {
             using IServiceScope scope = this.scopeFactory.CreateScope();
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
-            List<AgentsDB> agentsDBs = new List<AgentsDB>();
-            switch (orderBy)
+            List<AgentsDB> agentsDBs = new ();
+            agentsDBs = orderBy switch
             {
-                case "match":
-                case "matches":
-                case "matches won":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.MatchesWon).Take(10).ToList();
-                    break;
-
-                case "matches lost":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.MatchesLost).Take(10).ToList();
-                    break;
-
-                case "rounds lost":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.RoundsLost).Take(10).ToList();
-                    break;
-
-                case "rounds tied":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.RoundsTied).Take(10).ToList();
-                    break;
-
-                case "kills":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.Kills).Take(10).ToList();
-                    break;
-
-                case "deaths":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.Deaths).Take(10).ToList();
-                    break;
-
-                case "arrests":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.Arrests).Take(10).ToList();
-                    break;
-
-                case "team kills":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.TeamKills).Take(10).ToList();
-                    break;
-
-                case "captures":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.Captures).Take(10).ToList();
-                    break;
-
-                case "hacks":
-                case "network hacks":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.NetworkHacks).Take(10).ToList();
-                    break;
-
-                case "survivals":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.Survivals).Take(10).ToList();
-                    break;
-
-                case "suicides":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.Suicides).Take(10).ToList();
-                    break;
-
-                case "login count":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.LoginCount).Take(10).ToList();
-                    break;
-
-                case "pickups":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.Pickups).Take(10).ToList();
-                    break;
-
-                case "votes":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.TotalVotes).Take(10).ToList();
-                    break;
-
-                case "xp":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.TotalXP).Take(10).ToList();
-                    break;
-
-                case "team damage":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.TeamDamage).Take(10).ToList();
-                    break;
-
-                case "team knockdowns":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.TeamKnockdowns).Take(10).ToList();
-                    break;
-
-                case "arrested":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.GotArrested).Take(10).ToList();
-                    break;
-
-                case "got knocked down":
-                case "knocked down":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.GotArrested).Take(10).ToList();
-                    break;
-
-                case "rounds won capture":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.RoundsWonCapture).Take(10).ToList();
-                    break;
-
-                case "rounds won hack":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.RoundsWonHack).Take(10).ToList();
-                    break;
-
-                case "rounds won elim":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.RoundsWonElim).Take(10).ToList();
-                    break;
-
-                case "rounds won timer":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.RoundsWonTimer).Take(10).ToList();
-                    break;
-
-                case "rounds won custom":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.RoundsWonCustom).Take(10).ToList();
-                    break;
-
-                case "positive votes":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.PositiveVotes).Take(10).ToList();
-                    break;
-
-                case "negative votes":
-                    agentsDBs = db.Agents.OrderByDescending(x => x.NegativeVotes).Take(10).ToList();
-                    break;
-
-                default:
-                    agentsDBs = db.Agents.OrderByDescending(x => x.TotalXP).Take(10).ToList();
-                    break;
-            }
-
+                "match" or "matches" or "matches won" => db.Agents.OrderByDescending(x => x.MatchesWon).Take(10).ToList(),
+                "matches lost" => db.Agents.OrderByDescending(x => x.MatchesLost).Take(10).ToList(),
+                "rounds lost" => db.Agents.OrderByDescending(x => x.RoundsLost).Take(10).ToList(),
+                "rounds tied" => db.Agents.OrderByDescending(x => x.RoundsTied).Take(10).ToList(),
+                "kills" => db.Agents.OrderByDescending(x => x.Kills).Take(10).ToList(),
+                "deaths" => db.Agents.OrderByDescending(x => x.Deaths).Take(10).ToList(),
+                "arrests" => db.Agents.OrderByDescending(x => x.Arrests).Take(10).ToList(),
+                "team kills" => db.Agents.OrderByDescending(x => x.TeamKills).Take(10).ToList(),
+                "captures" => db.Agents.OrderByDescending(x => x.Captures).Take(10).ToList(),
+                "hacks" or "network hacks" => db.Agents.OrderByDescending(x => x.NetworkHacks).Take(10).ToList(),
+                "survivals" => db.Agents.OrderByDescending(x => x.Survivals).Take(10).ToList(),
+                "suicides" => db.Agents.OrderByDescending(x => x.Suicides).Take(10).ToList(),
+                "login count" => db.Agents.OrderByDescending(x => x.LoginCount).Take(10).ToList(),
+                "pickups" => db.Agents.OrderByDescending(x => x.Pickups).Take(10).ToList(),
+                "votes" => db.Agents.OrderByDescending(x => x.TotalVotes).Take(10).ToList(),
+                "xp" => db.Agents.OrderByDescending(x => x.TotalXP).Take(10).ToList(),
+                "team damage" => db.Agents.OrderByDescending(x => x.TeamDamage).Take(10).ToList(),
+                "team knockdowns" => db.Agents.OrderByDescending(x => x.TeamKnockdowns).Take(10).ToList(),
+                "arrested" => db.Agents.OrderByDescending(x => x.GotArrested).Take(10).ToList(),
+                "got knocked down" or "knocked down" => db.Agents.OrderByDescending(x => x.GotArrested).Take(10).ToList(),
+                "rounds won capture" => db.Agents.OrderByDescending(x => x.RoundsWonCapture).Take(10).ToList(),
+                "rounds won hack" => db.Agents.OrderByDescending(x => x.RoundsWonHack).Take(10).ToList(),
+                "rounds won elim" => db.Agents.OrderByDescending(x => x.RoundsWonElim).Take(10).ToList(),
+                "rounds won timer" => db.Agents.OrderByDescending(x => x.RoundsWonTimer).Take(10).ToList(),
+                "rounds won custom" => db.Agents.OrderByDescending(x => x.RoundsWonCustom).Take(10).ToList(),
+                "positive votes" => db.Agents.OrderByDescending(x => x.PositiveVotes).Take(10).ToList(),
+                "negative votes" => db.Agents.OrderByDescending(x => x.NegativeVotes).Take(10).ToList(),
+                _ => db.Agents.OrderByDescending(x => x.TotalXP).Take(10).ToList(),
+            };
             return agentsDBs;
         }
 
@@ -626,18 +462,18 @@ namespace Bloon.Features.IntruderBackend.Agents
             Agent profileResponse = await this.GetAgentProfileAsync(steamID);
 
             // get stats
-            AgentStats statsResponse = await this.GetAgentStatsAsync(steamID);
+            Stats statsResponse = await this.GetAgentStatsAsync(steamID);
 
             // get votes
-            List<AgentVotes> votesResponse = await this.QueryAgentVotes(steamID);
+            List<VoteSummary> votesResponse = await this.QueryAgentVotes(steamID);
 
             // add to db
-            AgentsDB agentsDB = new AgentsDB()
+            AgentsDB agentsDB = new ()
             {
                 // BEGIN PROFILE INFO
-                SteamID = profileResponse.SteamID,
-                SteamAvatar = profileResponse.AvatarURL,
-                ID = profileResponse.IntruderID,
+                SteamID = profileResponse.SteamId,
+                SteamAvatar = profileResponse.AvatarUrl,
+                ID = profileResponse.Id,
                 Role = profileResponse.Role,
                 Name = profileResponse.Name,
                 LoginCount = profileResponse.LoginCount,
@@ -650,7 +486,7 @@ namespace Bloon.Features.IntruderBackend.Agents
                 MatchesLost = statsResponse.MatchesLost,
                 RoundsLost = statsResponse.RoundsLost,
                 RoundsTied = statsResponse.RoundsTied,
-                RoundsWonElim = statsResponse.RoundsWonElim,
+                RoundsWonElim = statsResponse.RoundsWonElimination,
                 RoundsWonCapture = statsResponse.RoundsWonCapture,
                 RoundsWonHack = statsResponse.RoundsWonHack,
                 RoundsWonTimer = statsResponse.RoundsWonTimer,
@@ -671,14 +507,14 @@ namespace Bloon.Features.IntruderBackend.Agents
                 TeamKnockdowns = statsResponse.TeamKnockdowns,
                 TeamDamage = statsResponse.TeamDamage,
                 Level = statsResponse.Level,
-                LevelXP = statsResponse.LevelXP,
-                LevelXPRequired = statsResponse.LevelXPRequired,
-                TotalXP = statsResponse.TotalXP,
+                LevelXP = statsResponse.LevelXp,
+                LevelXPRequired = statsResponse.LevelXpRequired,
+                TotalXP = statsResponse.TotalXp,
 
                 // BEGIN VOTES
-                PositiveVotes = votesResponse.ElementAt(0).PositiveVotes,
-                NegativeVotes = votesResponse.ElementAt(0).NegativeVotes,
-                TotalVotes = votesResponse.ElementAt(0).ReceivedVotes,
+                PositiveVotes = votesResponse.ElementAt(0).Positive,
+                NegativeVotes = votesResponse.ElementAt(0).Negative,
+                TotalVotes = votesResponse.ElementAt(0).Received,
                 Timestamp = DateTime.Now,
             };
 
@@ -697,86 +533,6 @@ namespace Bloon.Features.IntruderBackend.Agents
             }
 
             await Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Quries the Intruder API endpoint for agents.
-        /// https://api.intruderfps.com/agents.
-        /// </summary>
-        /// <param name="q">Gets or sets the (partial) agent name or Steam ID filter.</param>
-        /// <param name="orderBy">Gets or sets the result set ordering using property:direction.</param>
-        /// <param name="onlineOnly">Gets or sets a value indicating whether only online agents should be retrieved.</param>
-        /// <param name="page">Gets or sets the current pagination page.</param>
-        /// <param name="perPage">Gets or sets the amount of entries per page.</param>
-        /// <returns>JToken.</returns>
-        private async Task<JToken> QueryAgents(string? q, string? orderBy, bool? onlineOnly, int? page, int? perPage)
-        {
-            // https://api.intruderfps.com/agents?
-            // if i want numbers in my damn variables i'm gonna put numbers in my variables.
-            StringBuilder urlBuilder3000 = new StringBuilder(BaseUrl);
-
-            if (q != null)
-            {
-                // https://api.intruderfps.com/agents?Q=XXXXXXXXX
-                urlBuilder3000.Append($"?Q={q}");
-            }
-
-            if (orderBy != null)
-            {
-                // https://api.intruderfps.com/agents?Q=XXXXXXXXX&OrderBy=XXXX:XXXX
-                // https://api.intruderfps.com/agents?&OrderBy=XXXX:XXXX
-                urlBuilder3000.Append($"?OrderBy={orderBy}");
-            }
-
-            if (onlineOnly != null)
-            {
-                // https://api.intruderfps.com/agents?Q=XXXXXXXXX&OrderBy=XXXX:XXXX&OnlineOnly=XXXXX
-                // https://api.intruderfps.com/agents?&OnlineOnly=XXXXX
-                urlBuilder3000.Append($"&OnlineOnly={onlineOnly}");
-            }
-
-            if (page != null)
-            {
-                if (page == 0)
-                {
-                    page = 1;
-                }
-
-                // https://api.intruderfps.com/agents?Q=XXXXXXXXX&OrderBy=XXXX:XXXX&OnlineOnly=XXXXX&Page=X
-                // https://api.intruderfps.com/agents?&Page=X
-                urlBuilder3000.Append($"?Page={page}");
-            }
-
-            if (perPage != null)
-            {
-                // if you try to query lower than 25 results per page, force it to 25 records per page.
-                if (perPage < 25)
-                {
-                }
-
-                // the limit of the API is 100.
-                if (perPage > 100)
-                {
-                }
-
-                // https://api.intruderfps.com/agents?Q=XXXXXXXXX&OrderBy=XXXX:XXXX&OnlineOnly=XXXXX&Page=X&PerPage=XX
-                // https://api.intruderfps.com/agents?&PerPage=XX
-                urlBuilder3000.Append($"&PerPage={perPage}");
-            }
-
-            // DEBUGGING
-            Console.WriteLine(urlBuilder3000.ToString());
-
-            try
-            {
-                string rawJson = await this.httpClient.GetStringAsync(new Uri(urlBuilder3000.ToString()));
-                return string.IsNullOrEmpty(rawJson) ? null : JToken.Parse(rawJson);
-            }
-            catch (HttpRequestException e)
-            {
-                Log.Error(e, $"Failed to run a query for Agents. URL: {urlBuilder3000}");
-                return null;
-            }
         }
     }
 }

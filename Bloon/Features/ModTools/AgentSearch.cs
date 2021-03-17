@@ -7,6 +7,7 @@ namespace Bloon.Features.ModTools
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
+    using IntruderLib.Models.Agents;
 
     [Group("agentsearch")]
     [Aliases("as")]
@@ -25,14 +26,16 @@ namespace Bloon.Features.ModTools
         /// This needs some more work, it'll probably break past 25 agents as we'll hit the character limit of an embed.
         /// Need to limit the amount that shows on the first page. Annoying to test when there is less than 25 people in the first place.
         /// </summary>
+        /// <param name="ctx">Command Context.</param>
+        /// <returns>An awaitable Task.</returns>
         [Command("-online")]
         [Aliases("-o")]
         [Description("Show All Online Users")]
         public async Task SearchOnlineAgents(CommandContext ctx)
         {
-            List<Agent> agents = await this.agentService.GetAgents(null, null, true, 1, 25);
+            List<LeveledAgent> agents = await this.agentService.GetAllAgents(new AgentListFilter { OnlineOnly = true });
 
-            DiscordEmbedBuilder onlineUsersEmbed = new DiscordEmbedBuilder
+            DiscordEmbedBuilder onlineUsersEmbed = new ()
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
@@ -48,7 +51,7 @@ namespace Bloon.Features.ModTools
 
             foreach (Agent agent in agents)
             {
-                agentDetails += $"{agent.IntruderID} | {agent.Name} | `{agent.SteamID}`\n";
+                agentDetails += $"{agent.Id} | {agent.Name} | `{agent.SteamId}`\n";
             }
 
             if (agents.Count > 25)

@@ -8,7 +8,6 @@ namespace Bloon.Core.Commands
     using System.Reflection;
     using System.Threading.Tasks;
     using Bloon.Core.Commands.Attributes;
-    using Bloon.Features.IntruderBackend.Rooms;
     using Bloon.Features.IntruderBackend.Servers;
     using Bloon.Variables.Channels;
     using Bloon.Variables.Emojis;
@@ -16,6 +15,7 @@ namespace Bloon.Core.Commands
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
+    using IntruderLib.Models.Rooms;
 
     public class OwnerCommands : BaseCommandModule
     {
@@ -54,7 +54,7 @@ namespace Bloon.Core.Commands
         [Command("rooms")]
         public async Task GoGetRooms(CommandContext ctx)
         {
-            List<Rooms> rooms = await this.roomService.GetRooms(null, null, null, null, null, null, null, null, null, null, 1, 100);
+            List<Room> rooms = await this.roomService.GetRoomsAsync(new RoomListFilter { PerPage = 100 });
             await this.roomService.ArchiveRoomData(rooms);
 
             // await this.roomService.ArchiveRoomMapHistory(rooms);
@@ -66,7 +66,7 @@ namespace Bloon.Core.Commands
         public async Task UpdateWelcomeAgents(CommandContext ctx)
         {
             // DiscordChannel sbgBugs = await this.dClient.GetChannelAsync(SBGChannels.Bugs);
-            DiscordEmbedBuilder hrEmbed = new DiscordEmbedBuilder
+            DiscordEmbedBuilder hrEmbed = new ()
             {
                 Color = new DiscordColor(23, 153, 177),
                 Timestamp = DateTime.Now,

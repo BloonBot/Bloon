@@ -1,0 +1,3 @@
+[submodule "IntruderLib"]
+	path = IntruderLib
+	url = https://github.com/BloonBot/IntruderLib

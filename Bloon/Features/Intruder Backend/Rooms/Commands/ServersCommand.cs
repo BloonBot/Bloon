@@ -9,6 +9,7 @@ namespace Bloon.Features.IntruderBackend.Servers
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
+    using IntruderLib.Models.Rooms;
 
     [Group("servers")]
     [Aliases("gsi")]
@@ -25,74 +26,26 @@ namespace Bloon.Features.IntruderBackend.Servers
         /// <summary>
         /// Base #current-server-info command.
         /// </summary>
-        /// <param name="ctx">Discord Client Context</param>
+        /// <param name="ctx">Discord Client Context.</param>
         /// <returns>Server Embed via Command.</returns>
         [GroupCommand]
-        public async Task CurrentServerInfo(CommandContext ctx)
-        {
-            CurrentServerInfo csi = await this.roomService.GetCSIRooms(null, null, null, null, "false", "false", "false", "false", "false", null, 1, 100);
-            DiscordEmbedBuilder serverEmbed = new DiscordEmbedBuilder
-            {
-                Footer = new DiscordEmbedBuilder.EmbedFooter
-                {
-                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, ServerEmojis.Unofficial).Url,
-                },
-                Color = new DiscordColor(217, 187, 19),
-                Timestamp = DateTime.UtcNow,
-            };
-            serverEmbed.Url = "https://intruderfps.com/rooms";
-            int skipRoomCount = 0;
-            if (csi.Rooms.Count > 0)
-            {
-                StringBuilder serverList = new StringBuilder();
-                int roomCount = 0;
-                foreach (Rooms room in csi.Rooms)
-                {
-                    roomCount++;
-                    if (roomCount >= 12)
-                    {
-                        skipRoomCount++;
-                    }
-                    else
-                    {
-                        serverList.AppendLine($"{room.ServerIcon} | {room.RegionFlag} | {room.Name} - [{room.AgentCount}/{room.MaxAgents}]");
-                    }
-                }
-
-                if (skipRoomCount >= 1)
-                {
-                    serverList.Append($"<:unofficial:{ServerEmojis.Unofficial}> <:os:{ServerEmojis.Official}> <:passworded:{ServerEmojis.Password}> and **{skipRoomCount}** more servers.");
-                }
-
-                serverEmbed.Title = "Current Server Information";
-                serverEmbed.Url = "https://intruderfps.com/rooms";
-                serverEmbed.AddField($"Server | Region | Name - [Agents]", serverList.ToString(), true);
-            }
-            else
-            {
-                serverEmbed.AddField($"Current Server Information", $"N/A", true);
-            }
-
-            string extensions = $"{DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Chrome)} [**Chrome**](https://chrome.google.com/webstore/detail/intruder-notifications/aoebpknpfcepopfgnbnikaipjeekalim) | "
-                + $"[**Firefox**](https://addons.mozilla.org/en-US/firefox/addon/intruder-notifications/) {DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Firefox)}";
-            serverEmbed.AddField("Browser Extensions", extensions);
-            serverEmbed.Footer.Text = $"SuperbossGames | #current-server-info | Total Agents: {csi.PlayerCount}";
-
-            await ctx.RespondAsync(embed: serverEmbed.Build());
-        }
+        public Task CurrentServerInfo(CommandContext ctx) => this.CurrentServerInfo(ctx, "ALL");
 
         [GroupCommand]
-        public async Task CurrentServerInfo(CommandContext ctx, [RemainingText] string region)
+        public async Task CurrentServerInfo(CommandContext ctx, [RemainingText]string regionText)
         {
-            region = ConvertRegion(region);
+            CurrentServerInfo csi = await this.roomService.GetCSIRooms(new RoomListFilter
+            {
+                HideEmpty = true,
+                Region = regionText == "ALL" ? null : Enum.Parse<Region>(ConvertRegion(regionText)),
+            });
 
-            CurrentServerInfo csi = await this.roomService.GetCSIRooms("true", "false", "false", "false", "false", "false", region);
-
-            DiscordEmbedBuilder serverEmbed = new DiscordEmbedBuilder
+            DiscordEmbedBuilder serverEmbed = new ()
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
                     IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, ServerEmojis.Unofficial).Url,
+                    Text = $"SuperbossGames | #current-server-info | Total Agents: {csi.PlayerCount}",
                 },
                 Color = new DiscordColor(217, 187, 19),
                 Timestamp = DateTime.UtcNow,
@@ -100,9 +53,9 @@ namespace Bloon.Features.IntruderBackend.Servers
             int skipRoomCount = 0;
             if (csi.Rooms.Count > 0)
             {
-                StringBuilder serverList = new StringBuilder();
+                StringBuilder serverList = new ();
                 int roomCount = 0;
-                foreach (Rooms room in csi.Rooms)
+                foreach (RoomDB room in csi.Rooms)
                 {
                     if (roomCount >= 12)
                     {
@@ -132,7 +85,6 @@ namespace Bloon.Features.IntruderBackend.Servers
                 + $"[**Firefox**](https://addons.mozilla.org/en-US/firefox/addon/intruder-notifications/) {DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Firefox)}";
 
             serverEmbed.AddField("Browser Extensions", extensions);
-            serverEmbed.Footer.Text = $"SuperbossGames | #current-server-info | Total Agents: {csi.PlayerCount}";
 
             await ctx.RespondAsync(embed: serverEmbed.Build());
         }

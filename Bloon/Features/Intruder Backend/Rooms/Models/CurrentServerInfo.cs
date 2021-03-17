@@ -9,7 +9,7 @@ namespace Bloon.Features.IntruderBackend.Rooms
     [NotMapped]
     public class CurrentServerInfo
     {
-        public List<Rooms> Rooms { get; set; }
+        public List<RoomDB> Rooms { get; set; }
 
         public int PlayerCount { get; set; }
 

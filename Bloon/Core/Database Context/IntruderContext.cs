@@ -2,6 +2,7 @@ namespace Bloon.Core.Database
 {
     using System;
     using Bloon.Features.IntruderBackend.Agents;
+    using IntruderLib.Models.Agents;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
     using Newtonsoft.Json;
@@ -28,14 +29,10 @@ namespace Bloon.Core.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            JsonSerializerSettings settings = new JsonSerializerSettings()
+            JsonSerializerSettings settings = new ()
             {
                 Formatting = Formatting.None,
             };
-
-            modelBuilder.Entity<Agent>()
-                .Property(s => s.Role)
-                .HasConversion(new EnumToStringConverter<Role>());
 
             modelBuilder.Entity<AgentsDB>()
                 .Property(s => s.Role)

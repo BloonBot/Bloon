@@ -5,6 +5,6 @@ namespace Bloon.Core.Database
 
     public partial class IntruderContext : DbContext
     {
-        public DbSet<Rooms> Rooms { get; set; }
+        public DbSet<RoomDB> Rooms { get; set; }
     }
 }

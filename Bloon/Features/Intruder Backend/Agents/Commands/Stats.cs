@@ -11,6 +11,8 @@ namespace Bloon.Commands
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
+    using IntruderLib.Models;
+    using IntruderLib.Models.Agents;
 
     public class Stats : BaseCommandModule
     {
@@ -26,10 +28,10 @@ namespace Bloon.Commands
         public async Task AgentStats(CommandContext ctx, [RemainingText] string steamIDOrUsername)
         {
             // Find Agents
-            List<Agent> agents = await this.agentService.SearchAgent(steamIDOrUsername);
+            List<LeveledAgent> agents = await this.agentService.GetAllAgents(new AgentListFilter { Q = steamIDOrUsername });
 
             // Build Base Embed.
-            DiscordEmbedBuilder userDetails = new DiscordEmbedBuilder
+            DiscordEmbedBuilder userDetails = new ()
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
@@ -51,7 +53,7 @@ namespace Bloon.Commands
 
                 foreach (Agent agent in agents)
                 {
-                    extraAgents += $"{agent.Name} | {agent.SteamID}\n";
+                    extraAgents += $"{agent.Name} | {agent.SteamId}\n";
                 }
 
                 userDetails.AddField($"Did you mean any of these agents?", extraAgents);
@@ -62,25 +64,25 @@ namespace Bloon.Commands
                 Agent agent = agents.FirstOrDefault();
 
                 // See if local DB has agent stored or not.
-                if (this.agentService.CheckDBAgent(agent.SteamID))
+                if (this.agentService.CheckDBAgent(agent.SteamId))
                 {
                     await this.agentService.UpdateDBAgentAsync(agent);
                 }
                 else
                 {
                     // No DB agent found, lets store them.
-                    await this.agentService.StoreAgentDBAsync(agent.SteamID);
+                    await this.agentService.StoreAgentDBAsync(agent.SteamId);
                 }
 
-                AgentStats agentStats = await this.agentService.GetAgentStatsAsync(agent.SteamID);
-                userDetails.Url = $"https://intruderfps.com/agents/{agent.SteamID}/";
+                IntruderLib.Models.Agents.Stats agentStats = await this.agentService.GetAgentStatsAsync(agent.SteamId);
+                userDetails.Url = $"https://intruderfps.com/agents/{agent.SteamId}/";
                 float levelProgression = 0;
                 float matchWLPercent = 0;
                 float roundsWLPercent = 0;
                 float killDeathPercent = 0;
                 try
                 {
-                    float totalRounds = agentStats.RoundsWonCapture + agentStats.RoundsWonHack + agentStats.RoundsWonElim + agentStats.RoundsWonTimer + agentStats.RoundsWonCustom + agentStats.RoundsTied;
+                    float totalRounds = agentStats.RoundsWonCapture + agentStats.RoundsWonHack + agentStats.RoundsWonElimination + agentStats.RoundsWonTimer + agentStats.RoundsWonCustom + agentStats.RoundsTied;
                     float totalRoundsWon = totalRounds - agentStats.RoundsTied;
                     totalRounds += agentStats.RoundsLost;
                     float totalMatches = agentStats.MatchesWon + agentStats.MatchesLost;
@@ -88,21 +90,11 @@ namespace Bloon.Commands
                     roundsWLPercent = totalRoundsWon / totalRounds * 100;
                     float totalKills = agentStats.Kills + agentStats.Deaths;
                     killDeathPercent = (float)agentStats.Kills / (float)agentStats.Deaths;
-                    float lvlXpRequired = 0;
-                    if (agentStats.LevelXPRequired is null)
-                    {
-                        lvlXpRequired = 0;
-                    }
-                    else
-                    {
-                        lvlXpRequired = (float)agentStats.LevelXPRequired;
-                    }
-
-                    levelProgression = ((float)agentStats.LevelXP / (float)lvlXpRequired) * 100;
+                    levelProgression = ((float)agentStats.LevelXp / (float)agentStats.LevelXpRequired) * 100;
                 }
                 catch (DivideByZeroException)
                 {
-                    Console.WriteLine($"Found a user but had no match or round data | User: {agent.Name} | {agent.SteamID}");
+                    Console.WriteLine($"Found a user but had no match or round data | User: {agent.Name} | {agent.SteamId}");
                 }
 
                 string lvlProg = string.Empty;
@@ -124,13 +116,13 @@ namespace Bloon.Commands
 
                 userDetails.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
                 {
-                    Url = agent.AvatarURL,
+                    Url = agent.AvatarUrl,
                 };
 
                 userDetails.Title = $"{agent.Name}   //   Level: {agentStats.Level}";
 
                 userDetails.Description =
-                    $"{agentStats.LevelXP}*xp* `{lvlProg.PadRight(10, '▱')}` {agentStats.LevelXPRequired}*xp* - {Math.Round(levelProgression, 1)}% \n" +
+                    $"{agentStats.LevelXp}*xp* `{lvlProg.PadRight(10, '▱')}` {agentStats.LevelXpRequired}*xp* - {Math.Round(levelProgression, 1)}% \n" +
                     $"**Arrests**: `{agentStats.Arrests}` | **Captures**: `{agentStats.Captures}` | **Hacks**: `{agentStats.NetworkHacks}`\n";
             }
 
@@ -139,7 +131,7 @@ namespace Bloon.Commands
 
         [Command("hiscores")]
         [Aliases("hs", "hiscore", "highscores", "highscore", "top")]
-        public async Task Hiscores(CommandContext ctx, [RemainingText] string? orderby)
+        public async Task Hiscores(CommandContext ctx, [RemainingText] string orderby)
         {
             if (orderby == null)
             {
@@ -150,7 +142,7 @@ namespace Bloon.Commands
                 orderby = orderby.ToLowerInvariant();
             }
 
-            DiscordEmbedBuilder hiscoreEmbed = new DiscordEmbedBuilder
+            DiscordEmbedBuilder hiscoreEmbed = new ()
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {

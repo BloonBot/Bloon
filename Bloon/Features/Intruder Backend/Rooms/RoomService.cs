@@ -4,7 +4,6 @@ namespace Bloon.Features.IntruderBackend.Servers
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Net.Http;
     using System.Text;
     using System.Threading.Tasks;
     using Bloon.Core.Database;
@@ -12,26 +11,26 @@ namespace Bloon.Features.IntruderBackend.Servers
     using Bloon.Features.IntruderBackend.Rooms;
     using Bloon.Utils;
     using Bloon.Variables.Emojis;
+    using IntruderLib;
+    using IntruderLib.Models;
+    using IntruderLib.Models.Rooms;
     using Microsoft.Extensions.DependencyInjection;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using Serilog;
 
     public class RoomService
     {
-        private const string BaseUrl = "https://api.intruderfps.com/rooms?HideEmpty=true";
-
-        private readonly HttpClient httpClient;
+        private readonly IntruderAPI intruderAPI;
         private readonly IServiceScopeFactory scopeFactory;
 
-        public RoomService(HttpClient httpClient, IServiceScopeFactory scopeFactory)
+        public RoomService(IntruderAPI intruderAPI, IServiceScopeFactory scopeFactory)
         {
-            this.httpClient = httpClient;
+            this.intruderAPI = intruderAPI;
             this.scopeFactory = scopeFactory;
         }
 
         // https://stackoverflow.com/questions/592248/how-can-i-check-if-the-current-time-is-between-in-a-time-frame
         // ty u bueaitiful sonnabitch
+        //          ^ Noice
         public static bool IsTimeOfDayBetween(DateTime time, TimeSpan startTime, TimeSpan endTime)
         {
             if (endTime == startTime)
@@ -50,45 +49,24 @@ namespace Bloon.Features.IntruderBackend.Servers
             }
         }
 
-        public async Task<List<Rooms>> GetRooms(
-            string? q,
-            int? version,
-            string? region,
-            string? hideEmpty,
-            string? hideFull,
-            string? hidePassworded,
-            string? hideOfficial,
-            string? hideCustom,
-            string? hideUnranked,
-            string? orderBy,
-            int? page,
-            int? perPage)
+        public async Task<List<Room>> GetRoomsAsync(RoomListFilter filter)
         {
-            JToken queryRoomResponse = await this.QueryRooms(q, version, region, hideEmpty, hideFull, hidePassworded, hideOfficial, hideCustom, hideUnranked, orderBy, page, perPage);
-            RoomObject roomObject = JsonConvert.DeserializeObject<RoomObject>(queryRoomResponse.ToString());
-            List<Rooms> rooms = new List<Rooms>();
+            PaginatedResult<Room> results = await this.intruderAPI.GetRoomsAsync(filter);
 
-            foreach (Rooms room in roomObject.Data)
-            {
-                rooms.Add(room);
-            }
-
-            return rooms;
+            return results.Data;
         }
 
-        public async Task<CurrentServerInfo> GetCSIRooms(string? hideEmpty, string? hideFull, string? hidePassworded, string? hideOfficial, string? hideCustom, string? hideUnranked, string? region)
+        public async Task<CurrentServerInfo> GetCSIRooms(RoomListFilter filter)
         {
-            // Send first request
-            JToken queryRoomResponse = await this.QueryRooms(null, null, null, hideEmpty, hideFull, hidePassworded, hideOfficial, hideCustom, hideUnranked, "official%3Adesc", 1, 100);
+            filter.OrderBy = "official:desc";
+            filter.PerPage = 100;
 
-            RoomObject roomObject = JsonConvert.DeserializeObject<RoomObject>(queryRoomResponse.ToString());
-
-            List<Rooms> rooms = new List<Rooms>();
+            PaginatedResult<Room> results = await this.intruderAPI.GetRoomsAsync(filter);
+            List<RoomDB> rooms = new ();
 
             int totalPlayers = 0;
-            int i = 1;
 
-            foreach (Rooms room in roomObject.Data)
+            foreach (RoomDB room in results.Data)
             {
                 if (room.Official)
                 {
@@ -111,17 +89,12 @@ namespace Bloon.Features.IntruderBackend.Servers
             }
 
             // MAKE SURE THE ROOM COUNT IN OUR MODEL MATCHES THE ROOMOBJECT REQUEST
-            while (rooms.Count != roomObject.TotalCount)
+            while (rooms.Count != results.TotalCount)
             {
-                i++;
+                filter.Page++;
+                results = await this.intruderAPI.GetRoomsAsync(filter);
 
-                // Send another request for moar data
-                queryRoomResponse = await this.QueryRooms(null, null, null, hideEmpty, hideFull, hidePassworded, hideOfficial, hideCustom, hideUnranked, "official%3Adesc", i, 100);
-
-                // Decode the mainframe overloader
-                roomObject = JsonConvert.DeserializeObject<RoomObject>(queryRoomResponse.ToString());
-
-                foreach (Rooms room in roomObject.Data)
+                foreach (RoomDB room in results.Data)
                 {
                     if (room.Official)
                     {
@@ -149,55 +122,19 @@ namespace Bloon.Features.IntruderBackend.Servers
             return csi;
         }
 
-        public async Task<CurrentServerInfo> GetCSIRooms(
-            string? q,
-            int? version,
-            string? region,
-            string? hideEmpty,
-            string? hideFull,
-            string? hidePassworded,
-            string? hideOfficial,
-            string? hideCustom,
-            string? hideUnranked,
-            string? orderBy,
-            int? page,
-            int? perPage)
-        {
-            JToken queryRoomResponse = await this.QueryRooms(null, null, region, hideEmpty, hideFull, hidePassworded, hideOfficial, hideCustom, hideUnranked, null, 1, 100);
-            RoomObject roomObject = JsonConvert.DeserializeObject<RoomObject>(queryRoomResponse.ToString());
-            List<Rooms> rooms = new List<Rooms>();
-
-            int totalPlayers = 0;
-
-            foreach (Rooms room in roomObject.Data)
-            {
-                rooms.Add(room);
-                room.RegionFlag = ConvertRegion(room.Region);
-                totalPlayers += room.AgentCount;
-            }
-
-            CurrentServerInfo csi = new CurrentServerInfo()
-            {
-                Rooms = rooms,
-                PlayerCount = totalPlayers,
-            };
-
-            return csi;
-        }
-
-        public async Task ArchiveRoomData(List<Rooms> rooms)
+        public async Task ArchiveRoomData(List<Room> rooms)
         {
             if (rooms.Count != 0)
             {
                 using IServiceScope scope = this.scopeFactory.CreateScope();
                 using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
 
-                foreach (Rooms room in rooms)
+                foreach (RoomDB room in rooms)
                 {
                     try
                     {
-                        room.DBCreatorSteamId = room.Creator.SteamID;
-                        room.DBCurrentMap = room.CurrentMap.Id;
+                        room.DBCreatorSteamId = room.Creator.SteamId;
+                        room.DBCurrentMap = (long)room.CurrentMap.Id;
                         if (room.Password != null)
                         {
                             room.Passworded = true;
@@ -207,7 +144,7 @@ namespace Bloon.Features.IntruderBackend.Servers
                             room.Passworded = false;
                         }
 
-                        Rooms dbRoom = db.Rooms.Where(x => x.RoomId == room.RoomId).FirstOrDefault();
+                        RoomDB dbRoom = db.Rooms.Where(x => x.RoomId == room.RoomId).FirstOrDefault();
 
                         if (dbRoom == null)
                         {
@@ -226,7 +163,7 @@ namespace Bloon.Features.IntruderBackend.Servers
                             dbRoom.CreatorId = room.CreatorId;
                             dbRoom.DBCreatorSteamId = room.DBCreatorSteamId;
                             dbRoom.LastUpdate = room.LastUpdate;
-                            dbRoom.DBCurrentMap = room.CurrentMap.Id;
+                            dbRoom.DBCurrentMap = (long)room.CurrentMap.Id;
                             db.Update(dbRoom);
                         }
 
@@ -293,7 +230,7 @@ namespace Bloon.Features.IntruderBackend.Servers
             // Remove [SeriousPlay] tag in room name
             roomName = roomName.Replace("[SeriousPlay]", string.Empty);
             roomName = roomName.Replace("[Casual]", string.Empty);
-            Censor censor = new Censor(File.ReadAllLines(Directory.GetCurrentDirectory() + "/Features/Censor/naughtywords.txt", Encoding.UTF8));
+            Censor censor = new (File.ReadAllLines(Directory.GetCurrentDirectory() + "/Features/Censor/naughtywords.txt", Encoding.UTF8));
             if (censor.HasNaughtyWord(roomName))
             {
                 roomName = "Loser's Room";
@@ -350,14 +287,14 @@ namespace Bloon.Features.IntruderBackend.Servers
             return DayNightEmojis.Sunrise;
         }
 
-        private static CurrentServerInfo CountRegions(List<Rooms> rooms)
+        private static CurrentServerInfo CountRegions(List<RoomDB> rooms)
         {
-            CurrentServerInfo csi = new CurrentServerInfo()
+            CurrentServerInfo csi = new ()
             {
                 Rooms = rooms,
             };
 
-            foreach (Rooms regionRooms in rooms)
+            foreach (RoomDB regionRooms in rooms)
             {
                 switch (regionRooms.Region)
                 {
@@ -421,119 +358,6 @@ namespace Bloon.Features.IntruderBackend.Servers
             csi.AUTOD = CheckTimeOfDay(DateTime.UtcNow.AddHours(11.0));
 
             return csi;
-        }
-
-        private async Task<JToken> QueryRooms(
-            string? q,
-            int? version,
-            string? region,
-            string? hideEmpty,
-            string? hideFull,
-            string? hidePassworded,
-            string? hideOfficial,
-            string? hideCustom,
-            string? hideUnranked,
-            string? orderBy,
-            int? page,
-            int? perPage)
-        {
-            // https://api.intruderfps.com/rooms?
-            StringBuilder urlBuilder3000 = new StringBuilder(BaseUrl);
-
-            if (q != null)
-            {
-                urlBuilder3000.Append($"&Q={q}");
-            }
-
-            if (version != null)
-            {
-                urlBuilder3000.Append($"&Version={version}");
-            }
-
-            if (region != null)
-            {
-                urlBuilder3000.Append($"&Region={region}");
-            }
-
-            if (hideEmpty != null)
-            {
-                urlBuilder3000.Append($"&HideEmpty={hideEmpty}");
-            }
-
-            if (hideFull != null)
-            {
-                urlBuilder3000.Append($"&HideFull={hideFull}");
-            }
-
-            if (hidePassworded != null)
-            {
-                urlBuilder3000.Append($"&HidePassworded={hidePassworded}");
-            }
-
-            if (hideOfficial != null)
-            {
-                urlBuilder3000.Append($"&HideOfficial={hideOfficial}");
-            }
-
-            if (hideCustom != null)
-            {
-                urlBuilder3000.Append($"&HideCustom={hideCustom}");
-            }
-
-            if (hideUnranked != null)
-            {
-                urlBuilder3000.Append($"&HideUnranked={hideUnranked}");
-            }
-
-            if (orderBy != null)
-            {
-                // https://api.intruderfps.com/agents?Q=XXXXXXXXX&OrderBy=XXXX:XXXX
-                // https://api.intruderfps.com/agents?&OrderBy=XXXX:XXXX
-                urlBuilder3000.Append($"&OrderBy={orderBy}");
-            }
-
-            if (page != null)
-            {
-                if (page == 0)
-                {
-                    page = 1;
-                }
-
-                // https://api.intruderfps.com/agents?Q=XXXXXXXXX&OrderBy=XXXX:XXXX&OnlineOnly=XXXXX&Page=X
-                // https://api.intruderfps.com/agents?&Page=X
-                urlBuilder3000.Append($"&Page={page}");
-            }
-
-            if (perPage != null)
-            {
-                // if you try to query lower than 25 results per page, force it to 25 records per page.
-                if (perPage < 25)
-                {
-                }
-
-                // the limit of the API is 100.
-                if (perPage > 100)
-                {
-                }
-
-                // https://api.intruderfps.com/agents?Q=XXXXXXXXX&OrderBy=XXXX:XXXX&OnlineOnly=XXXXX&Page=X&PerPage=XX
-                // https://api.intruderfps.com/agents?&PerPage=XX
-                urlBuilder3000.Append($"&PerPage={perPage}");
-            }
-
-            // DEBUGGING
-            Console.WriteLine(urlBuilder3000.ToString());
-
-            try
-            {
-                string rawJson = await this.httpClient.GetStringAsync(new Uri(urlBuilder3000.ToString()));
-                return string.IsNullOrEmpty(rawJson) ? null : JToken.Parse(rawJson);
-            }
-            catch (HttpRequestException e)
-            {
-                Log.Error(e, $"Failed to run a query for Agents. URL: {urlBuilder3000}");
-                return null;
-            }
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Bloon.Features.IntruderBackend.Servers
     using Bloon.Variables.Emojis;
     using DSharpPlus;
     using DSharpPlus.Entities;
+    using IntruderLib.Models.Rooms;
     using Serilog;
 
     public class ServerJob : ITimedJob
@@ -33,9 +34,9 @@ namespace Bloon.Features.IntruderBackend.Servers
         {
             Log.Information("Looking for available Intruder servers..");
             DiscordChannel sbgCSI = await this.dClient.GetChannelAsync(SBGChannels.CurrentServerInfo);
-            CurrentServerInfo csi = await this.roomService.GetCSIRooms(null, null, null, null, "false", "true", "false", "false", "false", null, 1, 100);
+            CurrentServerInfo csi = await this.roomService.GetCSIRooms(new RoomListFilter { HidePassworded = true });
 
-            DiscordEmbedBuilder serverEmbed = new DiscordEmbedBuilder
+            DiscordEmbedBuilder serverEmbed = new ()
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
@@ -49,9 +50,9 @@ namespace Bloon.Features.IntruderBackend.Servers
             int skipRoomCount = 0;
             if (csi.Rooms.Count > 0)
             {
-                StringBuilder serverList = new StringBuilder();
+                StringBuilder serverList = new ();
                 int roomCount = 0;
-                foreach (Rooms room in csi.Rooms)
+                foreach (RoomDB room in csi.Rooms)
                 {
                     roomCount++;
                     if (roomCount >= 12)

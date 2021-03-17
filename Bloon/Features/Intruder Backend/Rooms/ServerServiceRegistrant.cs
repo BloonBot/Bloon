@@ -7,7 +7,7 @@ namespace Bloon.Features.IntruderBackend.Servers
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpClient<RoomService>();
+            services.AddSingleton<RoomService>();
             services.AddSingleton<ServerJob>();
         }
     }

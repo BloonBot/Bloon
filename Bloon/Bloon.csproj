@@ -54,6 +54,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IntruderLib\IntruderLib\IntruderLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update=".env">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

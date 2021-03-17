@@ -4,6 +4,7 @@ namespace Bloon.Features.IntruderBackend.Maps
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using IntruderLib.Models.Agents;
     using Newtonsoft.Json;
 
     [Table("maps")]
@@ -17,7 +18,7 @@ namespace Bloon.Features.IntruderBackend.Maps
         public long IntruderId { get; set; }
 
         [NotMapped]
-        public MapAuthor Author { get; set; }
+        public SteamProfile Author { get; set; }
 
         [Column("author_steam_id")]
         public long DBAuthorSteamID { get; set; }
