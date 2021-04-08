@@ -15,7 +15,11 @@ namespace Bloon.Variables.Channels
 
         public static ulong CurrentServerInfo { get; private set; } = 143546335910428672;
 
+        public static ulong JoinSBA { get; private set; } = 556614381870514176;
+
         public static ulong SpecialEvents { get; private set; } = 705918938818543677;
+
+        public static ulong IntruderCommunities { get; private set; } = 814924571367047169;
 
         public static ulong Bugs { get; private set; } = 106405837810995200;
 
@@ -23,11 +27,15 @@ namespace Bloon.Variables.Channels
 
         public static ulong General { get; private set; } = 103933666417217536;
 
+        public static ulong CliffsideRework { get; private set; } = 822945681403805756;
+
         public static ulong PicsNVids { get; private set; } = 268062505761243137;
 
         public static ulong Mapmaker { get; private set; } = 141327816300953600;
 
         public static ulong MapMakerShowcase { get; private set; } = 630869030139592726;
+
+        public static ulong TradingPost { get; private set; } = 813493071479701544;
 
         public static ulong CompetitiveMatches { get; private set; } = 305788366467760131;
 
@@ -39,7 +47,11 @@ namespace Bloon.Variables.Channels
 
         public static ulong LifeTheGame { get; private set; } = 141329672314028032;
 
+        public static ulong Music { get; private set; } = 141328228567613441;
+
         public static ulong Bloonside { get; private set; } = 450731463286063104;
+
+        public static ulong Offtopic { get; private set; } = 122802899905413120;
 
         public static void MockFakeStub()
         {

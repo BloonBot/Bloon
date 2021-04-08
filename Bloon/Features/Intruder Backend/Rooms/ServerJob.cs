@@ -81,12 +81,13 @@ namespace Bloon.Features.IntruderBackend.Servers
 #pragma warning disable SA1118 // Parameter should not span multiple lines
             serverEmbed.AddField(
                 "Statistics",
-                $"{RegionFlagEmojis.US}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.USTOD)}| **{csi.USPlayerCount}** agents | **{csi.USRoomCount}** Rooms\n" +
-                $"{RegionFlagEmojis.SA}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.SATOD)}| **{csi.SAPlayerCount}** agents | **{csi.SARoomCount}** Rooms\n" +
-                $"{RegionFlagEmojis.EU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.EUTOD)}| **{csi.EUPlayerCount}** agents | **{csi.EURoomCount}** Rooms\n" +
-                $"{RegionFlagEmojis.RU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.RUTOD)}| **{csi.RUPlayerCount}** agents | **{csi.RURoomCount}** Rooms\n" +
-                $"{RegionFlagEmojis.JP}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.JPTOD)}| **{csi.JPPlayerCount}** agents | **{csi.JPRoomCount}** Rooms\n" +
-                $"{RegionFlagEmojis.AU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.AUTOD)}| **{csi.AUPlayerCount}** agents | **{csi.AURoomCount}** Rooms\n" +
+                $"{RegionFlagEmojis.US}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.USTOD)}| **{csi.USPlayerCount}** | **{csi.USRoomCount}**\n" +
+                $"{RegionFlagEmojis.SA}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.SATOD)}| **{csi.SAPlayerCount}** | **{csi.SARoomCount}**\n" +
+                $"{RegionFlagEmojis.EU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.EUTOD)}| **{csi.EUPlayerCount}** | **{csi.EURoomCount}**\n" +
+                $"{RegionFlagEmojis.RU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.RUTOD)}| **{csi.RUPlayerCount}** | **{csi.RURoomCount}**\n" +
+                $"{RegionFlagEmojis.JP}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.JPTOD)}| **{csi.JPPlayerCount}** | **{csi.JPRoomCount}**\n" +
+                $"{RegionFlagEmojis.Asia}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.ASTOD)}| **{csi.AsiaPlayerCount}** | **{csi.AsiaRoomCount}**\n" +
+                $"{RegionFlagEmojis.AU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.AUTOD)}| **{csi.AUPlayerCount}** | **{csi.AURoomCount}**\n" +
                 $"Agents: **{csi.PlayerCount}** | Rooms: **{csi.Rooms.Count}**\n", true);
 #pragma warning restore SA1118 // Parameter should not span multiple lines
 

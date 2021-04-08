@@ -3,6 +3,7 @@ namespace Bloon.Core.Commands
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Bloon.Core.Commands.Attributes;
     using Bloon.Variables.Emojis;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
@@ -12,6 +13,7 @@ namespace Bloon.Core.Commands
     /// This class pertains to the commands that can be ran practically anywhere. They're typically short and simple commands to run.
     /// </summary>
     [ModuleLifespan(ModuleLifespan.Transient)]
+    [General]
     public class GeneralCommands : BaseCommandModule
     {
         private readonly Dictionary<char, char> vecishMapping = new Dictionary<char, char>()
@@ -54,11 +56,11 @@ namespace Bloon.Core.Commands
         public Task DevelopmentURLAsync(CommandContext ctx) => ctx.RespondAsync("https://discord.gg/tAVydGr");
 
         [Command("trello")]
-        [Aliases("ideas")]
         [Description("Shows the trello feature board link")]
         public Task TrelloUrlAsync(CommandContext ctx) => ctx.RespondAsync("https://trello.com/b/ebmvvFVE/intruder-board");
 
         [Command("bugs")]
+        [Aliases("suggestions", "suggest", "bug", "ideas", "helprace")]
         [Description("Shows the helprace bug tracking link")]
         public Task BugsUrlAsync(CommandContext ctx) => ctx.RespondAsync("https://superbossgames.helprace.com/");
 

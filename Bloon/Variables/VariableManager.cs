@@ -2,6 +2,7 @@ namespace Bloon.Variables
 {
     using Bloon.Variables.Channels;
     using Bloon.Variables.Roles;
+    using Bloon.Variables.Emojis;
     using DSharpPlus;
     using Serilog;
 
@@ -18,6 +19,7 @@ namespace Bloon.Variables
                 Guilds.MockFakeStub();
                 SBGChannels.MockFakeStub();
                 SBGRoles.MockFakeStub();
+                SBGEmojis.MockFakeStub();
             }
         }
     }
