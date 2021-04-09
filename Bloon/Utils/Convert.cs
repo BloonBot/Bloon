@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace Bloon.Utils
 {
     public static class Convert
@@ -24,6 +26,11 @@ namespace Bloon.Utils
             }
 
             return input.Length <= maxLength ? input : input.Substring(0, maxLength);
+        }
+
+        public static string RemoveRichText(string input)
+        {
+            return new Regex(@"<\/?(b|i|color|material|quad|size)(?:=.*?)?>").Replace(input, string.Empty).ToString();
         }
     }
 }

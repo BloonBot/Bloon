@@ -12,6 +12,7 @@ namespace Bloon.Commands
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
 
+    [StatsAttribute]
     public class Stats : BaseCommandModule
     {
         private readonly AgentService agentService;
@@ -38,7 +39,7 @@ namespace Bloon.Commands
                 Color = new DiscordColor(95, 95, 95),
             };
 
-            // If the count is 0, no agents found with that name/id
+            // If the count is 0, no agents found with that name/i
             if (agents.Count == 0)
             {
                 userDetails.AddField($"No agent found", "Try a different search");
@@ -48,10 +49,18 @@ namespace Bloon.Commands
             if (agents.Count > 1)
             {
                 string extraAgents = string.Empty;
-
+                int addedAgents = 0;
                 foreach (Agent agent in agents)
                 {
-                    extraAgents += $"{agent.Name} | {agent.SteamID}\n";
+                    addedAgents++;
+                    if (addedAgents > 12)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        extraAgents += $"{agent.Name} | {agent.SteamID}\n";
+                    }
                 }
 
                 userDetails.AddField($"Did you mean any of these agents?", extraAgents);
@@ -139,6 +148,10 @@ namespace Bloon.Commands
 
         [Command("hiscores")]
         [Aliases("hs", "hiscore", "highscores", "highscore", "top")]
+        [Description ("**Available Orderby Columns -**\n" +
+                    "`matches`, `matches lost`, `rounds`, `rounds lost`, `rounds tied`, `kills`, `deaths`, `arrests`, `team kills`, `captures`, `hacks`, `network hacks`, `survivals`, `suicides`," +
+                    " `login count`, `pickups`, `votes`, `xp`, `team damage`, `team knockdowns`, `arrested`, `knocked down`, `rounds won capture`, `rounds won hack`, `rounds won elim`, `rounds won timer`, `rounds won custom`," +
+                    " `positive votes`, `negative votes`")]
         public async Task Hiscores(CommandContext ctx, [RemainingText] string? orderby)
         {
             if (orderby == null)
@@ -155,7 +168,7 @@ namespace Bloon.Commands
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
                     IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, Variables.Emojis.SBGEmojis.Superboss).Url,
-                    Text = "Superbossgames API",
+                    Text = "Superbossgames API | Run .help top for all available columns",
                 },
                 Color = new DiscordColor(217, 187, 19),
                 Timestamp = DateTime.UtcNow,

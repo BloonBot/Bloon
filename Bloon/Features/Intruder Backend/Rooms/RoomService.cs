@@ -171,16 +171,14 @@ namespace Bloon.Features.IntruderBackend.Servers
 
             foreach (Rooms room in roomObject.Data)
             {
+                room.Name = FilterRoomNames(room.Name);
                 rooms.Add(room);
                 room.RegionFlag = ConvertRegion(room.Region);
                 totalPlayers += room.AgentCount;
             }
 
-            CurrentServerInfo csi = new CurrentServerInfo()
-            {
-                Rooms = rooms,
-                PlayerCount = totalPlayers,
-            };
+            CurrentServerInfo csi = CountRegions(rooms);
+            csi.PlayerCount = totalPlayers;
 
             return csi;
         }
@@ -446,7 +444,7 @@ namespace Bloon.Features.IntruderBackend.Servers
 
             if (region != null)
             {
-                urlBuilder3000.Append($"&Region={region}");
+                urlBuilder3000.Append($"?Region={region}");
             }
 
             if (hideEmpty != null)
