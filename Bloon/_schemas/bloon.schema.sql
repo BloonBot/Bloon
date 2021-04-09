@@ -24,6 +24,15 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `censor`
+--
+
+CREATE TABLE `censor` (
+  `id` int(11) NOT NULL,
+  `pattern` varchar(128) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
 -- Table structure for table `faq`
 --
 
@@ -388,6 +397,12 @@ INSERT INTO `z26` (`name`, `value`) VALUES
 --
 
 --
+-- Indexes for table `censor`
+--
+ALTER TABLE `censor`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `faq`
 --
 ALTER TABLE `faq`
@@ -447,6 +462,12 @@ ALTER TABLE `z26`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `censor`
+--
+ALTER TABLE `censor`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `faq`
