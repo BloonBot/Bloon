@@ -6,6 +6,7 @@ namespace Bloon.Features.Wiki
     using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
+    using Bloon.Core.Commands.Attributes;
     using Bloon.Features.Wiki.Models;
     using Bloon.Utils;
     using Bloon.Variables.Emojis;
@@ -15,6 +16,7 @@ namespace Bloon.Features.Wiki
 
     [Group("wiki")]
     [Description("Retrieves a small description of a specified wiki article along with the URL where the information is pulled from.")]
+    [GeneralAttribute]
     public class WikiCommands : BaseCommandModule
     {
         private readonly WikiService wikiService;

@@ -27,7 +27,7 @@ namespace Bloon.Features.IntruderBackend.Rooms
         public bool IsMapMakerMap { get; set; }
 
         [NotMapped]
-        public List<string[]> Tags { get; set; }
+        public List<string> Tags { get; set; }
 
         public DateTime LastUpdate { get; set; }
     }
