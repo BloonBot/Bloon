@@ -291,13 +291,6 @@ namespace Bloon.Features.IntruderBackend.Servers
             // Remove [SeriousPlay] tag in room name
             roomName = roomName.Replace("[SeriousPlay]", string.Empty);
             roomName = roomName.Replace("[Casual]", string.Empty);
-            roomName = Utils.Convert.RemoveRichText(roomName);
-            Censor censor = new Censor(File.ReadAllLines(Directory.GetCurrentDirectory() + "/Features/Censor/naughtywords.txt", Encoding.UTF8));
-            if (censor.HasNaughtyWord(roomName))
-            {
-                roomName = "Loser's Room";
-            }
-
             roomName = roomName.Truncate(20);
             return roomName;
         }
