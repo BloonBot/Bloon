@@ -8,7 +8,7 @@ namespace Bloon.Core.Commands.Attributes
 
     /**
      * <summary>
-     * Precondition for general commands.
+     * Precondition for stats commands.
      * </summary>
      */
     public class StatsAttribute : CheckBaseAttribute

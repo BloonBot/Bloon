@@ -25,6 +25,7 @@ namespace Bloon.Features.Doorman
         public override Task Disable()
         {
             this.dClient.GuildMemberAdded -= this.GeneralWelcomeEmbed;
+            this.dClient.GuildMemberAdded -= this.BloonsideEmbed;
 
             return base.Disable();
         }
@@ -32,6 +33,7 @@ namespace Bloon.Features.Doorman
         public override Task Enable()
         {
             this.dClient.GuildMemberAdded += this.GeneralWelcomeEmbed;
+            this.dClient.GuildMemberAdded += this.BloonsideEmbed;
 
             return base.Enable();
         }
