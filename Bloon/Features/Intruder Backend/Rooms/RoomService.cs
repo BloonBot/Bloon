@@ -291,6 +291,7 @@ namespace Bloon.Features.IntruderBackend.Servers
             // Remove [SeriousPlay] tag in room name
             roomName = roomName.Replace("[SeriousPlay]", string.Empty);
             roomName = roomName.Replace("[Casual]", string.Empty);
+            roomName = Utils.Convert.RemoveRichText(roomName);
             roomName = roomName.Truncate(20);
             return roomName;
         }
