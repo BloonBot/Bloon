@@ -65,7 +65,7 @@ namespace Bloon.Features.Doorman
                 Color = colorDate,
                 Timestamp = DateTime.UtcNow,
                 Title = $"**New User Joined** | {args.Member.DisplayName}",
-                Description = $"**User**: {args.Member.Username}#{args.Member.Discriminator}\n" +
+                Description = $"**User**: {args.Member.Mention}\n" +
                     $"**ID**: {args.Member.Id}\n",
                 Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
                 {
@@ -103,7 +103,7 @@ namespace Bloon.Features.Doorman
                 Color = colorDate,
                 Timestamp = DateTime.UtcNow,
                 Title = $"**New User Joined** | {args.Member.DisplayName}",
-                Description = $"**User**: {args.Member.Username}#{args.Member.Discriminator}\n" +
+                Description = $"**User**: {args.Member.Mention}\n" +
                     $"**ID**: {args.Member.Id}\n" +
                     $"User Events: N/A",
                 Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
