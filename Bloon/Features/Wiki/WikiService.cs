@@ -17,7 +17,7 @@ namespace Bloon.Features.Wiki
 
     public class WikiService : ISocialService<WikiArticle>
     {
-        private const string BaseUrl = "https://wiki.superbossgames.com/wiki/api.php?";
+        private const string BaseUrl = "https://wiki.bloon.info/api.php?";
 
         // Last article that was edited
         private const string LatestRevisionParams = "action=query&format=json&list=recentchanges&rcprop=title|ids|sizes|flags|user|timestamp&rclimit=1";
