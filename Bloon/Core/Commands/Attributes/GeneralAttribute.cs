@@ -26,8 +26,11 @@ namespace Bloon.Core.Commands.Attributes
                 SBGChannels.SecretBaseAlpha,
                 SBGChannels.Wiki,
                 SBGChannels.Offtopic,
+                BloonChannels.CommandCentre,
+                BloonChannels.Commands,
+                BloonChannels.Ground0,
             };
-            if (availChannels.Contains(ctx.Channel.Id))
+            if (availChannels.Contains(ctx.Channel.Id) || ctx.Channel.IsPrivate)
             {
                 return Task.FromResult(true);
             }
