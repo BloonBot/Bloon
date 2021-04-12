@@ -116,7 +116,7 @@ namespace Bloon.Features.Doorman
                 Color = colorDate,
                 Timestamp = DateTime.UtcNow,
                 Title = $"**New User Joined** | {member.DisplayName}",
-                Description = $"**User**: {member.Mention}\n" +
+                Description = $"**User**: <@{member.Id}>\n" +
                     $"**ID**: {member.Id}",
                 Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
                 {
