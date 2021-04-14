@@ -33,7 +33,7 @@ namespace Bloon.Features.IntruderBackend.Servers
         {
             Log.Information("Looking for available Intruder servers..");
             DiscordChannel sbgCSI = await this.dClient.GetChannelAsync(SBGChannels.CurrentServerInfo);
-            CurrentServerInfo csi = await this.roomService.GetCSIRooms(null, null, null, null, "false", "true", "false", "true", "true", null, 1, 100);
+            CurrentServerInfo csi = await this.roomService.GetCSIRooms(null, null, null, null, "false", "true", "false", "true", "false", null, 1, 100);
 
             DiscordEmbedBuilder serverEmbed = new DiscordEmbedBuilder
             {
