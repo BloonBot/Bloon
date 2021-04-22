@@ -66,7 +66,7 @@ namespace Bloon.Features.Censor
             DiscordChannel bloonside = await this.dClient.GetChannelAsync(SBGChannels.Bloonside);
             DiscordMessage foulEmbed = await bloonside.GetMessageAsync(args.Message.Id);
 
-            if (args.Message.Channel.Id == SBGChannels.Bloonside && foulEmbed.Content.Contains("Profanity Detected", StringComparison.Ordinal) && foulEmbed.Author.Id == dClient.CurrentUser.Id)
+            if (args.Message.Channel.Id == SBGChannels.Bloonside && foulEmbed.Author.Id == dClient.CurrentUser.Id && foulEmbed.Embeds.Count > 0 && foulEmbed.Embeds[0].Title == "Censor")
             {
                 await foulEmbed.DeleteAsync();
             }
