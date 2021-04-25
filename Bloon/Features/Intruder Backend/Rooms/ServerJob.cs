@@ -33,7 +33,7 @@ namespace Bloon.Features.IntruderBackend.Servers
         {
             Log.Information("Looking for available Intruder servers..");
             DiscordChannel sbgCSI = await this.dClient.GetChannelAsync(SBGChannels.CurrentServerInfo);
-            CurrentServerInfo csi = await this.roomService.GetCSIRooms(null, null, null, null, "false", "true", "false", "true", "false", null, 1, 100);
+            CurrentServerInfo csi = await this.roomService.GetCSIRooms(null, null, null, null, "false", "true", "false", "false", "false", null, 1, 100);
 
             DiscordEmbedBuilder serverEmbed = new DiscordEmbedBuilder
             {
@@ -60,7 +60,14 @@ namespace Bloon.Features.IntruderBackend.Servers
                     }
                     else
                     {
-                        serverList.AppendLine($"{room.ServerIcon} | {room.RegionFlag} | {room.Name} - [{room.AgentCount}/{room.MaxAgents}]");
+                        if (room.Official == true)
+                        {
+                            serverList.AppendLine($"{room.ServerIcon} | {room.RegionFlag} | {room.Name} - [{room.AgentCount}/{room.MaxAgents}]");
+                        }
+                        else
+                        {
+                            skipRoomCount++;
+                        }
                     }
                 }
 
@@ -81,13 +88,13 @@ namespace Bloon.Features.IntruderBackend.Servers
 #pragma warning disable SA1118 // Parameter should not span multiple lines
             serverEmbed.AddField(
                 "Statistics",
-                $"{RegionFlagEmojis.US}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.USTOD)}| **{csi.USPlayerCount}** Agents| **{csi.USRoomCount}** Rooms\n" +
-                $"{RegionFlagEmojis.SA}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.SATOD)}| **{csi.SAPlayerCount}** Agents| **{csi.SARoomCount}** Rooms\n" +
-                $"{RegionFlagEmojis.EU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.EUTOD)}| **{csi.EUPlayerCount}** Agents| **{csi.EURoomCount}** Rooms\n" +
-                $"{RegionFlagEmojis.RU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.RUTOD)}| **{csi.RUPlayerCount}** Agents| **{csi.RURoomCount}** Rooms\n" +
-                $"{RegionFlagEmojis.JP}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.JPTOD)}| **{csi.JPPlayerCount}** Agents| **{csi.JPRoomCount}** Rooms\n" +
-                $"{RegionFlagEmojis.Asia}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.ASTOD)}| **{csi.AsiaPlayerCount}** Agents| **{csi.AsiaRoomCount}** Rooms\n" +
-                $"{RegionFlagEmojis.AU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.AUTOD)}| **{csi.AUPlayerCount}** Agents| **{csi.AURoomCount}** Rooms\n" +
+                $"{RegionFlagEmojis.US}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.USTOD)}| **{csi.USPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)}| **{csi.USRoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial)}\n" +
+                $"{RegionFlagEmojis.SA}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.SATOD)}| **{csi.SAPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)}| **{csi.SARoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial)}\n" +
+                $"{RegionFlagEmojis.EU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.EUTOD)}| **{csi.EUPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)}| **{csi.EURoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial)}\n" +
+                $"{RegionFlagEmojis.RU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.RUTOD)}| **{csi.RUPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)}| **{csi.RURoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial)}\n" +
+                $"{RegionFlagEmojis.JP}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.JPTOD)}| **{csi.JPPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)}| **{csi.JPRoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial)}\n" +
+                $"{RegionFlagEmojis.Asia}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.ASTOD)}| **{csi.AsiaPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)}| **{csi.AsiaRoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial)}\n" +
+                $"{RegionFlagEmojis.AU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.AUTOD)}| **{csi.AUPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)}| **{csi.AURoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial)}\n" +
                 $"Agents: **{csi.PlayerCount}** | Rooms: **{csi.Rooms.Count}**\n", true);
 #pragma warning restore SA1118 // Parameter should not span multiple lines
 
