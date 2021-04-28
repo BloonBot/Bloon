@@ -124,7 +124,7 @@ namespace Bloon.Core.Discord
                 return;
             }
 
-            await args.Context.Message.CreateReactionAsync(DiscordEmoji.FromName(this.dClient, ":sos:"));
+            await args.Context.Message.CreateReactionAsync(DiscordEmoji.FromName(this.dClient, ":interrobang:"));
             Log.Error(args.Exception, $"Command '{args.Context.Message.Content}' errored");
             this.bloonLog.Error($"`{args.Context.User.Username}` ran `{args.Context.Message.Content}` in **[{args.Context.Guild?.Name ?? "DM"} - {args.Context.Channel.Name}]**: {args.Exception.Message}");
         }
