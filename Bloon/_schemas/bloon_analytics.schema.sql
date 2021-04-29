@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 13, 2021 at 02:07 AM
+-- Generation Time: Apr 29, 2021 at 05:48 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.4
 
@@ -29,11 +29,11 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `commands` (
   `id` int(11) NOT NULL,
-  `command` varchar(64) NOT NULL,
+  `command` varchar(128) NOT NULL,
   `guild` bigint(20) DEFAULT NULL,
-  `channel` bigint(20) NOT NULL,
+  `channel` bigint(20) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL,
-  `link` varchar(124) DEFAULT NULL,
+  `link` varchar(256) DEFAULT NULL,
   `timestamp` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

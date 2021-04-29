@@ -5,6 +5,7 @@ namespace Bloon.Core.Database
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
     using Newtonsoft.Json;
+    using Bloon.Analytics;
 
     public partial class AnalyticsContext : DbContext
     {
@@ -25,6 +26,8 @@ namespace Bloon.Core.Database
                 + $"SSL Mode=none";
             }
         }
+
+        public DbSet<Commands> Commands { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
