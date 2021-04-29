@@ -128,6 +128,11 @@ namespace Bloon.Features.Workshop
         public async Task<List<WorkshopMap>> GetAllMapsAsync()
         {
             JToken response = await this.QueryAllMaps();
+            if (response == null)
+            {
+                return null;
+            }
+
             WorkshopRootObject rootObject = JsonConvert.DeserializeObject<WorkshopRootObject>(response.ToString());
 
             List<WorkshopMap> maps = new List<WorkshopMap>();
