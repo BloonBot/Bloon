@@ -4,6 +4,7 @@ namespace Bloon.Core.Discord
     using System.Net.WebSockets;
     using System.Threading.Tasks;
     using Bloon.Core.Commands;
+    using Bloon.Core.Database;
     using Bloon.Core.Services;
     using Bloon.Variables;
     using Bloon.Variables.Emojis;
@@ -12,21 +13,24 @@ namespace Bloon.Core.Discord
     using DSharpPlus.CommandsNext.Exceptions;
     using DSharpPlus.Entities;
     using DSharpPlus.EventArgs;
+    using Microsoft.Extensions.DependencyInjection;
     using Serilog;
 
     public class Bot : Feature
     {
         private readonly IServiceProvider provider;
+        private readonly IServiceScopeFactory scopeFactory;
         private readonly ActivityManager activityManager;
         private readonly BloonLog bloonLog;
         private readonly DiscordClient dClient;
         private CommandsNextExtension cNext;
 
-        public Bot(IServiceProvider provider, ActivityManager activityManager, DiscordClient dClient, BloonLog bloonLog)
+        public Bot(IServiceProvider provider, IServiceScopeFactory scopeFactory, ActivityManager activityManager, DiscordClient dClient, BloonLog bloonLog)
         {
             this.activityManager = activityManager;
             this.dClient = dClient;
             this.provider = provider;
+            this.scopeFactory = scopeFactory;
             this.bloonLog = bloonLog;
         }
 
@@ -129,12 +133,28 @@ namespace Bloon.Core.Discord
             this.bloonLog.Error($"`{args.Context.User.Username}` ran `{args.Context.Message.Content}` in **[{args.Context.Guild?.Name ?? "DM"} - {args.Context.Channel.Name}]**: {args.Exception.Message}");
         }
 
-        private Task OnCommandExecuted(CommandsNextExtension cNext, CommandExecutionEventArgs args)
+        private async Task OnCommandExecuted(CommandsNextExtension cNext, CommandExecutionEventArgs args)
         {
             string logMessage = $"`{args.Context.User.Username}` ran `{args.Context.Message.Content}` in **[{(args.Context.Guild != null ? $"{args.Context.Guild.Name} - {args.Context.Channel.Name}" : "DM")}]**";
             Log.Debug(logMessage);
             this.bloonLog.Information(LogConsole.Commands, CommandEmojis.Run, logMessage);
-            return Task.CompletedTask;
+
+            using IServiceScope scope = this.scopeFactory.CreateScope();
+            using AnalyticsContext db = scope.ServiceProvider.GetRequiredService<AnalyticsContext>();
+            db.Commands.Add(new Analytics.Commands()
+            {
+                Command = args.Context.Message.Content.Substring(1),
+                Guild = args.Context.Guild != null ? args.Context.Guild.Id : ulong.MinValue,
+                Channel = args.Context.Channel != null ? args.Context.Channel.Id : ulong.MinValue,
+                UserId = args.Context.User.Id,
+                Link = args.Context.Guild != null ? $"https://discord.com/channels/{args.Context.Guild.Id}/{args.Context.Channel.Id}/{args.Context.User.Id}" : "DM",
+                Timestamp = DateTime.Now,
+            });
+
+            await db.SaveChangesAsync();
+
+            // Do we need this?
+            return;
         }
 
         private void OnShutdown(object sender, EventArgs args)
