@@ -89,7 +89,7 @@ namespace Bloon.Commands
                 return;
             }
 
-            await this.activityManager.SetStreamAsync(ctx.User.Id, name.Capitalize(), url, true);
+            await this.activityManager.SetStreamAsync(ctx.User.Id, name.Capitalize(), $"https://twitch.tv/{name}", true);
             await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":heavy_check_mark:"));
         }
 
