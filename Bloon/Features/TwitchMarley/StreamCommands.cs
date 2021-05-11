@@ -38,6 +38,11 @@ namespace Bloon.Commands
                 await ctx.RespondAsync("Invalid stream url");
                 return;
             }
+            else if (ctx.Client.CurrentUser.Presence.Activity.ActivityType == ActivityType.Streaming)
+            {
+                await ctx.RespondAsync("Sorry, I'm already watching somebody else's stream");
+                return;
+            }
 
             string name = url;
 
@@ -89,7 +94,7 @@ namespace Bloon.Commands
                 return;
             }
 
-            await this.activityManager.SetStreamAsync(ctx.User.Id, name.Capitalize(), $"https://twitch.tv/{name}", true);
+            await this.activityManager.SetStreamAsync(ctx.User.Id, name.Capitalize(), $"https://twitch.tv/{name}");
             await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":heavy_check_mark:"));
         }
 
