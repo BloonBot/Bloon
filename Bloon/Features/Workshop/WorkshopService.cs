@@ -152,6 +152,12 @@ namespace Bloon.Features.Workshop
             {
                 i++;
                 response = await this.QueryAllMaps(i);
+
+                if (response == null)
+                {
+                    break;
+                }
+
                 rootObject = JsonConvert.DeserializeObject<WorkshopRootObject>(response.ToString());
                 foreach (WorkshopMap map in rootObject.Data.WorkshopMaps)
                 {
