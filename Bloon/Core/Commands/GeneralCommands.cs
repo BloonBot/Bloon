@@ -55,6 +55,11 @@ namespace Bloon.Core.Commands
         [Description("Shows the invite link to my personal server")]
         public Task DevelopmentURLAsync(CommandContext ctx) => ctx.RespondAsync("https://discord.gg/tAVydGr");
 
+        [Command("github")]
+        [Aliases("repo", "repository")]
+        [Description("Shows the link to the GitHub repository")]
+        public Task GitHubURLAsync(CommandContext ctx) => ctx.RespondAsync("https://github.com/BloonBot/Bloon");
+
         [Command("trello")]
         [Description("Shows the trello feature board link")]
         public Task TrelloUrlAsync(CommandContext ctx) => ctx.RespondAsync("https://trello.com/b/ebmvvFVE/intruder-board");
