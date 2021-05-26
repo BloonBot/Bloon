@@ -126,8 +126,7 @@ namespace Bloon.Features.Doorman
             catch (Exception)
             {
                 memberCached = false;
-                DiscordUser user = await this.dClient.GetUserAsync(args.Member.Id)
-                    ;
+                DiscordUser user = await this.dClient.GetUserAsync(args.Member.Id);
                 username = user.Username;
                 discriminator = user.Discriminator;
             }
