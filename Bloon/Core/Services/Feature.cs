@@ -12,7 +12,10 @@ namespace Bloon.Core.Services
 
         public virtual bool Protected => false;
 
-        public virtual Task Initialize() => Task.CompletedTask;
+        public virtual Task Initialize()
+        {
+            return Task.CompletedTask;
+        }
 
         public virtual Task Enable()
         {

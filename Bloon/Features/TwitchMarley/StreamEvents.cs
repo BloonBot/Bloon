@@ -50,11 +50,20 @@ namespace Bloon.Features.TwitchMarley
             this.monitor.Stop();
         }
 
-        private async void OnStreamOffline(object sender, OnStreamOfflineArgs args) => await this.activityManager.ClearStreamAsync();
+        private async void OnStreamOffline(object sender, OnStreamOfflineArgs args)
+        {
+            await this.activityManager.ClearStreamAsync();
+        }
 
-        private void OnStreamOnline(object sender, OnStreamOnlineArgs args) => this.OnStreamOnlineOrUpdate(args.Channel, args.Stream);
+        private void OnStreamOnline(object sender, OnStreamOnlineArgs args)
+        {
+            this.OnStreamOnlineOrUpdate(args.Channel, args.Stream);
+        }
 
-        private void OnStreamUpdate(object sender, OnStreamUpdateArgs args) => this.OnStreamOnlineOrUpdate(args.Channel, args.Stream);
+        private void OnStreamUpdate(object sender, OnStreamUpdateArgs args)
+        {
+            this.OnStreamOnlineOrUpdate(args.Channel, args.Stream);
+        }
 
         private async void OnStreamOnlineOrUpdate(string channelID, Stream stream)
         {

@@ -13,6 +13,9 @@ namespace Bloon.Core.Commands.Attributes
      */
     public class OwnersExclusiveAttribute : CheckBaseAttribute
     {
-        public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help) => Task.FromResult(ctx.User?.Id == Users.DukeofSussex || ctx.User?.Id == Users.Ruby || ctx.User?.Id == Users.RobStorm || ctx.Channel?.Id == BloonChannels.CommandCentre);
+        public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help)
+        {
+            return Task.FromResult(ctx.User?.Id == Users.DukeofSussex || ctx.User?.Id == Users.Ruby || ctx.User?.Id == Users.RobStorm || ctx.Channel?.Id == BloonChannels.CommandCentre);
+        }
     }
 }

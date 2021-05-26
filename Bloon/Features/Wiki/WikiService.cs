@@ -169,12 +169,14 @@ namespace Bloon.Features.Wiki
             return true;
         }
 
-        private static bool IsValidArticle(JObject wikiObject) =>
+        private static bool IsValidArticle(JObject wikiObject)
+        {
 
             // No error, has a revision id and wikitext
-            wikiObject["error"] == null
+            return wikiObject["error"] == null
                 && int.Parse(wikiObject["parse"]["revid"].ToString(), CultureInfo.InvariantCulture) > 0
                 && !string.IsNullOrEmpty(wikiObject["parse"]["wikitext"]["*"].ToString());
+        }
 
         private async Task<JToken> Query(string path)
         {

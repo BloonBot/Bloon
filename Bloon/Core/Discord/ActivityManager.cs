@@ -44,13 +44,19 @@ namespace Bloon.Core.Discord
         /// </summary>
         /// <param name="streamerID">Discord user id.</param>
         /// <returns>Boolean.</returns>
-        public bool IsStreamOwner(ulong streamerID) => this.streamOwnerID == streamerID;
+        public bool IsStreamOwner(ulong streamerID)
+        {
+            return this.streamOwnerID == streamerID;
+        }
 
         /// <summary>
         /// Resets Bloon's activity to <see cref="DefaultActivity"/>.
         /// </summary>
         /// <returns>Awaitable task.</returns>
-        public Task ResetActivityAsync() => this.TrySetActivityAsync(DefaultActivity, ActivityType.Watching);
+        public Task ResetActivityAsync()
+        {
+            return this.TrySetActivityAsync(DefaultActivity, ActivityType.Watching);
+        }
 
         /// <summary>
         /// Advertises/Shares a stream. '<paramref name="force"/>' overrides any current stream.

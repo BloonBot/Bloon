@@ -59,9 +59,11 @@ namespace Bloon.Features.RolePersistence
         }
 
         private static bool ShouldPersist(DiscordGuild guild, DiscordRole role)
-            => !role.IsManaged
-            && !Blacklist.Contains(role.Id)
-            && role.Position < guild.CurrentMember.Hierarchy;
+        {
+            return !role.IsManaged
+                && !Blacklist.Contains(role.Id)
+                && role.Position < guild.CurrentMember.Hierarchy;
+        }
 
         private async Task OnGuildBanAdded(DiscordClient dClient, GuildBanAddEventArgs args)
         {

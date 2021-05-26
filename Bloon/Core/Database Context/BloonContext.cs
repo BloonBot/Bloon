@@ -21,18 +21,12 @@ namespace Bloon.Core.Database
         {
         }
 
-        public static string ConnectionString
-        {
-            get
-            {
-                return $"Host={Environment.GetEnvironmentVariable("DB_HOST")};"
-                + $"Port={Environment.GetEnvironmentVariable("DB_PORT")};"
-                + $"Username={Environment.GetEnvironmentVariable("DB_USER")};"
-                + $"Password={Environment.GetEnvironmentVariable("DB_PASS")};"
-                + $"Database={Environment.GetEnvironmentVariable("DB_NAME")};"
-                + $"SSL Mode=none";
-            }
-        }
+        public static string ConnectionString => $"Host={Environment.GetEnvironmentVariable("DB_HOST")};"
+            + $"Port={Environment.GetEnvironmentVariable("DB_PORT")};"
+            + $"Username={Environment.GetEnvironmentVariable("DB_USER")};"
+            + $"Password={Environment.GetEnvironmentVariable("DB_PASS")};"
+            + $"Database={Environment.GetEnvironmentVariable("DB_NAME")};"
+            + $"SSL Mode=none";
 
         public DbSet<Job> Jobs { get; set; }
 

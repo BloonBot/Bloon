@@ -83,9 +83,11 @@ namespace Bloon
         }
 
         private static IHostBuilder CreateHostBuilder()
-            => new HostBuilder()
+        {
+            return new HostBuilder()
                 .ConfigureServices(ConfigureServices)
                 .UseSerilog();
+        }
 
         private static void ConfigureServices(HostBuilderContext ctx, IServiceCollection services)
         {

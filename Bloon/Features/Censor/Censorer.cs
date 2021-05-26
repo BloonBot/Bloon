@@ -51,6 +51,9 @@ namespace Bloon.Features.Censor
             return false;
         }
 
-        private static string ToRegexPattern(string pattern) => @"\b" + pattern + @"\b";
+        private static string ToRegexPattern(string pattern)
+        {
+            return @"\b" + pattern + @"\b";
+        }
     }
 }

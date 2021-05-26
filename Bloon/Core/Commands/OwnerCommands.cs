@@ -29,17 +29,21 @@ namespace Bloon.Core.Commands
         [Command("build")]
         [Description("Provides current build bloon is on.")]
         [OwnersExclusive]
-        public Task BuildAsync(CommandContext ctx) => ctx.RespondAsync($"{Assembly.GetEntryAssembly().GetName().Version}");
+        public Task BuildAsync(CommandContext ctx)
+        {
+            return ctx.RespondAsync($"{Assembly.GetEntryAssembly().GetName().Version}");
+        }
 
         [Command("info")]
         [Description("Displays basic info and statistics about Bloon and this discord server")]
-        public Task Info(CommandContext ctx) => ctx.RespondAsync(
+        public Task Info(CommandContext ctx)
+        {
+            return ctx.RespondAsync(
                 $"{Formatter.Bold("Info")}\n" +
                 $"- Heap Size: {GetHeapSize()} MB\n" +
                 $"- Library: Discord.Net ({ctx.Client.VersionString})\n" +
-
-                // $"- Runtime: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.OSArchitecture}\n" +
                 $"- Uptime: {GetUptime()}\n");
+        }
 
         [Command("say")]
         [Description("Make Bloon send a message in any channel.")]
@@ -113,9 +117,14 @@ namespace Bloon.Core.Commands
         }
 
         private static string GetUptime()
-                => (DateTime.Now - Process.GetCurrentProcess().StartTime).ToString(@"dd\.hh\:mm\:ss", CultureInfo.InvariantCulture);
+        {
+            return (DateTime.Now - Process.GetCurrentProcess().StartTime).ToString(@"dd\.hh\:mm\:ss", CultureInfo.InvariantCulture);
+        }
 
-        private static string GetHeapSize() => Math.Round(GC.GetTotalMemory(true) / (1024.0 * 1024.0), 2).ToString(CultureInfo.InvariantCulture);
+        private static string GetHeapSize()
+        {
+            return Math.Round(GC.GetTotalMemory(true) / (1024.0 * 1024.0), 2).ToString(CultureInfo.InvariantCulture);
+        }
     }
 }
 #pragma warning restore CA1822 // Mark members as static

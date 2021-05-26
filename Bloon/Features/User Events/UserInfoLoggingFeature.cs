@@ -58,7 +58,10 @@ namespace Bloon.Features.Doorman
             return base.Enable();
         }
 
-        private static bool IsSBG(ulong guildId) => guildId == Variables.Guilds.SBG;
+        private static bool IsSBG(ulong guildId)
+        {
+            return guildId == Variables.Guilds.SBG;
+        }
 
         private async Task DBLogBanRemoved(DiscordClient sender, GuildBanRemoveEventArgs args)
         {
