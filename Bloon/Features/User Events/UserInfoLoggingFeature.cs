@@ -58,7 +58,10 @@ namespace Bloon.Features.Doorman
             return base.Enable();
         }
 
-        private static bool IsSBG(ulong guildId) => guildId == Variables.Guilds.SBG;
+        private static bool IsSBG(ulong guildId)
+        {
+            return guildId == Variables.Guilds.SBG;
+        }
 
         private async Task DBLogBanRemoved(DiscordClient sender, GuildBanRemoveEventArgs args)
         {
@@ -126,8 +129,7 @@ namespace Bloon.Features.Doorman
             catch (Exception)
             {
                 memberCached = false;
-                DiscordUser user = await this.dClient.GetUserAsync(args.Member.Id)
-                    ;
+                DiscordUser user = await this.dClient.GetUserAsync(args.Member.Id);
                 username = user.Username;
                 discriminator = user.Discriminator;
             }

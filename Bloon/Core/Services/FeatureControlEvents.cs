@@ -36,19 +36,24 @@ namespace Bloon.Core.Services
             return base.Enable();
         }
 
-        private static DiscordEmbed CreateFeatureEmbed(Feature feature) => new DiscordEmbedBuilder
+        private static DiscordEmbed CreateFeatureEmbed(Feature feature)
         {
-            Title = feature.Name,
-            Description = feature.Description,
-            Timestamp = DateTime.UtcNow,
-            Color = feature.Enabled ? new DiscordColor(21, 137, 255) : new DiscordColor(131, 126, 124),
-        };
+            return new DiscordEmbedBuilder
+            {
+                Title = feature.Name,
+                Description = feature.Description,
+                Timestamp = DateTime.UtcNow,
+                Color = feature.Enabled ? new DiscordColor(21, 137, 255) : new DiscordColor(131, 126, 124),
+            };
+        }
 
         // Ignore timestamps
         private static bool IdenticalEmbed(DiscordEmbed a, DiscordEmbed b)
-            => a.Title == b.Title
+        {
+            return a.Title == b.Title
                 && a.Description == b.Description
                 && a.Color == b.Color;
+        }
 
         private async Task OnMessageReactionAdded(DiscordClient dClient, MessageReactionAddEventArgs args)
         {

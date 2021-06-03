@@ -12,6 +12,9 @@ namespace Bloon.Features.Helprace
         /// </summary>
         /// <param name="input">HTML that needs sanitized.</param>
         /// <returns>Clean HTML without page/line breaks.</returns>
-        public static string RemoveBreaks(string input) => HttpUtility.HtmlDecode(HtmlTagRegex.Replace(input, string.Empty));
+        public static string RemoveBreaks(string input)
+        {
+            return HttpUtility.HtmlDecode(HtmlTagRegex.Replace(input, string.Empty));
+        }
     }
 }

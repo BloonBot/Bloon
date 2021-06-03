@@ -54,7 +54,10 @@ namespace Bloon.Features.RedditGuard
             Log.Information("[Reddit] Stopped monitoring new posts");
         }
 
-        private async void NewUpdatedAsync(object sender, PostsUpdateEventArgs posts) => await this.NewUpdatedAsync(posts.Added);
+        private async void NewUpdatedAsync(object sender, PostsUpdateEventArgs posts)
+        {
+            await this.NewUpdatedAsync(posts.Added);
+        }
 
         /// <summary>
         /// Finds the latest, new updated RedditPost. Should trigger whenever Guardbot can see the post.

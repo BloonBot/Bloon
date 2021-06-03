@@ -30,9 +30,15 @@ namespace Bloon.Features.SBAInactivity
 
         public override string Description => "Warns @SBA users after 7 days of inactivity and after 14 days will kick them from the @SBA role.";
 
+        public override Task Initialize()
+        {
+            this.dClient.MessageCreated += this.TrackSBAAsync;
+
+            return base.Initialize();
+        }
+
         public override Task Disable()
         {
-            this.dClient.MessageCreated -= this.TrackSBAAsync;
             this.jobManager.RemoveJob(this.sbaInactivityJob);
 
             return base.Disable();
@@ -40,7 +46,6 @@ namespace Bloon.Features.SBAInactivity
 
         public override Task Enable()
         {
-            this.dClient.MessageCreated += this.TrackSBAAsync;
             this.jobManager.AddJob(this.sbaInactivityJob);
 
             return base.Enable();

@@ -59,9 +59,11 @@ namespace Bloon.Features.RolePersistence
         }
 
         private static bool ShouldPersist(DiscordGuild guild, DiscordRole role)
-            => !role.IsManaged
-            && !Blacklist.Contains(role.Id)
-            && role.Position < guild.CurrentMember.Hierarchy;
+        {
+            return !role.IsManaged
+                && !Blacklist.Contains(role.Id)
+                && role.Position < guild.CurrentMember.Hierarchy;
+        }
 
         private async Task OnGuildBanAdded(DiscordClient dClient, GuildBanAddEventArgs args)
         {
@@ -72,8 +74,7 @@ namespace Bloon.Features.RolePersistence
 
             IServiceScope scope = this.scopeFactory.CreateScope();
             BloonContext db = scope.ServiceProvider.GetRequiredService<BloonContext>();
-            await db.Database.ExecuteSqlRawAsync("DELETE FROM `role_member` WHERE `id` = {0}", args.Member.Id)
-                ;
+            await db.Database.ExecuteSqlRawAsync("DELETE FROM `role_member` WHERE `id` = {0}", args.Member.Id);
         }
 
         private async Task OnGuildMemberAdded(DiscordClient dClient, GuildMemberAddEventArgs args)
@@ -88,8 +89,7 @@ namespace Bloon.Features.RolePersistence
             List<ulong> roleIds = await db.RoleMembers.AsNoTracking()
                 .Where(r => r.MemberId == args.Member.Id)
                 .Select(r => r.RoleId)
-                .ToListAsync()
-                ;
+                .ToListAsync();
 
             List<string> addedRoleNames = new List<string>();
 
@@ -98,8 +98,7 @@ namespace Bloon.Features.RolePersistence
                 if (args.Guild.Roles.TryGetValue(roleIds[i], out DiscordRole role) && role.Position < args.Guild.CurrentMember.Hierarchy)
                 {
                     addedRoleNames.Add(role.Name);
-                    await args.Member.GrantRoleAsync(role)
-                        ;
+                    await args.Member.GrantRoleAsync(role);
                 }
             }
 
@@ -109,8 +108,7 @@ namespace Bloon.Features.RolePersistence
             }
 
             await args.Guild.GetChannel(SBGChannels.Bloonside)
-                .SendMessageAsync($"Granted **{string.Join(", ", addedRoleNames)}** to **{args.Member.Username}**.")
-                ;
+                .SendMessageAsync($"Granted **{string.Join(", ", addedRoleNames)}** to **{args.Member.Username}**.");
         }
 
         private async Task OnGuildMembersChunked(DiscordClient dClient, GuildMembersChunkEventArgs args)
@@ -125,8 +123,7 @@ namespace Bloon.Features.RolePersistence
 
             List<RoleMember> roleMembers = await db.RoleMembers
                 .Where(r => args.Members.Select(m => m.Id).Contains(r.MemberId))
-                .ToListAsync()
-                ;
+                .ToListAsync();
 
             db.RoleMembers.RemoveRange(roleMembers);
 
@@ -159,8 +156,7 @@ namespace Bloon.Features.RolePersistence
                 }
             }
 
-            await db.SaveChangesAsync()
-                ;
+            await db.SaveChangesAsync();
         }
 
         private async Task OnGuildMemberUpdated(DiscordClient dClient, GuildMemberUpdateEventArgs args)
@@ -181,8 +177,7 @@ namespace Bloon.Features.RolePersistence
             foreach (DiscordRole role in modifiedRoles.Where(m => ShouldPersist(args.Guild, m)))
             {
                 RoleMember roleMember = await db.RoleMembers.Where(r => r.MemberId == args.Member.Id && r.RoleId == role.Id)
-                    .FirstOrDefaultAsync()
-                    ;
+                    .FirstOrDefaultAsync();
 
                 if (roleMember == null && roleAssigned)
                 {
@@ -198,8 +193,7 @@ namespace Bloon.Features.RolePersistence
                 }
             }
 
-            await db.SaveChangesAsync()
-                ;
+            await db.SaveChangesAsync();
         }
 
         private async Task OnGuildRoleDeleted(DiscordClient dClient, GuildRoleDeleteEventArgs args)
@@ -211,8 +205,7 @@ namespace Bloon.Features.RolePersistence
 
             IServiceScope scope = this.scopeFactory.CreateScope();
             BloonContext db = scope.ServiceProvider.GetRequiredService<BloonContext>();
-            await db.Database.ExecuteSqlRawAsync("DELETE FROM `role_member` WHERE `role_id` = {0}", args.Role.Id)
-                ;
+            await db.Database.ExecuteSqlRawAsync("DELETE FROM `role_member` WHERE `role_id` = {0}", args.Role.Id);
         }
     }
 }

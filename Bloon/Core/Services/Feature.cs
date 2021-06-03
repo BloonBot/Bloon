@@ -12,7 +12,10 @@ namespace Bloon.Core.Services
 
         public virtual bool Protected => false;
 
-        public virtual Task Initialize() => Task.CompletedTask;
+        public virtual Task Initialize()
+        {
+            return Task.CompletedTask;
+        }
 
         public virtual Task Enable()
         {
@@ -32,10 +35,8 @@ namespace Bloon.Core.Services
 
         public async Task Reload()
         {
-            await this.Disable()
-                ;
-            await this.Enable()
-                ;
+            await this.Disable();
+            await this.Enable();
         }
     }
 }

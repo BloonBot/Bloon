@@ -73,7 +73,10 @@ namespace Bloon.Features.TwitchMarley
             return base.Initialize();
         }
 
-        private void ConvertToSerilog(object sender, OnLogArgs args) => Log.Information("[Twitch] {BotUsername} : {Data}", args.BotUsername, args.Data);
+        private void ConvertToSerilog(object sender, OnLogArgs args)
+        {
+            Log.Information("[Twitch] {BotUsername} : {Data}", args.BotUsername, args.Data);
+        }
 
         private void OnShutdown(object sender, EventArgs args)
         {

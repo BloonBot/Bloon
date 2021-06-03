@@ -96,7 +96,7 @@ namespace Bloon.Commands
                     matchWLPercent = agentStats.MatchesWon / totalMatches * 100;
                     roundsWLPercent = totalRoundsWon / totalRounds * 100;
                     float totalKills = agentStats.Kills + agentStats.Deaths;
-                    killDeathPercent = (float)agentStats.Kills / (float)agentStats.Deaths;
+                    killDeathPercent = agentStats.Kills / (float)agentStats.Deaths;
                     float lvlXpRequired = 0;
                     if (agentStats.LevelXPRequired is null)
                     {
@@ -107,7 +107,7 @@ namespace Bloon.Commands
                         lvlXpRequired = (float)agentStats.LevelXPRequired;
                     }
 
-                    levelProgression = ((float)agentStats.LevelXP / (float)lvlXpRequired) * 100;
+                    levelProgression = (agentStats.LevelXP / (float)lvlXpRequired) * 100;
                 }
                 catch (DivideByZeroException)
                 {
@@ -148,7 +148,7 @@ namespace Bloon.Commands
 
         [Command("hiscores")]
         [Aliases("hs", "hiscore", "highscores", "highscore", "top")]
-        [Description ("**Available Orderby Columns -**\n" +
+        [Description("**Available Orderby Columns -**\n" +
                     "`matches`, `matches lost`, `rounds`, `rounds lost`, `rounds tied`, `kills`, `deaths`, `arrests`, `team kills`, `captures`, `hacks`, `network hacks`, `survivals`, `suicides`," +
                     " `login count`, `pickups`, `votes`, `xp`, `team damage`, `team knockdowns`, `arrested`, `knocked down`, `rounds won capture`, `rounds won hack`, `rounds won elim`, `rounds won timer`, `rounds won custom`," +
                     " `positive votes`, `negative votes`")]

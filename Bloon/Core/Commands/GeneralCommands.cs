@@ -49,31 +49,57 @@ namespace Bloon.Core.Commands
         [Command("ping")]
         [Description("This command is to be used when you think the bot is frozen or stuck. It'll reply with **pong**")]
 
-        public Task PingPongAsync(CommandContext ctx) => ctx.RespondAsync($"pong! Latency: {ctx.Client.Ping}ms");
+        public Task PingPongAsync(CommandContext ctx)
+        {
+            return ctx.RespondAsync($"pong! Latency: {ctx.Client.Ping}ms");
+        }
 
         [Command("dev")]
         [Description("Shows the invite link to my personal server")]
-        public Task DevelopmentURLAsync(CommandContext ctx) => ctx.RespondAsync("https://discord.gg/tAVydGr");
+        public Task DevelopmentURLAsync(CommandContext ctx)
+        {
+            return ctx.RespondAsync("https://discord.gg/tAVydGr");
+        }
+
+        [Command("github")]
+        [Aliases("repo", "repository")]
+        [Description("Shows the link to the GitHub repository")]
+        public Task GitHubURLAsync(CommandContext ctx)
+        {
+            return ctx.RespondAsync("https://github.com/BloonBot/Bloon");
+        }
 
         [Command("trello")]
         [Description("Shows the trello feature board link")]
-        public Task TrelloUrlAsync(CommandContext ctx) => ctx.RespondAsync("https://trello.com/b/ebmvvFVE/intruder-board");
+        public Task TrelloUrlAsync(CommandContext ctx)
+        {
+            return ctx.RespondAsync("https://trello.com/b/ebmvvFVE/intruder-board");
+        }
 
         [Command("bugs")]
         [Aliases("suggestions", "suggest", "bug", "ideas", "helprace")]
         [Description("Shows the helprace bug tracking link")]
-        public Task BugsUrlAsync(CommandContext ctx) => ctx.RespondAsync("https://superbossgames.helprace.com/");
+        public Task BugsUrlAsync(CommandContext ctx)
+        {
+            return ctx.RespondAsync("https://superbossgames.helprace.com/");
+        }
 
         [Command("donate")]
         [Description("Something something pizza and beer")]
-        public async Task DonationUrlAsync(CommandContext ctx) => await (await ctx.Member.CreateDmChannelAsync()).SendMessageAsync("https://www.patreon.com/bloon");
+        public async Task DonationUrlAsync(CommandContext ctx)
+        {
+            await (await ctx.Member.CreateDmChannelAsync()).SendMessageAsync("https://www.patreon.com/bloon");
+        }
 
         [Command("extensions")]
         [Aliases("addons", "plugins", "browsers", "chrome", "chromesucks", "firefox", "firefoxbestbrowser")]
         [Description("Shows the available browser extensions")]
-        public Task ExtensionsAsync(CommandContext ctx) => ctx.RespondAsync(
-                $"{DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Chrome)} <https://chrome.google.com/webstore/detail/intruder-notifications/aoebpknpfcepopfgnbnikaipjeekalim>\n" +
-                $"{DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Firefox)} <https://addons.mozilla.org/en-US/firefox/addon/intruder-notifications/>");
+        public Task ExtensionsAsync(CommandContext ctx)
+        {
+            return ctx.RespondAsync(
+$"{DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Chrome)} <https://chrome.google.com/webstore/detail/intruder-notifications/aoebpknpfcepopfgnbnikaipjeekalim>\n" +
+$"{DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Firefox)} <https://addons.mozilla.org/en-US/firefox/addon/intruder-notifications/>");
+        }
 
         [Command("vecish")]
         [Description("Shift a message using the American keyboard layout")]

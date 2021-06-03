@@ -108,8 +108,7 @@ namespace Bloon.Features.IntruderBackend.Servers
             serverEmbed.Color = new DiscordColor(217, 187, 19);
             serverEmbed.Timestamp = DateTime.UtcNow;
 
-            await this.activityManager.TrySetActivityAsync($"{csi.PlayerCount} agents ", ActivityType.Watching)
-                ;
+            await this.activityManager.TrySetActivityAsync($"{csi.PlayerCount} agents ", ActivityType.Watching);
 
             try
             {

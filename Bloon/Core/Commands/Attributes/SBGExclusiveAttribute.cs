@@ -12,6 +12,9 @@ namespace Bloon.Core.Commands.Attributes
      */
     public class SBGExclusiveAttribute : CheckBaseAttribute
     {
-        public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help) => Task.FromResult(ctx.Guild?.Id == Guilds.SBG);
+        public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help)
+        {
+            return Task.FromResult(ctx.Guild?.Id == Guilds.SBG);
+        }
     }
 }

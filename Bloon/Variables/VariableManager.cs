@@ -1,8 +1,8 @@
 namespace Bloon.Variables
 {
     using Bloon.Variables.Channels;
-    using Bloon.Variables.Roles;
     using Bloon.Variables.Emojis;
+    using Bloon.Variables.Roles;
     using DSharpPlus;
     using Serilog;
 

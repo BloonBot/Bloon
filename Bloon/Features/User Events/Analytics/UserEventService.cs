@@ -7,6 +7,7 @@ namespace Bloon.Features.Analytics
     using Bloon.Analytics.Users;
     using Bloon.Core.Database;
     using DSharpPlus.EventArgs;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Serilog;
 
@@ -143,7 +144,7 @@ namespace Bloon.Features.Analytics
             using AnalyticsContext db = scope.ServiceProvider.GetRequiredService<AnalyticsContext>();
             try
             {
-                var dbQuery = db.UserEvents;
+                DbSet<UserEvent> dbQuery = db.UserEvents;
                 foreach (UserEvent events in dbQuery.Where(x => x.UserId == discordId))
                 {
                     dbUserEvents.Add(events);

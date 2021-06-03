@@ -9,7 +9,10 @@ namespace Bloon.Utils
         /// </summary>
         /// <param name="input">The string to capitalize.</param>
         /// <returns>Capitalized string.</returns>
-        public static string Capitalize(this string input) => char.ToUpperInvariant(input[0]) + input.Substring(1);
+        public static string Capitalize(this string input)
+        {
+            return char.ToUpperInvariant(input[0]) + input.Substring(1);
+        }
 
         /// <summary>
         /// This method will drop all text after a given number of characters.

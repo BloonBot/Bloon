@@ -1,11 +1,11 @@
 namespace Bloon.Core.Database
 {
     using System;
+    using Bloon.Analytics;
     using Bloon.Analytics.Users;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
     using Newtonsoft.Json;
-    using Bloon.Analytics;
 
     public partial class AnalyticsContext : DbContext
     {
@@ -14,18 +14,12 @@ namespace Bloon.Core.Database
         {
         }
 
-        public static string ConnectionString
-        {
-            get
-            {
-                return $"Host={Environment.GetEnvironmentVariable("DB_HOST")};"
-                + $"Port={Environment.GetEnvironmentVariable("DB_PORT")};"
-                + $"Username={Environment.GetEnvironmentVariable("DB_USER")};"
-                + $"Password={Environment.GetEnvironmentVariable("DB_PASS")};"
-                + $"Database={Environment.GetEnvironmentVariable("DB_NAME_ANALYTICS")};"
-                + $"SSL Mode=none";
-            }
-        }
+        public static string ConnectionString => $"Host={Environment.GetEnvironmentVariable("DB_HOST")};"
+            + $"Port={Environment.GetEnvironmentVariable("DB_PORT")};"
+            + $"Username={Environment.GetEnvironmentVariable("DB_USER")};"
+            + $"Password={Environment.GetEnvironmentVariable("DB_PASS")};"
+            + $"Database={Environment.GetEnvironmentVariable("DB_NAME_ANALYTICS")};"
+            + $"SSL Mode=none";
 
         public DbSet<Commands> Commands { get; set; }
 

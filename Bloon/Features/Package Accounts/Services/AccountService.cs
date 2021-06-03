@@ -6,6 +6,7 @@ namespace Bloon.Features.PackageAccounts
     using System.Threading.Tasks;
     using Bloon.Core.Database;
     using DSharpPlus.Entities;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Serilog;
 
@@ -58,7 +59,7 @@ namespace Bloon.Features.PackageAccounts
             using AccountsContext db = scope.ServiceProvider.GetRequiredService<AccountsContext>();
             try
             {
-                var dbQuery = db.Accounts;
+                DbSet<PackageAccount> dbQuery = db.Accounts;
                 foreach (PackageAccount account in dbQuery)
                 {
                     dbAccounts.Add(account);
