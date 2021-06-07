@@ -3,7 +3,6 @@ namespace Bloon.Features.Youtube
     using System.ComponentModel.DataAnnotations.Schema;
     using Bloon.Core.Services;
 
-    [Table("social_youtube_video")]
     public class YouTubeVideo : SocialItem
     {
         [Column("type")]

@@ -7,6 +7,8 @@ namespace Bloon.Features.Twitter
     using Bloon.Core.Database;
     using Bloon.Core.Services;
     using LinqToTwitter;
+    using LinqToTwitter.Common;
+    using LinqToTwitter.OAuth;
     using Microsoft.Extensions.DependencyInjection;
     using Serilog;
 
