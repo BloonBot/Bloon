@@ -1,6 +1,7 @@
 namespace Bloon.Features.FAQ
 {
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Text.RegularExpressions;
 
     [Table("faq")]
     public class Faq
@@ -9,7 +10,7 @@ namespace Bloon.Features.FAQ
         public int Id { get; set; }
 
         [Column("regex")]
-        public string Regex { get; set; }
+        public Regex Regex { get; set; }
 
         [Column("message")]
         public string Message { get; set; }
