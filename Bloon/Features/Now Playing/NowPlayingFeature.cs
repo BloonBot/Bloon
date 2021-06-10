@@ -50,7 +50,7 @@ namespace Bloon.Features.NowPlaying
 
         private Task ManageNowPlayingAsync(DiscordClient dClient, PresenceUpdateEventArgs args)
         {
-            Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 // Ignore non-SBG events
                 if (args.PresenceAfter.Guild.Id != Variables.Guilds.SBG)
@@ -58,10 +58,16 @@ namespace Bloon.Features.NowPlaying
                     return;
                 }
 
+                bool wasPlaying = args.PresenceBefore?.Activities.Any(a => a.Name == "Intruder") ?? false;
+                bool nowPlaying = args.PresenceAfter.Activities.Any(a => a.Name == "Intruder");
+
+                if ((!wasPlaying && !nowPlaying) || (wasPlaying && nowPlaying))
+                {
+                    return;
+                }
+
                 DiscordRole nowPlayingRole = args.PresenceAfter.Guild.GetRole(SBGRoles.NowPlaying);
                 DiscordMember member = await args.PresenceAfter.Guild.GetMemberAsync(args.UserAfter.Id);
-                bool wasPlaying = (args.PresenceBefore?.Activities.Any(a => a.Name == "Intruder") ?? false) || member.Roles.Any(r => r.Id == SBGRoles.NowPlaying);
-                bool nowPlaying = args.PresenceAfter.Activities.Any(a => a.Name == "Intruder");
 
                 // User started playing Intruder
                 if (!wasPlaying && nowPlaying)
