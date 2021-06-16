@@ -159,6 +159,12 @@ namespace Bloon.Features.Workshop
                 }
 
                 rootObject = JsonConvert.DeserializeObject<WorkshopRootObject>(response.ToString());
+
+                if (rootObject.Data?.WorkshopMaps == null)
+                {
+                    break;
+                }
+
                 foreach (WorkshopMap map in rootObject.Data.WorkshopMaps)
                 {
                     maps.Add(map);
