@@ -58,7 +58,7 @@ namespace Bloon.Features.Spam
 
             this.messageCounter += 1;
 
-            if (this.messageCounter >= AdvertThreshold)
+            if (this.messageCounter >= AdvertThreshold && args.Channel.Id == SBGChannels.General)
             {
                 Random rnd = new Random();
 
