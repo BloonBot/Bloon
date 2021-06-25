@@ -41,7 +41,7 @@ namespace Bloon
 
         public static int Main()
         {
-            DotEnv.Config();
+            DotEnv.Load();
 
             // Configure logging
             // Log everything to console

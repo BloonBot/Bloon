@@ -14,10 +14,12 @@ namespace Bloon.Core
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContextPool<AccountsContext>(options => options.UseMySql(AccountsContext.ConnectionString))
-                .AddDbContextPool<BloonContext>(options => options.UseMySql(BloonContext.ConnectionString))
-                .AddDbContextPool<AnalyticsContext>(options => options.UseMySql(AnalyticsContext.ConnectionString))
-                .AddDbContextPool<IntruderContext>(options => options.UseMySql(IntruderContext.ConnectionString))
+            ServerVersion version = ServerVersion.AutoDetect(BloonContext.ConnectionString);
+
+            services.AddDbContextPool<AccountsContext>(options => options.UseMySql(AccountsContext.ConnectionString, version))
+                .AddDbContextPool<BloonContext>(options => options.UseMySql(BloonContext.ConnectionString, version))
+                .AddDbContextPool<AnalyticsContext>(options => options.UseMySql(AnalyticsContext.ConnectionString, version))
+                .AddDbContextPool<IntruderContext>(options => options.UseMySql(IntruderContext.ConnectionString, version))
                 .AddSingleton<ActivityManager>()
                 .AddSingleton<BloonLog>()
 #pragma warning disable CA2000 // Dispose objects before losing scope

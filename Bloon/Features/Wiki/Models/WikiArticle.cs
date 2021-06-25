@@ -5,7 +5,6 @@ namespace Bloon.Features.Wiki
     using System.Globalization;
     using Bloon.Core.Services;
 
-    [Table("social_wiki_article")]
     public class WikiArticle : SocialItem
     {
         [Column("type")]
