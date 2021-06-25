@@ -1,7 +1,9 @@
 namespace Bloon.Core.Database
 {
     using System;
+    using System.Text.RegularExpressions;
     using Bloon.Core.Services;
+    using Bloon.Features.FAQ;
     using Bloon.Features.Helprace;
     using Bloon.Features.RedditGuard;
     using Bloon.Features.SteamNews;
@@ -49,6 +51,10 @@ namespace Bloon.Core.Database
                 .HasValue<WikiArticle>(SocialType.Wiki)
                 .HasValue<SocialItemWorkshopMap>(SocialType.Workshop)
                 .HasValue<YouTubeVideo>(SocialType.YouTube);
+
+            modelBuilder.Entity<Faq>()
+                .Property(s => s.Regex)
+                .HasConversion(s => s.ToString(), s => new Regex(s, RegexOptions.Compiled | RegexOptions.IgnoreCase));
 
             modelBuilder.Entity<SocialItem>()
                 .Property(s => s.Additional)
