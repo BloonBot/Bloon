@@ -58,7 +58,7 @@ namespace Bloon.Features.Censor
 
         private async Task ProfanityFilterRemove(DiscordClient dClient, MessageReactionAddEventArgs args)
         {
-            if (args.User.Id == dClient.CurrentUser.Id || (args.Channel.Id != SBGChannels.Bloonside && !args.Emoji.Equals(DiscordEmoji.FromName(this.dClient, ":wastebasket:"))))
+            if (args.User.Id == dClient.CurrentUser.Id || (args.Channel?.Id != SBGChannels.Bloonside && !args.Emoji.Equals(DiscordEmoji.FromName(this.dClient, ":wastebasket:"))))
             {
                 return;
             }
@@ -66,7 +66,7 @@ namespace Bloon.Features.Censor
             DiscordChannel bloonside = await this.dClient.GetChannelAsync(SBGChannels.Bloonside);
             DiscordMessage foulEmbed = await bloonside.GetMessageAsync(args.Message.Id);
 
-            if (args.Message.Channel.Id == SBGChannels.Bloonside && foulEmbed.Author.Id == dClient.CurrentUser.Id && foulEmbed.Embeds.Count > 0 && foulEmbed.Embeds[0].Title == "Censor")
+            if (args.Message.Channel.Id == SBGChannels.Bloonside && foulEmbed.Author.Id == dClient.CurrentUser.Id && foulEmbed.Embeds.Count > 0 && foulEmbed.Embeds[0].Title.Contains("Censor"))
             {
                 await foulEmbed.DeleteAsync();
             }
