@@ -63,7 +63,7 @@ namespace Bloon.Features.Youtube
                 Timestamp = video.Timestamp,
                 Title = video.Title,
                 Description = video.Description,
-                Url = $"https://www.youtube.com/watch?v={video.Id}",
+                Url = $"https://www.youtube.com/watch?v={video.UID}",
                 Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
                 {
                     Url = video.ThumbnailUrl,
