@@ -39,8 +39,18 @@ namespace Bloon.Features.Youtube
                 return null;
             }
 
+            if (string.IsNullOrEmpty(rawJson))
+            {
+                return null;
+            }
+
             JObject jObject = JObject.Parse(rawJson);
-            JToken yVideo = jObject["items"][0];
+            JToken yVideo = jObject?["items"]?[0];
+
+            if (yVideo == null)
+            {
+                return null;
+            }
 
             YouTubeVideo video = new YouTubeVideo()
             {
