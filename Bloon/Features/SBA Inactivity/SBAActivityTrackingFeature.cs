@@ -26,20 +26,15 @@ namespace Bloon.Features.SBAInactivity
 
         public override string Description => "Tracks message history of users within SBA.";
 
-        public override Task Initialize()
-        {
-            this.dClient.MessageCreated += this.TrackSBAAsync;
-
-            return base.Initialize();
-        }
-
         public override Task Disable()
         {
+            this.dClient.MessageCreated -= this.TrackSBAAsync;
             return base.Disable();
         }
 
         public override Task Enable()
         {
+            this.dClient.MessageCreated += this.TrackSBAAsync;
             return base.Enable();
         }
 
