@@ -31,7 +31,7 @@ namespace Bloon.Features.Youtube
 
             try
             {
-                rawJson = await this.httpClient.GetStringAsync(new Uri($"https://www.googleapis.com/youtube/v3/search?key={this.apiKey}&channelId=UCuxq1O0Giy8ZK67WmuD_HkA&part=snippet,id&order=date&maxResults=1"));
+                rawJson = await this.httpClient.GetStringAsync(new Uri($"https://www.googleapis.com/youtube/v3/search?key={this.apiKey}&channelId=UCuxq1O0Giy8ZK67WmuD_HkA&type=video&part=snippet,id&order=date&maxResults=1"));
             }
             catch (HttpRequestException e)
             {
@@ -47,7 +47,7 @@ namespace Bloon.Features.Youtube
             JObject jObject = JObject.Parse(rawJson);
             JToken yVideo = jObject?["items"]?[0];
 
-            if (yVideo == null || yVideo["id"]["videoId"] == null)
+            if (yVideo == null)
             {
                 return null;
             }
