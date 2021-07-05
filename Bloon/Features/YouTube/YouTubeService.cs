@@ -47,7 +47,7 @@ namespace Bloon.Features.Youtube
             JObject jObject = JObject.Parse(rawJson);
             JToken yVideo = jObject?["items"]?[0];
 
-            if (yVideo == null)
+            if (yVideo == null || yVideo["id"]["videoId"] == null)
             {
                 return null;
             }
