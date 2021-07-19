@@ -100,7 +100,6 @@ namespace Bloon.Features.SBAInactivity
 
                     db.Remove(trackedUser);
 
-                    await sbaChannel.SendMessageAsync($"Kicked {user.Username}#{user.Discriminator} out of SBA");
                     this.bloonLog.Information(LogConsole.RoleEdits, ManageRoleEmojis.Demotion, $"**Inactivity Role Demotion**: {user.Username} - SBA");
                 }
 

@@ -63,6 +63,7 @@ namespace Bloon.Core.Services
             }
 
             DiscordChannel settingsChannel = await this.dClient.GetChannelAsync(BloonChannels.Settings);
+            DiscordChannel botMods = await this.dClient.GetChannelAsync(BloonChannels.BotMods);
             DiscordMessage featureMessage = await settingsChannel.GetMessageAsync(args.Message.Id);
             Feature feature = this.featureManager.Features.Where(f => f.Name == featureMessage.Embeds[0]?.Title).FirstOrDefault();
 
@@ -74,11 +75,15 @@ namespace Bloon.Core.Services
             {
                 await feature.Disable();
                 await this.featureManager.UpdateFeatureStatusAsync(feature.Name, false);
+                await botMods.SendMessageAsync($"{args.User.Username}#{args.User.Discriminator} *disabled* `{feature.Name}` at {DateTime.Now}\n" +
+                    $"{featureMessage.JumpLink}");
             }
             else if (args.Emoji.Id == FeatureEmojis.ToggleOn && !feature.Enabled)
             {
                 await feature.Enable();
                 await this.featureManager.UpdateFeatureStatusAsync(feature.Name, true);
+                await botMods.SendMessageAsync($"{args.User.Username}#{args.User.Discriminator} *enabled* `{feature.Name}` at {DateTime.Now}\n" +
+                    $"{featureMessage.JumpLink}");
             }
 
             await featureMessage.ModifyAsync(embed: CreateFeatureEmbed(feature));

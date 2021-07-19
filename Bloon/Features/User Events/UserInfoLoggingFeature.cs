@@ -34,7 +34,6 @@ namespace Bloon.Features.Doorman
         public override Task Disable()
         {
             this.dClient.GuildMemberAdded -= this.DBLogMemberJoined;
-            this.dClient.GuildMemberAdded += this.DiscordLogUserJoin;
 
             this.dClient.GuildMemberRemoved -= this.DBLogMemberLeft;
             this.dClient.GuildMemberRemoved -= this.DiscordLogUserLeft;
@@ -47,7 +46,6 @@ namespace Bloon.Features.Doorman
         public override Task Enable()
         {
             this.dClient.GuildMemberAdded += this.DBLogMemberJoined;
-            this.dClient.GuildMemberAdded += this.DiscordLogUserJoin;
 
             this.dClient.GuildMemberRemoved += this.DBLogMemberLeft;
             this.dClient.GuildMemberRemoved += this.DiscordLogUserLeft;
@@ -96,18 +94,6 @@ namespace Bloon.Features.Doorman
             {
                 await this.userEventService.AddUserLeftEventAsync(args);
             }
-        }
-
-        private Task DiscordLogUserJoin(DiscordClient dClient, GuildMemberAddEventArgs args)
-        {
-            if (args.Guild.Id != Variables.Guilds.SBG)
-            {
-                return Task.CompletedTask;
-            }
-
-            this.bloonLog.Information(LogConsole.UserInfo, EventEmojis.Join, $"{args.Member.Username} **Joined** SBG. Account Created: {args.Member.CreationTimestamp.UtcDateTime.ToString("D", CultureInfo.InvariantCulture)} | ID: {args.Member.Id}");
-
-            return Task.CompletedTask;
         }
 
         private async Task DiscordLogUserLeft(DiscordClient dClient, GuildMemberRemoveEventArgs args)

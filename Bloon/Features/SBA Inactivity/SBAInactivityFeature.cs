@@ -28,12 +28,10 @@ namespace Bloon.Features.SBAInactivity
 
         public override string Name => "SBA Inactivity Pruning";
 
-        public override string Description => "Warns @SBA users after 7 days of inactivity and after 14 days will kick them from the @SBA role.";
+        public override string Description => "Responsible for the SBA Pruning. Will not stop tracking message history.";
 
         public override Task Initialize()
         {
-            this.dClient.MessageCreated += this.TrackSBAAsync;
-
             return base.Initialize();
         }
 
@@ -49,38 +47,6 @@ namespace Bloon.Features.SBAInactivity
             this.jobManager.AddJob(this.sbaInactivityJob);
 
             return base.Enable();
-        }
-
-        /// <summary>
-        /// Track SBA activity for the inactivity job.
-        /// </summary>
-        /// <param name="args">Message arguments.</param>
-        /// <returns>Task.</returns>
-        private async Task TrackSBAAsync(DiscordClient dClient, MessageCreateEventArgs args)
-        {
-            if (args.Author.IsBot || args.Channel.Id != SBGChannels.SecretBaseAlpha)
-            {
-                return;
-            }
-
-            using IServiceScope scope = this.scopeFactory.CreateScope();
-            using BloonContext db = scope.ServiceProvider.GetRequiredService<BloonContext>();
-            SBAInactivityTracking tracking = db.SBAInactivityTracking
-                .Where(s => s.UserId == args.Author.Id)
-                .FirstOrDefault();
-
-            if (tracking == null)
-            {
-                tracking = new SBAInactivityTracking()
-                {
-                    UserId = args.Author.Id,
-                };
-
-                db.Add(tracking);
-            }
-
-            tracking.LastMessage = DateTime.UtcNow;
-            await db.SaveChangesAsync();
         }
     }
 }
