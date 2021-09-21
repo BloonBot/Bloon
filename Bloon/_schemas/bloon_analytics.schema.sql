@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 29, 2021 at 05:48 PM
+-- Generation Time: Sep 21, 2021 at 08:53 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.4
 
@@ -40,6 +40,21 @@ CREATE TABLE `commands` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `mod_events`
+--
+
+CREATE TABLE `mod_events` (
+  `id` int(11) NOT NULL,
+  `mod_id` bigint(20) NOT NULL,
+  `event` enum('Muted','Unmuted','Kicked','Banned','Unbanned') NOT NULL,
+  `offender_id` bigint(20) NOT NULL,
+  `notes` varchar(512) DEFAULT NULL,
+  `timestamp` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user_event`
 --
 
@@ -67,6 +82,12 @@ ALTER TABLE `commands`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `mod_events`
+--
+ALTER TABLE `mod_events`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `user_event`
 --
 ALTER TABLE `user_event`
@@ -80,6 +101,12 @@ ALTER TABLE `user_event`
 -- AUTO_INCREMENT for table `commands`
 --
 ALTER TABLE `commands`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mod_events`
+--
+ALTER TABLE `mod_events`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
