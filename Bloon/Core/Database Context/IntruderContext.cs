@@ -35,6 +35,10 @@ namespace Bloon.Core.Database
                 .Property(s => s.Role)
                 .HasConversion(new EnumToStringConverter<Role>());
 
+            modelBuilder.Entity<IntruderDBAgent>()
+                .Property(s => s.Role)
+                 .HasConversion(new EnumToStringConverter<IntruderDBAgentRole>());
+
             base.OnModelCreating(modelBuilder);
         }
     }

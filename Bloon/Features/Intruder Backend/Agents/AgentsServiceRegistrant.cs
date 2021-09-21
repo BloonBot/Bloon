@@ -1,6 +1,7 @@
 namespace Bloon.Features.IntruderBackend.Agents
 {
     using Bloon.Core.Services;
+    using Bloon.Features.Intruder_Backend.Agents;
     using Microsoft.Extensions.DependencyInjection;
 
     public class AgentsServiceRegistrant : IServiceRegistrant
@@ -9,6 +10,7 @@ namespace Bloon.Features.IntruderBackend.Agents
         {
             services.AddHttpClient<AgentService>();
             services.AddSingleton<ScrapeAgents>();
+            services.AddSingleton<IntruderDBAgentService>();
         }
     }
 }

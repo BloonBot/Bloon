@@ -4,6 +4,7 @@ namespace Bloon.Features.IntruderBackend
     using Bloon.Commands;
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
+    using Bloon.Features.Intruder_Backend.Agents.Commands;
     using DSharpPlus;
     using DSharpPlus.CommandsNext;
 
@@ -30,6 +31,7 @@ namespace Bloon.Features.IntruderBackend
         public override Task Enable()
         {
             this.cNext.RegisterCommands<Stats>();
+            this.cNext.RegisterCommands<OldAgentStats>();
 
             return base.Enable();
         }

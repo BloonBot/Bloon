@@ -20,6 +20,9 @@ namespace Bloon.Features.PackageAccounts
         [Column("permissions")]
         public virtual Permission Type { get; set; }
 
+        [Column("tier")]
+        public virtual Permission Tier { get; set; }
+
         [Column("private_profile")]
         public bool PrivateProfile { get; set; }
 

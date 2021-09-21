@@ -12,5 +12,7 @@ namespace Bloon.Core.Database
         public DbSet<Levels> Levels { get; set; }
 
         public DbSet<AgentHistory> AgentHistory { get; set; }
+
+        public DbSet<IntruderDBAgent> OldAgents { get; set; }
     }
 }

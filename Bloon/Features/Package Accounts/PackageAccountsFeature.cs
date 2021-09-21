@@ -1,5 +1,6 @@
 namespace Bloon.Features.PackageAccounts
 {
+    using System;
     using System.Threading.Tasks;
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
@@ -8,11 +9,13 @@ namespace Bloon.Features.PackageAccounts
 
     public class PackageAccountsFeature : Feature
     {
-        private readonly CommandsNextExtension cNext;
+        private readonly IServiceProvider provider;
+        private readonly DiscordClient dClient;
 
-        public PackageAccountsFeature(DiscordClient dClient)
+        public PackageAccountsFeature(IServiceProvider provider, DiscordClient dClient)
         {
-            this.cNext = dClient.GetCommandsNext();
+            this.provider = provider;
+            this.dClient = dClient;
         }
 
         public override string Name => "PackageAccounts";
@@ -21,16 +24,20 @@ namespace Bloon.Features.PackageAccounts
 
         public override Task Disable()
         {
-            this.cNext.UnregisterCommands<AccountsCommands>();
 
             return base.Disable();
         }
 
         public override Task Enable()
         {
-            this.cNext.RegisterCommands<AccountsCommands>();
-
+            this.dClient.GuildMemberUpdated += DClient_GuildMemberUpdated;
             return base.Enable();
+        }
+
+        private Task DClient_GuildMemberUpdated(DiscordClient sender, DSharpPlus.EventArgs.GuildMemberUpdateEventArgs e)
+        {
+            // something
+            return Task.CompletedTask;
         }
     }
 }

@@ -5,6 +5,7 @@ namespace Bloon.Features.LTP
     using Bloon.Core.Services;
     using DSharpPlus;
     using DSharpPlus.CommandsNext;
+    using DSharpPlus.SlashCommands;
 
     public class LTPFeature : Feature
     {
