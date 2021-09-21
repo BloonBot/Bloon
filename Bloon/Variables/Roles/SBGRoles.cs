@@ -17,6 +17,8 @@ namespace Bloon.Variables.Roles
 
         public static ulong SBA { get; private set; } = 556941912871796736;
 
+        public static ulong Muted { get; private set; } = 645354840989630506;
+
         public static void MockFakeStub()
         {
             Developer = MockRoles.Admin;
@@ -25,6 +27,7 @@ namespace Bloon.Variables.Roles
             NowPlaying = MockRoles.All;
             NowStreaming = MockRoles.All;
             SBA = MockRoles.All;
+            Muted = MockRoles.Muted;
         }
     }
 }
