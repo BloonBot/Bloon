@@ -6,6 +6,7 @@ namespace Bloon.Core.Discord
     using Bloon.Core.Commands;
     using Bloon.Core.Database;
     using Bloon.Core.Services;
+    using Bloon.Features.LTP;
     using Bloon.Variables;
     using Bloon.Variables.Emojis;
     using DSharpPlus;
@@ -13,8 +14,10 @@ namespace Bloon.Core.Discord
     using DSharpPlus.CommandsNext.Exceptions;
     using DSharpPlus.Entities;
     using DSharpPlus.EventArgs;
+    using DSharpPlus.SlashCommands;
     using Microsoft.Extensions.DependencyInjection;
     using Serilog;
+    using Bloon.Variables;
 
     public class Bot : Feature
     {
@@ -24,6 +27,7 @@ namespace Bloon.Core.Discord
         private readonly BloonLog bloonLog;
         private readonly DiscordClient dClient;
         private CommandsNextExtension cNext;
+        private SlashCommandsExtension slash;
 
         public Bot(IServiceProvider provider, IServiceScopeFactory scopeFactory, ActivityManager activityManager, DiscordClient dClient, BloonLog bloonLog)
         {
@@ -52,6 +56,11 @@ namespace Bloon.Core.Discord
                 StringPrefixes = Environment.GetEnvironmentVariable("COMMAND_PREFIXES").Split(","),
             });
 
+            this.slash = this.dClient.UseSlashCommands(new SlashCommandsConfiguration
+            {
+                Services = this.provider,
+            });
+
             AppDomain.CurrentDomain.ProcessExit += this.OnShutdown;
 
             return base.Initialize();
@@ -70,6 +79,8 @@ namespace Bloon.Core.Discord
 
             this.cNext.RegisterCommands<GeneralCommands>();
             this.cNext.RegisterCommands<OwnerCommands>();
+
+            this.slash.RegisterCommands<LTPSlashCommand>(Guilds.SBG);
 
             await this.dClient.InitializeAsync();
             await this.dClient.ConnectAsync();

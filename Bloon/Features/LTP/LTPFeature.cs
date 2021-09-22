@@ -3,12 +3,15 @@ namespace Bloon.Features.LTP
     using System.Threading.Tasks;
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.CommandsNext;
+    using DSharpPlus.SlashCommands;
 
     public class LTPFeature : Feature
     {
         private readonly CommandsNextExtension cNext;
+        private readonly SlashCommandsExtension slash;
 
         public LTPFeature(DiscordClient dClient)
         {
