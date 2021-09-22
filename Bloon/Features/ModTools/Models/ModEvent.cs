@@ -15,7 +15,7 @@ namespace Bloon.Features.ModTools
         public ulong ModID { get; set; }
 
         [Column("event")]
-        public virtual ModActions Event { get; set; }
+        public virtual ModAction Event { get; set; }
 
         [Column("offender_id")]
         public ulong OffenderID { get; set; }

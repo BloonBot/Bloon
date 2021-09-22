@@ -33,7 +33,7 @@ namespace Bloon.Features.ModTools
                 DiscordMember discordUser = await ctx.Guild.GetMemberAsync(discordId);
 
                 await discordUser.RemoveAsync(notes);
-                this.LogModAction(ctx.User.Id, discordId, ModActions.Kicked, notes);
+                this.LogModAction(ctx.User.Id, discordId, ModAction.Kicked, notes);
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":heavy_check_mark:"));
             }
             catch (DSharpPlus.Exceptions.NotFoundException)
@@ -55,7 +55,7 @@ namespace Bloon.Features.ModTools
             await this.KickUserAsync(ctx, user.Id, notes);
         }
 
-        private async void LogModAction(ulong modID, ulong offenderID, ModActions modEvent, string? notes)
+        private async void LogModAction(ulong modID, ulong offenderID, ModAction modEvent, string? notes)
         {
             this.db.ModEvents.Add(new ModEvent()
             {

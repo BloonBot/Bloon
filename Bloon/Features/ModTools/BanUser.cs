@@ -39,7 +39,7 @@ namespace Bloon.Features.ModTools
                     await discordUser.BanAsync(360, notes);
                 }
 
-                this.LogModAction(ctx.User.Id, discordId, ModActions.Banned, notes);
+                this.LogModAction(ctx.User.Id, discordId, ModAction.Banned, notes);
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":heavy_check_mark:"));
 
             }
@@ -75,7 +75,7 @@ namespace Bloon.Features.ModTools
 
                 await discordUser.UnbanAsync(notes);
 
-                this.LogModAction(ctx.User.Id, discordId, ModActions.Unbanned, notes);
+                this.LogModAction(ctx.User.Id, discordId, ModAction.Unbanned, notes);
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":heavy_check_mark:"));
 
             }
@@ -98,7 +98,7 @@ namespace Bloon.Features.ModTools
             await this.UnbanUserByIDAsync(ctx, user.Id, notes);
         }
 
-        private async void LogModAction(ulong modID, ulong offenderID, ModActions modEvent, string? notes)
+        private async void LogModAction(ulong modID, ulong offenderID, ModAction modEvent, string? notes)
         {
             this.db.ModEvents.Add(new ModEvent()
             {
