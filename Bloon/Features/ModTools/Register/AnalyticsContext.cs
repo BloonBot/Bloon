@@ -5,6 +5,6 @@ namespace Bloon.Core.Database
 
     public partial class AnalyticsContext : DbContext
     {
-        public DbSet<ModEvents> ModEvents { get; set; }
+        public DbSet<ModEvent> ModEvents { get; set; }
     }
 }

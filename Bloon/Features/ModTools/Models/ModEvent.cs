@@ -4,8 +4,8 @@ namespace Bloon.Features.ModTools
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("mod_events")]
-    public class ModEvents
+    [Table("mod_event")]
+    public class ModEvent
     {
         [Column("id")]
         [Key]
@@ -15,7 +15,7 @@ namespace Bloon.Features.ModTools
         public ulong ModID { get; set; }
 
         [Column("event")]
-        public virtual Actions Event { get; set; }
+        public virtual ModActions Event { get; set; }
 
         [Column("offender_id")]
         public ulong OffenderID { get; set; }

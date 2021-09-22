@@ -42,7 +42,7 @@ namespace Bloon.Features.ModTools
                 else
                 {
                     await discordUser.GrantRoleAsync(muted);
-                    this.LogModAction(ctx.User.Id, discordId, Actions.Muted, notes);
+                    this.LogModAction(ctx.User.Id, discordId, ModActions.Muted, notes);
                     await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":heavy_check_mark:"));
                 }
             }
@@ -80,7 +80,7 @@ namespace Bloon.Features.ModTools
                 {
                     await discordUser.RevokeRoleAsync(muted);
                     await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":heavy_check_mark:"));
-                    this.LogModAction(ctx.User.Id, discordId, Actions.Unmuted, notes);
+                    this.LogModAction(ctx.User.Id, discordId, ModActions.Unmuted, notes);
                 }
 
                 // User is not mute, lets go and shut them up.
@@ -106,9 +106,9 @@ namespace Bloon.Features.ModTools
             await this.UnmuteUserByIDAsync(ctx, user.Id, notes);
         }
 
-        private async void LogModAction(ulong modID, ulong offenderID, Actions modEvent, string? notes)
+        private async void LogModAction(ulong modID, ulong offenderID, ModActions modEvent, string? notes)
         {
-            this.db.ModEvents.Add(new ModEvents()
+            this.db.ModEvents.Add(new ModEvent()
             {
                 ModID = modID,
                 Event = modEvent,
