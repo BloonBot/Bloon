@@ -55,7 +55,10 @@ namespace Bloon.Core.Discord
                 StringPrefixes = Environment.GetEnvironmentVariable("COMMAND_PREFIXES").Split(","),
             });
 
-            this.slash = this.dClient.UseSlashCommands();
+            this.slash = this.dClient.UseSlashCommands(new SlashCommandsConfiguration
+            {
+                Services = this.provider,
+            });
 
             AppDomain.CurrentDomain.ProcessExit += this.OnShutdown;
 
@@ -76,7 +79,7 @@ namespace Bloon.Core.Discord
             this.cNext.RegisterCommands<GeneralCommands>();
             this.cNext.RegisterCommands<OwnerCommands>();
 
-            this.slash.RegisterCommands<LTPSlashCommand>();
+            this.slash.RegisterCommands<LTPSlashCommand>(196820438398140417);
 
             await this.dClient.InitializeAsync();
             await this.dClient.ConnectAsync();

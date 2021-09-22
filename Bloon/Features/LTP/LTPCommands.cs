@@ -23,7 +23,6 @@ namespace Bloon.Features.LTP
         [Command("ltp")]
         [Description("Join or leave the looking to play role.")]
         [Aliases("lookingtoplay", "je", "le")]
-        [SBGExclusive]
         public async Task LTPAsync(CommandContext ctx)
         {
             DiscordRole ltp = ctx.Guild.GetRole(SBGRoles.LookingToPlay);

@@ -9,6 +9,7 @@ namespace Bloon.Core
     using Microsoft.Extensions.DependencyInjection;
     using Serilog;
     using Serilog.Extensions.Logging;
+    using Bloon.Features.LTP;
 
     public class CoreServiceRegistrant : IServiceRegistrant
     {
