@@ -1,6 +1,6 @@
 namespace Bloon.Features.ModTools
 {
-    public enum ModActions
+    public enum ModAction
     {
         Muted = 1,
         Unmuted = 2,
