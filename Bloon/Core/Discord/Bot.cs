@@ -80,8 +80,6 @@ namespace Bloon.Core.Discord
             this.cNext.RegisterCommands<GeneralCommands>();
             this.cNext.RegisterCommands<OwnerCommands>();
 
-            this.slash.RegisterCommands<LTPSlashCommand>(Guilds.SBG);
-
             await this.dClient.InitializeAsync();
             await this.dClient.ConnectAsync();
         }
