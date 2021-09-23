@@ -22,7 +22,7 @@ namespace Bloon.Variables.Roles
         public static void MockFakeStub()
         {
             Developer = MockRoles.Admin;
-            LookingToPlay = MockRoles.All;
+            LookingToPlay = MockRoles.LookingToPlay;
             Mod = MockRoles.Admin;
             NowPlaying = MockRoles.All;
             NowStreaming = MockRoles.All;

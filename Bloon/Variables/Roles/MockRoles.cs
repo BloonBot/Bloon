@@ -12,5 +12,6 @@ namespace Bloon.Variables.Roles
         public const ulong All = 377137420417761292;
         public const ulong Muted = 889916846948614174;
         public const ulong KidsTable = 377137352746729472;
+        public const ulong LookingToPlay = 889955578313605130;
     }
 }
