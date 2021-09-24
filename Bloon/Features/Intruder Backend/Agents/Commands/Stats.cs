@@ -24,6 +24,7 @@ namespace Bloon.Commands
 
         [Command("stats")]
         [Description("Gets the stats for a particular agent.")]
+        [Cooldown(5, 300, CooldownBucketType.User)]
         public async Task AgentStats(CommandContext ctx, [RemainingText] string steamIDOrUsername)
         {
             // Find Agents
@@ -143,11 +144,20 @@ namespace Bloon.Commands
                     $"**Arrests**: `{agentStats.Arrests}` | **Captures**: `{agentStats.Captures}` | **Hacks**: `{agentStats.NetworkHacks}`\n";
             }
 
-            await ctx.RespondAsync(embed: userDetails.Build());
+            if (ctx.Channel.IsThread)
+            {
+                await ctx.RespondAsync(embed: userDetails.Build());
+            }
+            else
+            {
+                var mess = await ctx.Message.CreateThreadAsync($"{ctx.Member.DisplayName} - {steamIDOrUsername} Stats", archiveAfter: DSharpPlus.AutoArchiveDuration.Day, reason: "User ran .stats command");
+                await mess.SendMessageAsync(embed: userDetails.Build());
+            }
         }
 
         [Command("hiscores")]
         [Aliases("hs", "hiscore", "highscores", "highscore", "top")]
+        [Cooldown(5, 300, CooldownBucketType.User)]
         [Description("**Available Orderby Columns -**\n" +
                     "`matches`, `matches lost`, `rounds`, `rounds lost`, `rounds tied`, `kills`, `deaths`, `arrests`, `team kills`, `captures`, `hacks`, `network hacks`, `survivals`, `suicides`," +
                     " `login count`, `pickups`, `votes`, `xp`, `team damage`, `team knockdowns`, `arrested`, `knocked down`, `rounds won capture`, `rounds won hack`, `rounds won elim`, `rounds won timer`, `rounds won custom`," +
