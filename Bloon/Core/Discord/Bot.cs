@@ -81,6 +81,7 @@ namespace Bloon.Core.Discord
             this.slash.SlashCommandErrored += this.OnSlashCommandErrored;
 
             this.cNext.RegisterCommands<GeneralCommands>();
+            this.slash.RegisterCommands<GeneralSlashCommands>(196820438398140417);
             this.cNext.RegisterCommands<OwnerCommands>();
 
             await this.dClient.InitializeAsync();

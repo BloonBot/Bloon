@@ -48,7 +48,6 @@ namespace Bloon.Core.Commands
 
         [Command("ping")]
         [Description("This command is to be used when you think the bot is frozen or stuck. It'll reply with **pong**")]
-
         public Task PingPongAsync(CommandContext ctx)
         {
             return ctx.RespondAsync($"pong! Latency: {ctx.Client.Ping}ms");
