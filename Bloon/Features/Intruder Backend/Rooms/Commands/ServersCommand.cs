@@ -49,7 +49,7 @@ namespace Bloon.Features.IntruderBackend.Servers
                 foreach (Rooms room in csi.Rooms)
                 {
                     roomCount++;
-                    if (roomCount >= 12)
+                    if (roomCount >= 15)
                     {
                         skipRoomCount++;
                     }
