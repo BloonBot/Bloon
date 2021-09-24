@@ -31,9 +31,10 @@ namespace Bloon.Features.ModTools
             this.cNext.RegisterCommands<AgentSearch>();
             this.cNext.RegisterCommands<UserInfo>();
 
-            this.cNext.RegisterCommands<MuteUser>();
-            this.cNext.RegisterCommands<KickUser>();
-            this.cNext.RegisterCommands<BanUser>();
+            // Disabled due to Zepplein
+            //this.cNext.RegisterCommands<MuteUser>();
+            //this.cNext.RegisterCommands<KickUser>();
+            //this.cNext.RegisterCommands<BanUser>();
             return base.Enable();
         }
     }
