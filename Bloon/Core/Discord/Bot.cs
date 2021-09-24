@@ -82,6 +82,7 @@ namespace Bloon.Core.Discord
             this.cNext.RegisterCommands<OwnerCommands>();
 
             await this.dClient.InitializeAsync();
+            VariableManager.ApplyVariableScopes(this.dClient);
             await this.dClient.ConnectAsync();
         }
 
@@ -117,7 +118,6 @@ namespace Bloon.Core.Discord
         private Task OnSocketOpened(DiscordClient dClient, SocketEventArgs args)
         {
             SocketState = WebSocketState.Open;
-            VariableManager.ApplyVariableScopes(this.dClient);
             return Task.CompletedTask;
         }
 
