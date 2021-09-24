@@ -79,6 +79,7 @@ namespace Bloon.Core.Discord
 
             this.slash.SlashCommandExecuted += this.OnSlashCommandExecuted;
             this.slash.SlashCommandErrored += this.OnSlashCommandErrored;
+            this.slash.ContextMenuErrored += this.OnContextMenuErrored;
 
             this.cNext.RegisterCommands<GeneralCommands>();
             this.slash.RegisterCommands<GeneralSlashCommands>(196820438398140417);
@@ -207,6 +208,17 @@ namespace Bloon.Core.Discord
             return;
         }
 
+        private async Task OnContextMenuErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.ContextMenuErrorEventArgs args)
+        {
+            if (args.Exception is ContextMenuExecutionChecksFailedException)
+            {
+                await args.Context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("You do not have permission to do this.").AsEphemeral(true));
+                return;
+            }
+
+            Log.Error(args.Exception, $"Command '{args.Context.CommandName}' errored");
+            this.bloonLog.Error($"`{args.Context.User.Username}` ran `{args.Context.CommandName}` in **[{args.Context.Guild?.Name ?? "DM"} - {args.Context.Channel.Name}]**: {args.Exception.Message}");
+        }
 
         private void OnShutdown(object sender, EventArgs args)
         {
