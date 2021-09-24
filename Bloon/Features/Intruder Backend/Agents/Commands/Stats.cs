@@ -8,6 +8,7 @@ namespace Bloon.Commands
     using Bloon.Core.Commands.Attributes;
     using Bloon.Features.IntruderBackend.Agents;
     using Bloon.Utils;
+    using Bloon.Variables;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
@@ -144,14 +145,56 @@ namespace Bloon.Commands
                     $"**Arrests**: `{agentStats.Arrests}` | **Captures**: `{agentStats.Captures}` | **Hacks**: `{agentStats.NetworkHacks}`\n";
             }
 
+
             if (ctx.Channel.IsThread)
             {
                 await ctx.RespondAsync(embed: userDetails.Build());
             }
             else
             {
-                var mess = await ctx.Message.CreateThreadAsync($"{ctx.Member.DisplayName} - {steamIDOrUsername} Stats", archiveAfter: DSharpPlus.AutoArchiveDuration.Day, reason: "User ran .stats command");
+                ThreadQueryResult ctxArchivedThreads = await ctx.Channel.ListPublicArchivedThreadsAsync();
+                IReadOnlyList<DiscordThreadChannel> publicArchThreads = ctxArchivedThreads.Threads;
+
+                // Check to see if we have archived threads for this user.
+                foreach (DiscordThreadChannel thread in publicArchThreads)
+                {
+                    if (thread.CreatorId == Users.Bloon)
+                    {
+                        IReadOnlyList<DiscordThreadChannelMember> threadMembers = await thread.ListJoinedMembersAsync();
+                        foreach (DiscordThreadChannelMember user in threadMembers)
+                        {
+                            // User has an open thread for this command.
+                            if (user.Id == ctx.User.Id && thread.Name.Contains($"{ctx.Member.DisplayName} -") && thread.ThreadMetadata.IsArchived)
+                            {
+                                await thread.SendMessageAsync(embed: userDetails.Build());
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                // Check if we have any public open threads for this user.
+                IReadOnlyList<DiscordThreadChannel> publicThreads = ctx.Channel.Threads;
+                foreach (DiscordThreadChannel thread in publicThreads)
+                {
+                    if (thread.CreatorId == Users.Bloon)
+                    {
+                        IReadOnlyList<DiscordThreadChannelMember> threadMembers = await thread.ListJoinedMembersAsync();
+                        foreach (DiscordThreadChannelMember user in threadMembers)
+                        {
+                            // User has an open thread for this command.
+                            if (user.Id == ctx.User.Id && thread.Name.Contains($"{ctx.Member.DisplayName} -") && !thread.ThreadMetadata.IsArchived)
+                            {
+                                await thread.SendMessageAsync(embed: userDetails.Build());
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                var mess = await ctx.Message.CreateThreadAsync($"{ctx.Member.DisplayName} - {steamIDOrUsername} Stats", archiveAfter: DSharpPlus.AutoArchiveDuration.Hour, reason: "User ran .stats command");
                 await mess.SendMessageAsync(embed: userDetails.Build());
+                return;
             }
         }
 
