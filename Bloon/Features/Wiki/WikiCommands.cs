@@ -35,17 +35,6 @@ namespace Bloon.Features.Wiki
                 return;
             }
 
-            // else if (pageTitle.Equals("-rc", StringComparison.Ordinal))
-            // {
-            //    await this.ShowRecentChangesAsync(ctx);
-            //    return;
-            // }
-            // else if (pageTitle.Equals("-au", StringComparison.Ordinal))
-            // {
-            //    await this.ReturnActiveUsers(ctx);
-            //    return;
-            // }
-
             // Base embed
             DiscordEmbedBuilder wikiEmbed = new DiscordEmbedBuilder
             {
