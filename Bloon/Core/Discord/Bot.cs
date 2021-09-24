@@ -170,13 +170,9 @@ namespace Bloon.Core.Discord
 
         private async Task OnSlashCommandErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandErrorEventArgs args)
         {
-            if (args.Exception is ChecksFailedException)
+            if (args.Exception is SlashExecutionChecksFailedException)
             {
                 await args.Context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("You do not have permission to run this command.").AsEphemeral(true));
-                return;
-            }
-            else if (args.Exception is CommandNotFoundException)
-            {
                 return;
             }
 
