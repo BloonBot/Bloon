@@ -35,7 +35,7 @@ namespace Bloon.Features.LTP
                 });
 
                 await this.db.SaveChangesAsync();
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("You have been removed from the Looking to Play role."));
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("You have been removed from the Looking to Play role.").AsEphemeral(true));
             }
             else
             {
@@ -48,7 +48,7 @@ namespace Bloon.Features.LTP
                 });
 
                 await this.db.SaveChangesAsync();
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("You have been added to the Looking to Play role!"));
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("You have been added to the Looking to Play role!").AsEphemeral(true));
             }
         }
     }

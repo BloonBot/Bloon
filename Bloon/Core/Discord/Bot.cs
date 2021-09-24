@@ -76,7 +76,9 @@ namespace Bloon.Core.Discord
 
             this.cNext.CommandErrored += this.OnCommandErroredAsync;
             this.cNext.CommandExecuted += this.OnCommandExecuted;
+
             this.slash.SlashCommandExecuted += this.OnSlashCommandExecuted;
+            this.slash.SlashCommandErrored += this.OnSlashCommandErrored;
 
             this.cNext.RegisterCommands<GeneralCommands>();
             this.cNext.RegisterCommands<OwnerCommands>();
@@ -166,9 +168,25 @@ namespace Bloon.Core.Discord
             return;
         }
 
+        private async Task OnSlashCommandErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandErrorEventArgs args)
+        {
+            if (args.Exception is ChecksFailedException)
+            {
+                await args.Context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("You do not have permission to run this command.").AsEphemeral(true));
+                return;
+            }
+            else if (args.Exception is CommandNotFoundException)
+            {
+                return;
+            }
+
+            Log.Error(args.Exception, $"Command '{args.Context.CommandName}' errored");
+            this.bloonLog.Error($"`{args.Context.User.Username}` ran `{args.Context.CommandName}` in **[{args.Context.Guild?.Name ?? "DM"} - {args.Context.Channel.Name}]**: {args.Exception.Message}");
+        }
+
         private async Task OnSlashCommandExecuted(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandExecutedEventArgs args)
         {
-            string logMessage = $"`{args.Context.User.Username}` ran `{args.Context.CommandName}` in **[{(args.Context.Guild != null ? $"{args.Context.Guild.Name} - {args.Context.Channel.Name}" : "DM")}]**";
+            string logMessage = $"`{args.Context.User.Username}` ran `/{args.Context.CommandName}` in **[{(args.Context.Guild != null ? $"{args.Context.Guild.Name} - {args.Context.Channel.Name}" : "DM")}]**";
 
             this.bloonLog.Information(LogConsole.Commands, CommandEmojis.Run, logMessage);
 
