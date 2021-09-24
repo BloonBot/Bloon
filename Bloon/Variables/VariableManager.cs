@@ -20,6 +20,7 @@ namespace Bloon.Variables
                 SBGChannels.MockFakeStub();
                 SBGRoles.MockFakeStub();
                 SBGEmojis.MockFakeStub();
+                Users.MockFakeStub();
             }
         }
     }
