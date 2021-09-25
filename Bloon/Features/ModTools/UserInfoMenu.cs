@@ -80,7 +80,7 @@ namespace Bloon.Features.ModTools
                 Title = "**User Details**",
             };
             userDetails.WithDescription(this.BuildUserDetails(member));
-            string userEvents = await this.BuildUserEventsAsync(ctx.TargetMember.Id, ctx);
+            string userEvents = this.BuildUserEventsAsync(ctx.TargetMember.Id, ctx);
             if (!string.IsNullOrEmpty(userEvents))
             {
                 userDetails.AddField("User Server Events", userEvents);
@@ -116,7 +116,7 @@ namespace Bloon.Features.ModTools
                              + $"Send TTS Messages: {(permissions.HasPermission(Permissions.SendTtsMessages) ? DiscordEmoji.FromName(ctx.Client, ":white_check_mark:") : DiscordEmoji.FromName(ctx.Client, ":x:"))}\n"
                              + $"**Speak**: {(permissions.HasPermission(Permissions.Speak) ? DiscordEmoji.FromName(ctx.Client, ":white_check_mark:") : DiscordEmoji.FromName(ctx.Client, ":x:"))}\n"
                              + $"Use External Emojis: {(permissions.HasPermission(Permissions.UseExternalEmojis) ? DiscordEmoji.FromName(ctx.Client, ":white_check_mark:") : DiscordEmoji.FromName(ctx.Client, ":x:"))}\n"
-                             + $"**Use VAD**: {(permissions.HasPermission(Permissions.UseVoiceDetection) ? "✔" : "✘") }\n";
+                             + $"**Use VAD**: {(permissions.HasPermission(Permissions.UseVoiceDetection) ? "✔" : "✘")}\n";
             return perms;
         }
 
@@ -141,12 +141,11 @@ namespace Bloon.Features.ModTools
             return details;
         }
 
-        private async Task<string> BuildUserEventsAsync(ulong discordId, ContextMenuContext ctx)
+        private string BuildUserEventsAsync(ulong discordId, ContextMenuContext ctx)
         {
             List<UserEvent> userEvents = this.userEventService.QueryEventReportAsync(discordId);
 
             StringBuilder discordUserEvents = new StringBuilder();
-
 
             foreach (UserEvent events in userEvents)
             {

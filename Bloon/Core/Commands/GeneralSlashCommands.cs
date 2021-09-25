@@ -32,7 +32,6 @@ namespace Bloon.Core.Commands
         [SlashCommand("links", "Responds with a message containing important links for getting around the community.")]
         public async Task DevelopmentURLAsync(InteractionContext ctx)
         {
-
             DiscordEmbedBuilder linksEmbed = new DiscordEmbedBuilder
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter

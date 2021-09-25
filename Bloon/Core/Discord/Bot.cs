@@ -6,7 +6,6 @@ namespace Bloon.Core.Discord
     using Bloon.Core.Commands;
     using Bloon.Core.Database;
     using Bloon.Core.Services;
-    using Bloon.Features.LTP;
     using Bloon.Variables;
     using Bloon.Variables.Emojis;
     using DSharpPlus;
@@ -17,7 +16,6 @@ namespace Bloon.Core.Discord
     using DSharpPlus.SlashCommands;
     using Microsoft.Extensions.DependencyInjection;
     using Serilog;
-    using Bloon.Variables;
 
     public class Bot : Feature
     {

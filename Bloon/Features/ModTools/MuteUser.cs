@@ -24,7 +24,6 @@ namespace Bloon.Features.ModTools
         [Description("Mute a particular user. Requires Moderator Role. Usage: `.mute {discordId} {notes}`. Notes are optional.")]
         [ModExclusive]
         public async Task MuteUserByIDAsync(CommandContext ctx, ulong discordId, [RemainingText] string? notes)
-
         {
             try
             {
@@ -59,7 +58,6 @@ namespace Bloon.Features.ModTools
         [Aliases("m", "mu", "silence", "shh")]
         [ModExclusive]
         public async Task MuteUserAsync(CommandContext ctx, DiscordUser user, [RemainingText] string? notes)
-
         {
             await this.MuteUserByIDAsync(ctx, user.Id, notes);
         }
@@ -68,7 +66,6 @@ namespace Bloon.Features.ModTools
         [Description("umid")]
         [ModExclusive]
         public async Task UnmuteUserByIDAsync(CommandContext ctx, ulong discordId, [RemainingText] string? notes)
-
         {
             try
             {

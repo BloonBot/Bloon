@@ -25,7 +25,7 @@ namespace Bloon.Features.IntruderBackend.Servers
         /// <summary>
         /// Base #current-server-info command.
         /// </summary>
-        /// <param name="ctx">Discord Client Context</param>
+        /// <param name="ctx">Discord Client Context.</param>
         /// <returns>Server Embed via Command.</returns>
         [GroupCommand]
         public async Task CurrentServerInfo(CommandContext ctx)

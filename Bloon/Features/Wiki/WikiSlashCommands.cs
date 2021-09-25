@@ -1,25 +1,12 @@
 namespace Bloon.Features.Wiki
 {
     using System;
-    using System;
     using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
     using System.Linq;
     using System.Threading.Tasks;
-    using System.Threading.Tasks;
-    using Bloon.Core.Commands.Attributes;
-    using Bloon.Core.Commands.Attributes;
-    using Bloon.Core.Database;
-    using Bloon.Features.Wiki.Models;
-    using Bloon.Utils;
-    using Bloon.Variables;
     using Bloon.Variables.Emojis;
-    using Bloon.Variables.Roles;
     using DSharpPlus;
-    using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
-    using DSharpPlus.Entities;
     using DSharpPlus.Entities;
     using DSharpPlus.SlashCommands;
 

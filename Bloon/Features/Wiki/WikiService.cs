@@ -171,7 +171,6 @@ namespace Bloon.Features.Wiki
 
         private static bool IsValidArticle(JObject wikiObject)
         {
-
             // No error, has a revision id and wikitext
             return wikiObject["error"] == null
                 && int.Parse(wikiObject["parse"]["revid"].ToString(), CultureInfo.InvariantCulture) > 0

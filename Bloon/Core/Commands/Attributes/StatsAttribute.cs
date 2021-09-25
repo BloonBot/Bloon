@@ -43,6 +43,7 @@ namespace Bloon.Core.Commands.Attributes
                     return Task.FromResult(false);
                 }
             }
+
             return Task.FromResult(false);
         }
     }

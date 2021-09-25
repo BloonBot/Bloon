@@ -1,24 +1,14 @@
 namespace Bloon.Features.IntruderBackend.Servers
 {
     using System;
-    using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
     using Bloon.Core.Commands.Attributes;
-    using Bloon.Core.Database;
-    using Bloon.Variables;
-    using Bloon.Variables.Roles;
+    using Bloon.Features.IntruderBackend.Rooms;
+    using Bloon.Variables.Emojis;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using DSharpPlus.SlashCommands;
-    using System;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
-    using Bloon.Features.IntruderBackend.Rooms;
-    using Bloon.Variables.Emojis;
-    using DSharpPlus.CommandsNext;
-    using DSharpPlus.CommandsNext.Attributes;
-    using DSharpPlus.Entities;
 
     [SlashModuleLifespan(SlashModuleLifespan.Scoped)]
     public class GSISlashCommand : ApplicationCommandModule
