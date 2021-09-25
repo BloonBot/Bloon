@@ -96,12 +96,13 @@ namespace Bloon.Core.Commands
         public Task ExtensionsAsync(CommandContext ctx)
         {
             return ctx.RespondAsync(
-$"{DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Chrome)} <https://chrome.google.com/webstore/detail/intruder-notifications/aoebpknpfcepopfgnbnikaipjeekalim>\n" +
-$"{DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Firefox)} <https://addons.mozilla.org/en-US/firefox/addon/intruder-notifications/>");
+                $"{DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Chrome)} <https://chrome.google.com/webstore/detail/intruder-notifications/aoebpknpfcepopfgnbnikaipjeekalim>\n" +
+                $"{DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Firefox)} <https://addons.mozilla.org/en-US/firefox/addon/intruder-notifications/>");
         }
 
         [Command("vecish")]
         [Description("Shift a message using the American keyboard layout")]
+        [Hidden]
         public async Task VecishAsync(CommandContext ctx, [RemainingText] string message)
         {
             if (string.IsNullOrEmpty(message))
