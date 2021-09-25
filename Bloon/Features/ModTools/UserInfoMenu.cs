@@ -40,7 +40,7 @@ namespace Bloon.Features.ModTools
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    Text = $"Status: {member.Presence.Status} | isBot: {(member.IsBot ? "✔" : "✘")}",
+                    Text = $"ID: {member.Id} | isBot: {(member.IsBot ? "✔" : "✘")}",
                 },
                 Color = new DiscordColor(95, 95, 95),
                 Timestamp = DateTime.UtcNow,
@@ -48,7 +48,7 @@ namespace Bloon.Features.ModTools
                 {
                     Url = member.AvatarUrl,
                 },
-                Title = "**User Details**",
+                Title = $"**User Details for {ctx.Channel.Name}**",
             };
             userDetails.WithDescription(this.BuildUserDetails(member));
 
@@ -69,7 +69,7 @@ namespace Bloon.Features.ModTools
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    Text = $"Status: {member.Presence.Status} | isBot: {(member.IsBot ? "✔" : "✘")}",
+                    Text = $"ID: {member.Id} | isBot: {(member.IsBot ? "✔" : "✘")}",
                 },
                 Color = new DiscordColor(95, 95, 95),
                 Timestamp = DateTime.UtcNow,
@@ -123,10 +123,9 @@ namespace Bloon.Features.ModTools
         private string BuildUserDetails(DiscordMember member)
         {
             string details = $"**User**: {member.Username}#{member.Discriminator}\n"
+                + $"**Mention**: <@{member.Id}>\n"
                 + $"**Nickname**: {member.Nickname}\n"
-                + $"**ID**: {member.Id}\n"
-                + $"**Avatar Hash**: {member.AvatarHash}\n"
-                + $"**Current Activity**: {member.Presence.Activity.Name ?? "-"}\n"
+                + $"**Avatar URL**: [Click Here]({member.AvatarUrl})\n"
                 + $"**IsDeafened**: {member.IsDeafened}\n"
                 + $"**IsMuted**: {member.IsMuted}\n"
                 + $"**IsSuppressed**: {member.VoiceState?.IsSuppressed}\n"

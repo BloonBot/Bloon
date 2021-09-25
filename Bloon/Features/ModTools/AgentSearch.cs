@@ -11,6 +11,7 @@ namespace Bloon.Features.ModTools
     [Group("agentsearch")]
     [Aliases("as")]
     [Description("Search for a particular Agent")]
+    [Hidden]
     [ModuleLifespan(ModuleLifespan.Transient)]
     public class AgentSearch : BaseCommandModule
     {

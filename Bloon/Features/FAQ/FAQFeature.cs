@@ -33,7 +33,7 @@ namespace Bloon.Features.FAQ
 
         public override Task Disable()
         {
-            this.cNext.UnregisterCommands<FAQCommands>();
+            //this.cNext.UnregisterCommands<FAQCommands>();
             this.dClient.MessageCreated -= this.ProcessFAQAsync;
             this.faqManager.Reset();
 
@@ -46,7 +46,7 @@ namespace Bloon.Features.FAQ
             using BloonContext db = scope.ServiceProvider.GetRequiredService<BloonContext>();
             List<Faq> dbFaqs = db.Faqs.ToList();
             this.faqManager.Init(dbFaqs);
-            this.cNext.RegisterCommands<FAQCommands>();
+            //this.cNext.RegisterCommands<FAQCommands>();
             this.dClient.MessageCreated += this.ProcessFAQAsync;
 
             return base.Enable();

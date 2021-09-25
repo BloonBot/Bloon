@@ -9,6 +9,7 @@ namespace Bloon.Features.PackageAccounts
 
     [Group("package")]
     [Description("Commands that manage a user's Package Account")]
+    [Hidden]
     public class AccountsCommands : BaseCommandModule
     {
         private readonly AccountService accountService;

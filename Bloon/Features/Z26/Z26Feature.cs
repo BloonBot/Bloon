@@ -21,14 +21,14 @@ namespace Bloon.Features.Z26
 
         public override Task Disable()
         {
-            this.cNext.UnregisterCommands<Z26Commands>();
+            //this.cNext.UnregisterCommands<Z26Commands>();
 
             return base.Disable();
         }
 
         public override Task Enable()
         {
-            this.cNext.RegisterCommands<Z26Commands>();
+            //this.cNext.RegisterCommands<Z26Commands>();
 
             return base.Enable();
         }

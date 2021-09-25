@@ -80,7 +80,7 @@ namespace Bloon.Core.Discord
             this.slash.ContextMenuErrored += this.OnContextMenuErrored;
 
             this.cNext.RegisterCommands<GeneralCommands>();
-            this.slash.RegisterCommands<GeneralSlashCommands>(196820438398140417);
+            this.slash.RegisterCommands<GeneralSlashCommands>(Guilds.SBG);
             this.cNext.RegisterCommands<OwnerCommands>();
 
             await this.dClient.InitializeAsync();

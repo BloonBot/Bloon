@@ -563,6 +563,7 @@ namespace Bloon.Commands
 
         [OwnersExclusive]
         [Command("agentstats")]
+        [Hidden]
         public async Task PopulateAgentTable(CommandContext ctx, string launchCode)
         {
             await ctx.RespondAsync("OK - starting the table population.");
