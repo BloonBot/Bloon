@@ -11,6 +11,7 @@ namespace Bloon.Features.Workshop
     using Bloon.Core.Services;
     using Bloon.Features.IntruderBackend.Agents;
     using Bloon.Features.Workshop.Models;
+    using Bloon.Utils;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
@@ -73,7 +74,7 @@ namespace Bloon.Features.Workshop
                 UID = jMap["publishedfileid"].ToString(),
                 Title = jMap["title"].ToString(),
                 Author = jMap["creator"].ToString(),
-                Description = BBCodeRegex.Replace(jMap["short_description"].ToString(), string.Empty),
+                Description = BBCodeRegex.Replace(jMap["short_description"].ToString(), string.Empty).Truncate(1024),
                 ThumbnailUrl = new Uri(jMap["preview_url"].ToString()),
                 Timestamp = DateTime.UnixEpoch.AddSeconds(jMap["time_created"].ToObject<int>()),
             };
@@ -95,9 +96,9 @@ namespace Bloon.Features.Workshop
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
             foreach (WorkshopMap map in workshopMaps)
             {
-                map.TimeCreated = UnixTimeStampToDateTime(Convert.ToDouble(map.UploadDate));
-                map.TimeUpdated = UnixTimeStampToDateTime(Convert.ToDouble(map.MapUpdated));
-                map.CreatorSteamID = Convert.ToUInt64(map.APICreator, CultureInfo.CurrentCulture);
+                map.TimeCreated = UnixTimeStampToDateTime(System.Convert.ToDouble(map.UploadDate));
+                map.TimeUpdated = UnixTimeStampToDateTime(System.Convert.ToDouble(map.MapUpdated));
+                map.CreatorSteamID = System.Convert.ToUInt64(map.APICreator, CultureInfo.CurrentCulture);
 
                 // if we have the map already stored in db, check if there is an update.
                 if (db.WorkshopMaps.Any(x => x.FileID == map.FileID))
@@ -191,9 +192,9 @@ namespace Bloon.Features.Workshop
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
             foreach (WorkshopMap map in maps)
             {
-                map.TimeCreated = UnixTimeStampToDateTime(Convert.ToDouble(map.UploadDate));
-                map.TimeUpdated = UnixTimeStampToDateTime(Convert.ToDouble(map.MapUpdated));
-                map.CreatorSteamID = Convert.ToUInt64(map.APICreator, CultureInfo.CurrentCulture);
+                map.TimeCreated = UnixTimeStampToDateTime(System.Convert.ToDouble(map.UploadDate));
+                map.TimeUpdated = UnixTimeStampToDateTime(System.Convert.ToDouble(map.MapUpdated));
+                map.CreatorSteamID = System.Convert.ToUInt64(map.APICreator, CultureInfo.CurrentCulture);
                 if (db.WorkshopMaps.Any(x => x.FileID == map.FileID))
                 {
                     db.WorkshopMaps.Update(map);
