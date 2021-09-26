@@ -20,6 +20,7 @@ namespace Bloon.Variables.Channels
         public const ulong SettingsDebug = 767857429617704990;
 
         public static ulong Settings { get; set; } = 767857326975090689;
+
         public static ulong BotMods { get; set; } = 771825700419141642;
     }
 }

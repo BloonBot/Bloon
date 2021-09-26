@@ -8,6 +8,7 @@ namespace Bloon.Commands
     using Bloon.Core.Commands.Attributes;
     using Bloon.Features.IntruderBackend.Agents;
     using Bloon.Utils;
+    using Bloon.Variables;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
@@ -24,6 +25,7 @@ namespace Bloon.Commands
 
         [Command("stats")]
         [Description("Gets the stats for a particular agent.")]
+        [Cooldown(5, 300, CooldownBucketType.User)]
         public async Task AgentStats(CommandContext ctx, [RemainingText] string steamIDOrUsername)
         {
             // Find Agents
@@ -143,11 +145,61 @@ namespace Bloon.Commands
                     $"**Arrests**: `{agentStats.Arrests}` | **Captures**: `{agentStats.Captures}` | **Hacks**: `{agentStats.NetworkHacks}`\n";
             }
 
-            await ctx.RespondAsync(embed: userDetails.Build());
+            if (ctx.Channel.IsThread)
+            {
+                await ctx.RespondAsync(embed: userDetails.Build());
+            }
+            else
+            {
+                ThreadQueryResult ctxArchivedThreads = await ctx.Channel.ListPublicArchivedThreadsAsync();
+                IReadOnlyList<DiscordThreadChannel> publicArchThreads = ctxArchivedThreads.Threads;
+
+                // Check to see if we have archived threads for this user.
+                foreach (DiscordThreadChannel thread in publicArchThreads)
+                {
+                    if (thread.CreatorId == Users.Bloon)
+                    {
+                        IReadOnlyList<DiscordThreadChannelMember> threadMembers = await thread.ListJoinedMembersAsync();
+                        foreach (DiscordThreadChannelMember user in threadMembers)
+                        {
+                            // User has an open thread for this command.
+                            if (user.Id == ctx.User.Id && thread.Name.Contains($"{ctx.Member.DisplayName} -") && thread.ThreadMetadata.IsArchived)
+                            {
+                                await thread.SendMessageAsync(embed: userDetails.Build());
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                // Check if we have any public open threads for this user.
+                IReadOnlyList<DiscordThreadChannel> publicThreads = ctx.Channel.Threads;
+                foreach (DiscordThreadChannel thread in publicThreads)
+                {
+                    if (thread.CreatorId == Users.Bloon)
+                    {
+                        IReadOnlyList<DiscordThreadChannelMember> threadMembers = await thread.ListJoinedMembersAsync();
+                        foreach (DiscordThreadChannelMember user in threadMembers)
+                        {
+                            // User has an open thread for this command.
+                            if (user.Id == ctx.User.Id && thread.Name.Contains($"{ctx.Member.DisplayName} -") && !thread.ThreadMetadata.IsArchived)
+                            {
+                                await thread.SendMessageAsync(embed: userDetails.Build());
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                var mess = await ctx.Message.CreateThreadAsync($"{ctx.Member.DisplayName} - {steamIDOrUsername} Stats", archiveAfter: DSharpPlus.AutoArchiveDuration.Hour, reason: "User ran .stats command");
+                await mess.SendMessageAsync(embed: userDetails.Build());
+                return;
+            }
         }
 
         [Command("hiscores")]
         [Aliases("hs", "hiscore", "highscores", "highscore", "top")]
+        [Cooldown(5, 300, CooldownBucketType.User)]
         [Description("**Available Orderby Columns -**\n" +
                     "`matches`, `matches lost`, `rounds`, `rounds lost`, `rounds tied`, `kills`, `deaths`, `arrests`, `team kills`, `captures`, `hacks`, `network hacks`, `survivals`, `suicides`," +
                     " `login count`, `pickups`, `votes`, `xp`, `team damage`, `team knockdowns`, `arrested`, `knocked down`, `rounds won capture`, `rounds won hack`, `rounds won elim`, `rounds won timer`, `rounds won custom`," +
@@ -511,6 +563,7 @@ namespace Bloon.Commands
 
         [OwnersExclusive]
         [Command("agentstats")]
+        [Hidden]
         public async Task PopulateAgentTable(CommandContext ctx, string launchCode)
         {
             await ctx.RespondAsync("OK - starting the table population.");

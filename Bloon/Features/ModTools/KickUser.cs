@@ -27,7 +27,6 @@ namespace Bloon.Features.ModTools
         public async Task KickUserAsync(CommandContext ctx, ulong discordId, [RemainingText] string? notes)
 #pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         {
-
             try
             {
                 DiscordMember discordUser = await ctx.Guild.GetMemberAsync(discordId);

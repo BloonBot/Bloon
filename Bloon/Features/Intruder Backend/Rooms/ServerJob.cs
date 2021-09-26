@@ -54,20 +54,13 @@ namespace Bloon.Features.IntruderBackend.Servers
                 foreach (Rooms room in csi.Rooms)
                 {
                     roomCount++;
-                    if (roomCount >= 6)
+                    if (roomCount >= 12)
                     {
                         skipRoomCount++;
                     }
                     else
                     {
-                        if (room.Official == true)
-                        {
-                            serverList.AppendLine($"{room.ServerIcon} | {room.RegionFlag} | {room.Name} - [{room.AgentCount}/{room.MaxAgents}]");
-                        }
-                        else
-                        {
-                            skipRoomCount++;
-                        }
+                        serverList.AppendLine($"{room.ServerIcon} | {room.RegionFlag} | {room.Name} - [{room.AgentCount}/{room.MaxAgents}]");
                     }
                 }
 

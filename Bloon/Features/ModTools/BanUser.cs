@@ -1,11 +1,9 @@
 namespace Bloon.Features.ModTools
 {
     using System;
-    using System.Linq;
     using System.Threading.Tasks;
     using Bloon.Core.Commands.Attributes;
     using Bloon.Core.Database;
-    using Bloon.Variables.Roles;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
@@ -41,9 +39,8 @@ namespace Bloon.Features.ModTools
 
                 this.LogModAction(ctx.User.Id, discordId, ModAction.Banned, notes);
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":heavy_check_mark:"));
-
             }
-            catch (DSharpPlus.Exceptions.NotFoundException e)
+            catch
             {
                 // User was not found via ID. Tell mod.
                 await ctx.RespondAsync($"Failed to find a guild member with the user ID of `{discordId}`");
@@ -77,9 +74,8 @@ namespace Bloon.Features.ModTools
 
                 this.LogModAction(ctx.User.Id, discordId, ModAction.Unbanned, notes);
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":heavy_check_mark:"));
-
             }
-            catch (DSharpPlus.Exceptions.NotFoundException e)
+            catch
             {
                 // User was not found via ID. Tell mod.
                 await ctx.RespondAsync($"Failed to find a guild member with the user ID of `{discordId}`");

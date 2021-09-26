@@ -6,7 +6,6 @@ namespace Bloon.Core.Discord
     using Bloon.Core.Commands;
     using Bloon.Core.Database;
     using Bloon.Core.Services;
-    using Bloon.Features.LTP;
     using Bloon.Variables;
     using Bloon.Variables.Emojis;
     using DSharpPlus;
@@ -17,7 +16,6 @@ namespace Bloon.Core.Discord
     using DSharpPlus.SlashCommands;
     using Microsoft.Extensions.DependencyInjection;
     using Serilog;
-    using Bloon.Variables;
 
     public class Bot : Feature
     {
@@ -77,7 +75,12 @@ namespace Bloon.Core.Discord
             this.cNext.CommandErrored += this.OnCommandErroredAsync;
             this.cNext.CommandExecuted += this.OnCommandExecuted;
 
+            this.slash.SlashCommandExecuted += this.OnSlashCommandExecuted;
+            this.slash.SlashCommandErrored += this.OnSlashCommandErrored;
+            this.slash.ContextMenuErrored += this.OnContextMenuErrored;
+
             this.cNext.RegisterCommands<GeneralCommands>();
+            this.slash.RegisterCommands<GeneralSlashCommands>(Guilds.SBG);
             this.cNext.RegisterCommands<OwnerCommands>();
 
             await this.dClient.InitializeAsync();
@@ -162,8 +165,57 @@ namespace Bloon.Core.Discord
 
             await db.SaveChangesAsync();
 
-            // Do we need this?
             return;
+        }
+
+        private async Task OnSlashCommandErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandErrorEventArgs args)
+        {
+            if (args.Exception is SlashExecutionChecksFailedException)
+            {
+                await args.Context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("You do not have permission to run this command.").AsEphemeral(true));
+                return;
+            }
+
+            Log.Error(args.Exception, $"Command '{args.Context.CommandName}' errored");
+            this.bloonLog.Error($"`{args.Context.User.Username}` ran `{args.Context.CommandName}` in **[{args.Context.Guild?.Name ?? "DM"} - {args.Context.Channel.Name}]**: {args.Exception.Message}");
+        }
+
+        private async Task OnSlashCommandExecuted(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandExecutedEventArgs args)
+        {
+            string logMessage = $"`{args.Context.User.Username}` ran `/{args.Context.CommandName}` in **[{(args.Context.Guild != null ? $"{args.Context.Guild.Name} - {args.Context.Channel.Name}" : "DM")}]**";
+
+            this.bloonLog.Information(LogConsole.Commands, CommandEmojis.Run, logMessage);
+
+            Log.Debug(logMessage);
+
+            using IServiceScope scope = this.scopeFactory.CreateScope();
+            using AnalyticsContext db = scope.ServiceProvider.GetRequiredService<AnalyticsContext>();
+
+            db.Commands.Add(new Analytics.Commands()
+            {
+                Command = args.Context.CommandName,
+                Guild = args.Context.Guild != null ? args.Context.Guild.Id : ulong.MinValue,
+                Channel = args.Context.Channel != null ? args.Context.Channel.Id : ulong.MinValue,
+                UserId = args.Context.User.Id,
+                Link = args.Context.Guild != null ? $"https://discord.com/channels/{args.Context.Guild.Id}/{args.Context.Channel.Id}/{args.Context.User.Id}" : "DM",
+                Timestamp = DateTime.Now,
+            });
+
+            await db.SaveChangesAsync();
+
+            return;
+        }
+
+        private async Task OnContextMenuErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.ContextMenuErrorEventArgs args)
+        {
+            if (args.Exception is ContextMenuExecutionChecksFailedException)
+            {
+                await args.Context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("You do not have permission to do this.").AsEphemeral(true));
+                return;
+            }
+
+            Log.Error(args.Exception, $"Command '{args.Context.CommandName}' errored");
+            this.bloonLog.Error($"`{args.Context.User.Username}` ran `{args.Context.CommandName}` in **[{args.Context.Guild?.Name ?? "DM"} - {args.Context.Channel.Name}]**: {args.Exception.Message}");
         }
 
         private void OnShutdown(object sender, EventArgs args)

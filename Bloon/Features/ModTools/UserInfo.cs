@@ -15,6 +15,7 @@ namespace Bloon.Features.ModTools
     [Group("userlookup")]
     [Aliases("ul", "ui")]
     [Description("Report user information to end user.")]
+    [Hidden]
     [ModuleLifespan(ModuleLifespan.Transient)]
     public class UserInfo : BaseCommandModule
     {

@@ -1,7 +1,7 @@
-using System.Text.RegularExpressions;
-
 namespace Bloon.Utils
 {
+    using System.Text.RegularExpressions;
+
     public static class Convert
     {
         /// <summary>

@@ -20,7 +20,8 @@ namespace Bloon.Features.Doorman
         private readonly IServiceProvider provider;
         private readonly DiscordClient dClient;
 
-        private readonly Dictionary<Event, ulong> eventEmotes = new Dictionary<Event, ulong> {
+        private readonly Dictionary<Event, ulong> eventEmotes = new Dictionary<Event, ulong>
+        {
             { Event.Banned, Variables.Emojis.EventEmojis.Banned },
             { Event.Joined, Variables.Emojis.EventEmojis.Join },
             { Event.Left, Variables.Emojis.EventEmojis.Leave },

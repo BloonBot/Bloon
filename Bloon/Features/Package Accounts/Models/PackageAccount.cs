@@ -14,9 +14,6 @@ namespace Bloon.Features.PackageAccounts
         [Column("discord_id")]
         public ulong DiscordID { get; set; }
 
-        [Column("pin")]
-        public int Pin { get; set; }
-
         [Column("permissions")]
         public virtual Permission Type { get; set; }
 

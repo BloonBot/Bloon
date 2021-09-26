@@ -22,6 +22,7 @@ namespace Bloon.Features.Z26
 
         [Command("faq")]
         [Description("Retrieves a faq response")]
+        [Hidden]
         public async Task FaqAsync(CommandContext ctx, [RemainingText] string argument = null)
         {
             if (string.IsNullOrEmpty(argument))

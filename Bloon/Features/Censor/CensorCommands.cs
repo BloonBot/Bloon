@@ -14,6 +14,7 @@ namespace Bloon.Features.Censor
     [Group("censor")]
     [ModExclusive]
     [ModuleLifespan(ModuleLifespan.Transient)]
+    [Hidden]
     public class CensorCommands : BaseCommandModule
     {
         private const int CensorsPerEmbed = 15;

@@ -9,5 +9,7 @@ namespace Bloon.Variables.Emojis
         public const ulong Helprace = 499579695491448852;
         public const ulong Wiki = 587812105340846100;
         public const ulong Twitch = 655655324308471829;
+        public const ulong Github = 891007467910217739;
+        public const ulong Discord = 891008079892721725;
     }
 }

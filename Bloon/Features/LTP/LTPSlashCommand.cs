@@ -3,10 +3,11 @@ namespace Bloon.Features.LTP
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+    using Bloon.Core.Commands.Attributes;
     using Bloon.Core.Database;
+    using Bloon.Variables;
     using Bloon.Variables.Roles;
     using DSharpPlus;
-    using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
     using DSharpPlus.SlashCommands;
 
@@ -21,6 +22,7 @@ namespace Bloon.Features.LTP
         }
 
         [SlashCommand("ltp", "Add or remove yourself from the Looking To Play role.")]
+        [SlashSBGOnly]
         public async Task LTPAsyncslash(InteractionContext ctx)
         {
             DiscordRole ltp = ctx.Guild.GetRole(SBGRoles.LookingToPlay);
@@ -35,7 +37,7 @@ namespace Bloon.Features.LTP
                 });
 
                 await this.db.SaveChangesAsync();
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("You have been removed from the Looking to Play role."));
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("You have been removed from the Looking to Play role.").AsEphemeral(true));
             }
             else
             {
@@ -48,7 +50,7 @@ namespace Bloon.Features.LTP
                 });
 
                 await this.db.SaveChangesAsync();
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("You have been added to the Looking to Play role!"));
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent("You have been added to the Looking to Play role!").AsEphemeral(true));
             }
         }
     }
