@@ -145,7 +145,7 @@ namespace Bloon.Commands
                     $"**Arrests**: `{agentStats.Arrests}` | **Captures**: `{agentStats.Captures}` | **Hacks**: `{agentStats.NetworkHacks}`\n";
             }
 
-            if (ctx.Channel.IsThread)
+            if (ctx.Channel.IsThread || ctx.Channel.IsPrivate)
             {
                 await ctx.RespondAsync(embed: userDetails.Build());
             }
