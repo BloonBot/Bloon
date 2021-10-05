@@ -16,14 +16,12 @@ namespace Bloon.Core.Commands.Attributes
     {
         public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help)
         {
-            bool asdf = ctx.Channel.IsThread;
-
-            if (ctx.Guild.Id == Guilds.Bloon || ctx.Channel.IsPrivate)
+            if (ctx.Guild?.Id == Guilds.Bloon || ctx.Channel.IsPrivate)
             {
                 return Task.FromResult(true);
             }
 
-            if (ctx.Guild.Id == Guilds.SBG)
+            if (ctx.Guild?.Id == Guilds.SBG)
             {
                 List<ulong> availChannels = new List<ulong>
                 {
@@ -34,14 +32,8 @@ namespace Bloon.Core.Commands.Attributes
                     SBGChannels.Wiki,
                     SBGChannels.Offtopic,
                 };
-                if (availChannels.Contains(ctx.Channel.Id))
-                {
-                    return Task.FromResult(true);
-                }
-                else
-                {
-                    return Task.FromResult(false);
-                }
+
+                return Task.FromResult(availChannels.Contains(ctx.Channel.Id));
             }
 
             return Task.FromResult(false);
