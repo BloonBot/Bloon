@@ -47,9 +47,9 @@ CREATE TABLE `faq` (
 --
 
 INSERT INTO `faq` (`id`, `regex`, `message`) VALUES
-(1, '(what|how).*(switch|change|move|swap).*(maps?)', 'To change the map ingame make yourself an admin & then use `\\/changemap mapName` (You must be the admin to do this).'),
-(2, '(how|what).*(can)?.*(make|give|become|be) (admini?s?t?r?a?t?o?r?)', 'To make yourself an admin use `\\/makeadmin` this only works if you are the original room creator.'),
-(3, '(is).*(map|list).*(map|list)', 'The Official maps are Riverside, Mountainside, Cliffside, and Oceanside; there are many unofficial maps out there too, check them out at: <https:\\/\\/steamcommunity.com\\/app\\/518150\\/workshop\\/>'),
+(1, '(what|how).*(switch|change|move|swap).*(maps?)', 'To change the map ingame make yourself an admin & then use `/changemap mapName` (You must be the admin to do this).'),
+(2, '(how|what).*(can)?.*(make|give|become|be) (admini?s?t?r?a?t?o?r?)', 'To make yourself an admin use `/makeadmin` this only works if you are the original room creator.'),
+(3, '(is).*(map|list).*(map|list)', 'The Official maps are Riverside, Mountainside, Cliffside, and Oceanside; there are many unofficial maps out there too, check them out at: <https://steamcommunity.com/app/518150/workshop/>'),
 (4, '(how).*(report).*(bugs?)', 'You can report bugs at: <https://superbossgames.helprace.com/>'),
 (5, '(how|when|what) (long|length|doe?s?).*(ban?n?e?d?s?)', 'Temporary bans last about 15 minutes. A timer on the main menu will tell you how much time is left on your temporary ban.  '),
 (6, '(cant|can\'t|cannot).*(download).*(maps?)', 'If the map is not downloading correctly you may want to restart your game, if problems persist clear your map cache.'),
@@ -60,9 +60,9 @@ INSERT INTO `faq` (`id`, `regex`, `message`) VALUES
 (12, '(what|how).*(is|cant?n?o?t?|do).*(aug)', 'The Advanced User Group is a group formed to help serious players run matches, play tournaments, and engage in private community events and activities.'),
 (13, '(who).*(creato?r?e?d?|mad?k?e).*(intruder)', 'Intruder is being developed by Rob Storm and Austin Roush.'),
 (14, '(how|can) (to|do|you).*(kick)', 'To kick a player, use the button on their player profile by clicking the (i) icon next to their name in the Teams menu.'),
-(15, '(is|how|can).*(show|change).*(fps)', 'You can show your current FPS on your hud simply by doing `\\/fps`. You can change your FPS and Vsync settings from the options'),
+(15, '(is|how|can).*(show|change).*(fps)', 'You can show your current FPS on your hud simply by doing `/fps`. You can change your FPS and Vsync settings from the options'),
 (16, '(((what).*(is).*(default|normal|original).*(gravity))|((how|can|do).*(change|modify).*(gravity)))', 'Gravity by default is at `-9.81`. To change the gravity you do `/gravity #`. ***REMINDER YOU MUST BE AN ADMIN TO DO THIS***'),
-(17, '(((how|can).*(change|retrieve).*(passw?o?r?d?))|((i).*(forgot).*(password)))', 'You may reset your old user password at: <https:\\/\\/intruderfps.com\\/reset-password>'),
+(17, '(((how|can).*(change|retrieve).*(passw?o?r?d?))|((i).*(forgot).*(password)))', 'You may reset your old user password at: <https://intruderfps.com/reset-password>'),
 (18, '(do|can|how|is|where).*(pay).*(with) (paypal)', 'You can use Paypal on Steam!'),
 (19, '(what).*(are).*(controls)', 'The controls are: https://i.imgur.com/Bkc97Fp.jpg'),
 (20, '(how|can).*(to|do|you|move).*(time|sun) (in) (game|intruder)', 'You can change the time of day in game by doing /suntime 15 (24 hour time scale) ***WARNING YOU MUST BE MASTER CLIENT AND ADMIN***'),
