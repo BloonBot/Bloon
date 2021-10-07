@@ -128,7 +128,14 @@ namespace Bloon.Features.Wiki
                 return null;
             }
 
-            JToken jArticle = response["query"]["recentchanges"][0];
+            JArray changes = response["query"]["recentchanges"] as JArray;
+
+            if (changes.Count == 0)
+            {
+                return null;
+            }
+
+            JObject jArticle = changes[0] as JObject;
 
             WikiArticle article = new WikiArticle()
             {

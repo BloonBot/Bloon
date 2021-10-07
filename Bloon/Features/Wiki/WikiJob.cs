@@ -35,7 +35,7 @@ namespace Bloon.Features.Wiki
             // Unable to fetch the latest post from the wiki
             if (article == null)
             {
-                this.bloonLog.Error($"Something went wrong fetching the latest wiki article! Check Log File");
+                //this.bloonLog.Error($"Something went wrong fetching the latest wiki article! Check Log File");
                 return;
             }
             else if (!await this.wikiService.TryStoreNewAsync(article))
