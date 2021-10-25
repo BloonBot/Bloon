@@ -9,6 +9,7 @@ namespace Bloon.Features.Doorman
     using Bloon.Core.Database;
     using Bloon.Core.Services;
     using Bloon.Variables.Channels;
+    using Bloon.Variables.Roles;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using DSharpPlus.EventArgs;
@@ -42,6 +43,7 @@ namespace Bloon.Features.Doorman
         {
             this.dClient.GuildMemberAdded -= this.GeneralWelcomeEmbed;
             this.dClient.GuildMemberAdded -= this.BloonsideEmbed;
+            this.dClient.GuildMemberAdded -= this.GiveAgentRoleAsync;
 
             return base.Disable();
         }
@@ -50,6 +52,7 @@ namespace Bloon.Features.Doorman
         {
             this.dClient.GuildMemberAdded += this.GeneralWelcomeEmbed;
             this.dClient.GuildMemberAdded += this.BloonsideEmbed;
+            this.dClient.GuildMemberAdded += this.GiveAgentRoleAsync;
 
             return base.Enable();
         }
@@ -65,6 +68,17 @@ namespace Bloon.Features.Doorman
             }
 
             await sbgChannel.SendMessageAsync(this.BuildEmbed(args.Member));
+        }
+
+        private async Task GiveAgentRoleAsync(DiscordClient dClient, GuildMemberAddEventArgs args)
+        {
+            // If guild isn't SBG, just ignore this user join event.
+            if (args.Guild.Id != Variables.Guilds.SBG)
+            {
+                return;
+            }
+
+            await args.Member.GrantRoleAsync(args.Guild.GetRole(SBGRoles.Agent));
         }
 
         private async Task BloonsideEmbed(DiscordClient dClient, GuildMemberAddEventArgs args)
