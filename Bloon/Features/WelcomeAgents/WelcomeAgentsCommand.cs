@@ -105,7 +105,7 @@ namespace Bloon.Features.WelcomeAgents
             {
                 foreach (DiscordMessage msg in await rulesAndInfo.GetMessagesAsync())
                 {
-                    if (msg.Author.Id == ctx.Client.CurrentUser.Id && msg.Id == 892811060413886504)
+                    if (msg.Author.Id == ctx.Client.CurrentUser.Id && msg.Id == SBGMessages.TheOnlyMessageIDWeCurrentlyCareAboutAtleastInAPublicFacingPerspective)
                     {
                         await msg.ModifyAsync(embed: this.rulesEmbed.Build());
                         return;

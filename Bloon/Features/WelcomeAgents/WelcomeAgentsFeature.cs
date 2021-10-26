@@ -5,6 +5,7 @@ namespace Bloon.Features.WelcomeAgents
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
     using Bloon.Variables.Emojis;
+    using Bloon.Variables.Messages;
     using Bloon.Variables.Roles;
     using DSharpPlus;
     using DSharpPlus.CommandsNext;
@@ -30,6 +31,9 @@ namespace Bloon.Features.WelcomeAgents
         {
             this.cNext.UnregisterCommands<WelcomeAgentsCommand>();
 
+            this.dClient.MessageReactionAdded -= this.NewsRoleAssignment;
+            this.dClient.MessageReactionRemoved -= this.DClient_MessageReactionRemoved;
+
             return base.Disable();
         }
 
@@ -45,15 +49,15 @@ namespace Bloon.Features.WelcomeAgents
 
         private async Task NewsRoleAssignment(DiscordClient dClient, MessageReactionAddEventArgs args)
         {
-            if (args.User.Id == dClient.CurrentUser.Id || (args.Message?.Id != 892811060413886504 && !args.Emoji.Equals(DiscordEmoji.FromGuildEmote(this.dClient, ManageRoleEmojis.BloonMoji))))
+            if (args.User.Id == dClient.CurrentUser.Id || (args.Message?.Id != SBGMessages.TheOnlyMessageIDWeCurrentlyCareAboutAtleastInAPublicFacingPerspective && !args.Emoji.Equals(DiscordEmoji.FromGuildEmote(this.dClient, ManageRoleEmojis.BloonMoji))))
             {
                 return;
             }
 
-            var discordUser = await args.Guild.GetMemberAsync(args.User.Id);
+            DiscordMember discordUser = await args.Guild.GetMemberAsync(args.User.Id);
             DiscordRole newsRole = args.Guild.GetRole(SBGRoles.News);
 
-            if (args.Message.Id == 892811060413886504 && !discordUser.Roles.Contains(newsRole))
+            if (args.Message.Id == SBGMessages.TheOnlyMessageIDWeCurrentlyCareAboutAtleastInAPublicFacingPerspective && !discordUser.Roles.Contains(newsRole))
             {
                 await discordUser.GrantRoleAsync(newsRole);
             }
@@ -62,15 +66,15 @@ namespace Bloon.Features.WelcomeAgents
 
         private async Task DClient_MessageReactionRemoved(DiscordClient sender, MessageReactionRemoveEventArgs args)
         {
-            if (args.User.Id == this.dClient.CurrentUser.Id || (args.Message?.Id != 892811060413886504 && !args.Emoji.Equals(DiscordEmoji.FromGuildEmote(this.dClient, ManageRoleEmojis.BloonMoji))))
+            if (args.User.Id == this.dClient.CurrentUser.Id || (args.Message?.Id != SBGMessages.TheOnlyMessageIDWeCurrentlyCareAboutAtleastInAPublicFacingPerspective && !args.Emoji.Equals(DiscordEmoji.FromGuildEmote(this.dClient, ManageRoleEmojis.BloonMoji))))
             {
                 return;
             }
 
-            var discordUser = await args.Guild.GetMemberAsync(args.User.Id);
+            DiscordMember discordUser = await args.Guild.GetMemberAsync(args.User.Id);
             DiscordRole newsRole = args.Guild.GetRole(SBGRoles.News);
 
-            if (args.Message.Id == 892811060413886504 && discordUser.Roles.Contains(newsRole))
+            if (args.Message.Id == SBGMessages.TheOnlyMessageIDWeCurrentlyCareAboutAtleastInAPublicFacingPerspective && discordUser.Roles.Contains(newsRole))
             {
                 await discordUser.RevokeRoleAsync(newsRole);
             }
