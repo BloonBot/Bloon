@@ -40,7 +40,7 @@ namespace Bloon.Features.WelcomeAgents
             $"**10**. No discussion of moderator actions in public chats. Contact <@182979075256745985> if you feel wrongfully moderated in accordance with the rules listed above.",
         };
 
-        public DiscordEmbedBuilder RoleEmbed = new DiscordEmbedBuilder
+        private DiscordEmbedBuilder roleEmbed = new DiscordEmbedBuilder
         {
             Footer = new DiscordEmbedBuilder.EmbedFooter
             {
@@ -59,10 +59,10 @@ namespace Bloon.Features.WelcomeAgents
             StringBuilder roleLinks = new StringBuilder();
 
             roleLinks.Append($"<@&{SBGRoles.Developer}> : The developers of Intruder! \n");
-            roleLinks.Append($"<@&892781549794254848> : Official staff partners working along with the developer for community management.\n");
+            roleLinks.Append($"<@&{SBGRoles.Nerds}> : Official staff partners working along with the developer for community management.\n");
             roleLinks.Append($"<@&{SBGRoles.Mod}> : The amazing community volunteers assisting the team to keep the peace.  \n");
-            roleLinks.Append($"<@&103941588178202624> : A group of serious players who engage the community. \n");
-            roleLinks.Append($"<@&892781476414910464> : All members of the community.  \n");
+            roleLinks.Append($"<@&{SBGRoles.AUG}> : A group of serious players who engage the community. \n");
+            roleLinks.Append($"<@&{SBGRoles.Agents}> : All members of the community.  \n");
 
 
             StringBuilder importLinks = new StringBuilder();
@@ -98,7 +98,7 @@ namespace Bloon.Features.WelcomeAgents
         [Hidden]
         public async Task UpdateRoleEmbed(CommandContext ctx)
         {
-            this.RoleEmbed.Description = $"React to this message using {DiscordEmoji.FromGuildEmote(ctx.Client, 892799370372739072)} reaction to subscribe to news and stay up to date. This way, we will reserve using the @everyone for essential news only.\n";
+            this.roleEmbed.Description = $"React to this message using {DiscordEmoji.FromGuildEmote(ctx.Client, ManageRoleEmojis.BloonMoji)} reaction to subscribe to news and stay up to date. This way, we will reserve using the @everyone for essential news only.\n";
             DiscordChannel rulesAndInfo = ctx.Guild.GetChannel(SBGChannels.RulesAndInfo);
 
             StringBuilder roleLinks = new StringBuilder();

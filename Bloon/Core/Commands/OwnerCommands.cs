@@ -1,21 +1,17 @@
 #pragma warning disable CA1822 // Mark members as static
 namespace Bloon.Core.Commands
 {
-    using System;
-    using System.Diagnostics;
-    using System.Globalization;
-    using System.Reflection;
-    using System.Text;
-    using System.Threading.Tasks;
     using Bloon.Core.Commands.Attributes;
     using Bloon.Features.IntruderBackend.Servers;
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Emojis;
     using DSharpPlus;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
-    using Bloon.Variables.Roles;
+    using System;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.Reflection;
+    using System.Threading.Tasks;
 
     public class OwnerCommands : BaseCommandModule
     {

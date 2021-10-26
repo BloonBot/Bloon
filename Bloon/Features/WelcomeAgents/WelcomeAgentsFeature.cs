@@ -1,12 +1,11 @@
 namespace Bloon.Features.WelcomeAgents
 {
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Bloon.Core.Database;
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
-    using Bloon.Variables.Channels;
+    using Bloon.Variables.Emojis;
+    using Bloon.Variables.Roles;
     using DSharpPlus;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.Entities;
@@ -46,13 +45,13 @@ namespace Bloon.Features.WelcomeAgents
 
         private async Task NewsRoleAssignment(DiscordClient dClient, MessageReactionAddEventArgs args)
         {
-            if (args.User.Id == dClient.CurrentUser.Id || (args.Message?.Id != 892811060413886504 && !args.Emoji.Equals(DiscordEmoji.FromGuildEmote(this.dClient, 892799370372739072))))
+            if (args.User.Id == dClient.CurrentUser.Id || (args.Message?.Id != 892811060413886504 && !args.Emoji.Equals(DiscordEmoji.FromGuildEmote(this.dClient, ManageRoleEmojis.BloonMoji))))
             {
                 return;
             }
 
             var discordUser = await args.Guild.GetMemberAsync(args.User.Id);
-            DiscordRole newsRole = args.Guild.GetRole(892798225034145843);
+            DiscordRole newsRole = args.Guild.GetRole(SBGRoles.News);
 
             if (args.Message.Id == 892811060413886504 && !discordUser.Roles.Contains(newsRole))
             {
@@ -63,13 +62,13 @@ namespace Bloon.Features.WelcomeAgents
 
         private async Task DClient_MessageReactionRemoved(DiscordClient sender, MessageReactionRemoveEventArgs args)
         {
-            if (args.User.Id == this.dClient.CurrentUser.Id || (args.Message?.Id != 892811060413886504 && !args.Emoji.Equals(DiscordEmoji.FromGuildEmote(this.dClient, 892799370372739072))))
+            if (args.User.Id == this.dClient.CurrentUser.Id || (args.Message?.Id != 892811060413886504 && !args.Emoji.Equals(DiscordEmoji.FromGuildEmote(this.dClient, ManageRoleEmojis.BloonMoji))))
             {
                 return;
             }
 
             var discordUser = await args.Guild.GetMemberAsync(args.User.Id);
-            DiscordRole newsRole = args.Guild.GetRole(892798225034145843);
+            DiscordRole newsRole = args.Guild.GetRole(SBGRoles.News);
 
             if (args.Message.Id == 892811060413886504 && discordUser.Roles.Contains(newsRole))
             {
