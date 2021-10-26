@@ -17,9 +17,7 @@ namespace Bloon.Features.WelcomeAgents
     [ModuleLifespan(ModuleLifespan.Transient)]
     public class WelcomeAgentsCommand : BaseCommandModule
     {
-        private readonly BloonContext db;
-
-        public DiscordEmbedBuilder RulesEmbed = new DiscordEmbedBuilder
+        private DiscordEmbedBuilder rulesEmbed = new DiscordEmbedBuilder
         {
             Footer = new DiscordEmbedBuilder.EmbedFooter
             {
@@ -74,8 +72,8 @@ namespace Bloon.Features.WelcomeAgents
             importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, PlatformEmojis.Discord)} | [**Server Invite**](https://discord.gg/superbossgames)\n");
 
 
-            this.RulesEmbed.AddField($"Roles", roleLinks.ToString(), false);
-            this.RulesEmbed.AddField($"Important Links", importLinks.ToString(), false);
+            this.rulesEmbed.AddField($"Roles", roleLinks.ToString(), false);
+            this.rulesEmbed.AddField($"Important Links", importLinks.ToString(), false);
 
             try
             {
@@ -83,7 +81,7 @@ namespace Bloon.Features.WelcomeAgents
                 {
                     if (msg.Author.Id == ctx.Client.CurrentUser.Id && msg.Id == 892811059897991208)
                     {
-                        await msg.ModifyAsync(embed: this.RulesEmbed.Build());
+                        await msg.ModifyAsync(embed: this.rulesEmbed.Build());
                         return;
                     }
                 }
@@ -109,7 +107,7 @@ namespace Bloon.Features.WelcomeAgents
                 {
                     if (msg.Author.Id == ctx.Client.CurrentUser.Id && msg.Id == 892811060413886504)
                     {
-                        await msg.ModifyAsync(embed: this.RulesEmbed.Build());
+                        await msg.ModifyAsync(embed: this.rulesEmbed.Build());
                         return;
                     }
                 }
