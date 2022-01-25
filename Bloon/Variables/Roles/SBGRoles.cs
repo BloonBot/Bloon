@@ -21,6 +21,12 @@ namespace Bloon.Variables.Roles
 
         public static ulong Agent { get; set; } = 892781476414910464;
 
+        public static ulong News { get; private set; } = 892798225034145843;
+
+        public static ulong Nerds { get; private set; } = 892781549794254848;
+
+        public static ulong AUG { get; private set; } = 103941588178202624;
+
         public static void MockFakeStub()
         {
             Developer = MockRoles.Admin;

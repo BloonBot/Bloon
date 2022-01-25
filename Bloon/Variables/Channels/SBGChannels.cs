@@ -5,6 +5,22 @@ namespace Bloon.Variables.Channels
     /// </summary>
     public static class SBGChannels
     {
+        public static ulong ModAlerts { get; private set; } = 892873525688434788;
+
+        public static ulong ModServerLogs { get; private set; } = 892873550535467018;
+
+        public static ulong ModJoinLeaveLog { get; private set; } = 892873587281780826;
+
+        public static ulong HowToModerate { get; private set; } = 892873682479894539;
+
+        public static ulong ModerationCommands { get; private set; } = 892873710053261312;
+
+        public static ulong ModerationActions { get; private set; } = 892873793817686066;
+
+        public static ulong ModerationsEvidence { get; private set; } = 892873844359057428;
+
+        public static ulong ModChat { get; private set; } = 892873876848132196;
+
         public static ulong Announcements { get; private set; } = 125962601866854400;
 
         public static ulong DevUpdates { get; private set; } = 630812800389742592;
@@ -52,6 +68,8 @@ namespace Bloon.Variables.Channels
         public static ulong Bloonside { get; private set; } = 450731463286063104;
 
         public static ulong Offtopic { get; private set; } = 122802899905413120;
+
+        public static ulong RulesAndInfo { get; private set; } = 892796013759303760;
 
         public static void MockFakeStub()
         {

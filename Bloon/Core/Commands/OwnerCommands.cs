@@ -8,8 +8,6 @@ namespace Bloon.Core.Commands
     using System.Threading.Tasks;
     using Bloon.Core.Commands.Attributes;
     using Bloon.Features.IntruderBackend.Servers;
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Emojis;
     using DSharpPlus;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
@@ -65,58 +63,6 @@ namespace Bloon.Core.Commands
         //    // await this.roomService.ArchiveRoomMapHistory(rooms);
         //    await ctx.RespondAsync($"{rooms.Count}");
         //}
-
-        [OwnersExclusive]
-        [Command("welcomeagents")]
-        [Hidden]
-        public async Task UpdateWelcomeAgents(CommandContext ctx)
-        {
-            // DiscordChannel sbgBugs = await this.dClient.GetChannelAsync(SBGChannels.Bugs);
-            DiscordEmbedBuilder hrEmbed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor(23, 153, 177),
-                Timestamp = DateTime.Now,
-                Title = "Welcome new Agents!",
-            };
-
-#pragma warning disable SA1118 // Parameter should not span multiple lines
-            hrEmbed.AddField(
-                "Our Channels",
-                $"<#{SBGChannels.Announcements}> - get the latest news for Intruder here\n" +
-                $"<#{SBGChannels.CurrentServerInfo}> - see what servers are running on Intruder right now\n" +
-                $"<#{SBGChannels.Help}> - come here to get technical help with your game or account\n" +
-                $"<#{SBGChannels.General}> - come here for general chat with players and developers\n" +
-                $"<#{SBGChannels.Mapmaker}> - come here for Intruder Map Maker help and design ideas\n" +
-                $"<#{SBGChannels.PicsNVids}> - check out and add your own Intruder pics, videos, and gifs\n" +
-                $"<#{SBGChannels.Wiki}> - come here to ask about the wiki or to learn to edit it yourself\n" +
-                $"<#{SBGChannels.Bloonside}> - use my commands here so you don't clutter the other chats", false);
-
-            hrEmbed.AddField(
-                "Important Links",
-                $"{SBGEmojis.Superboss}[**Homepage**](https://intruderfps.com/)\n" +
-                $"{PlatformEmojis.YouTube}[**Youtube**](https://www.youtube.com/superbossgames)\n" +
-                $"{PlatformEmojis.Reddit}[**Reddit Page**](https://www.reddit.com/r/Intruder)\n" +
-                $"{PlatformEmojis.Twitter}[**Twitter**](https://twitter.com/SuperbossGames/)\n" +
-                $"{PlatformEmojis.Steam}[**Steam Group**](https://steamcommunity.com/groups/SuperbossGames)\n", false);
-
-            hrEmbed.AddField(
-                "Other Links",
-                $"{SBGEmojis.Superboss}[**Homepage**](https://intruderfps.com/)\n" +
-                $"{PlatformEmojis.YouTube}[**Youtube**](https://www.youtube.com/superbossgames)\n" +
-                $"{PlatformEmojis.Reddit}[**Reddit Page**](https://www.reddit.com/r/Intruder)\n" +
-                $"{PlatformEmojis.Twitter}[**Twitter**](https://twitter.com/SuperbossGames/)\n" +
-                $"{PlatformEmojis.Steam}[**Steam Group**](https://steamcommunity.com/groups/SuperbossGames)\n", false);
-#pragma warning restore SA1118 // Parameter should not span multiple lines
-
-            string extensions = $"{DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Chrome)} [**Chrome**](https://chrome.google.com/webstore/detail/intruder-notifications/aoebpknpfcepopfgnbnikaipjeekalim) | "
-                + $"[**Firefox**](https://addons.mozilla.org/en-US/firefox/addon/intruder-notifications/) {DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Firefox)}";
-
-            hrEmbed.AddField("Browser Extensions", extensions);
-
-            await ctx.RespondAsync(embed: hrEmbed.Build());
-
-            // DiscordMessage message = await sbgBugs.SendMessageAsync(embed: hrEmbed);
-        }
 
         private static string GetUptime()
         {
