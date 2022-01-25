@@ -1,13 +1,11 @@
 namespace Bloon.Features.WelcomeAgents
 {
     using System;
-    using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using Bloon.Core.Commands.Attributes;
-    using Bloon.Core.Database;
     using Bloon.Variables.Channels;
     using Bloon.Variables.Emojis;
+    using Bloon.Variables.Messages;
     using Bloon.Variables.Roles;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
@@ -60,8 +58,7 @@ namespace Bloon.Features.WelcomeAgents
             roleLinks.Append($"<@&{SBGRoles.Nerds}> : Official staff partners working along with the developer for community management.\n");
             roleLinks.Append($"<@&{SBGRoles.Mod}> : The amazing community volunteers assisting the team to keep the peace.  \n");
             roleLinks.Append($"<@&{SBGRoles.AUG}> : A group of serious players who engage the community. \n");
-            roleLinks.Append($"<@&{SBGRoles.Agents}> : All members of the community.  \n");
-
+            roleLinks.Append($"<@&{SBGRoles.Agent}> : All members of the community.  \n");
 
             StringBuilder importLinks = new StringBuilder();
             importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, PlatformEmojis.YouTube)} | [**Youtube**](https://www.youtube.com/superbossgames)\n");
@@ -70,7 +67,6 @@ namespace Bloon.Features.WelcomeAgents
             importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, PlatformEmojis.Reddit)} | [**Reddit**](https://www.reddit.com/r/Intruder)\n");
             importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, PlatformEmojis.Twitch)} | [**Twitch**](https://www.twitch.tv/superbossgames)\n");
             importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, PlatformEmojis.Discord)} | [**Server Invite**](https://discord.gg/superbossgames)\n");
-
 
             this.rulesEmbed.AddField($"Roles", roleLinks.ToString(), false);
             this.rulesEmbed.AddField($"Important Links", importLinks.ToString(), false);

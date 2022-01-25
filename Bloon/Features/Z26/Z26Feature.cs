@@ -1,7 +1,6 @@
 namespace Bloon.Features.Z26
 {
     using System.Threading.Tasks;
-    using Bloon.Core.Discord;
     using Bloon.Core.Services;
     using DSharpPlus;
     using DSharpPlus.CommandsNext;

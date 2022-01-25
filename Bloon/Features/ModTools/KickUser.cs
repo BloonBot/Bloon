@@ -1,11 +1,9 @@
 namespace Bloon.Features.ModTools
 {
     using System;
-    using System.Linq;
     using System.Threading.Tasks;
     using Bloon.Core.Commands.Attributes;
     using Bloon.Core.Database;
-    using Bloon.Variables.Roles;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;

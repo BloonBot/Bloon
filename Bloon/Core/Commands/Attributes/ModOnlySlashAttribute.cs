@@ -2,7 +2,6 @@ namespace Bloon.Core.Commands.Attributes
 {
     using System.Linq;
     using System.Threading.Tasks;
-    using Bloon.Variables;
     using Bloon.Variables.Roles;
     using DSharpPlus.SlashCommands;
 

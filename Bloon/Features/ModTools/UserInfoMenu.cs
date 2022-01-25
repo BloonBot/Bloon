@@ -3,16 +3,12 @@ namespace Bloon.Features.ModTools
     using System;
     using System.Collections.Generic;
     using System.Globalization;
-    using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
     using Bloon.Analytics.Users;
     using Bloon.Core.Commands.Attributes;
-    using Bloon.Core.Database;
     using Bloon.Features.Analytics;
     using Bloon.Variables;
-    using Bloon.Variables.Emojis;
-    using Bloon.Variables.Roles;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using DSharpPlus.SlashCommands;

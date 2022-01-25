@@ -3,7 +3,6 @@ namespace Bloon.Features.LTP
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-    using Bloon.Core.Commands.Attributes;
     using Bloon.Core.Database;
     using Bloon.Variables.Roles;
     using DSharpPlus.CommandsNext;

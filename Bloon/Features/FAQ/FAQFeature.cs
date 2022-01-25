@@ -4,7 +4,6 @@ namespace Bloon.Features.FAQ
     using System.Linq;
     using System.Threading.Tasks;
     using Bloon.Core.Database;
-    using Bloon.Core.Discord;
     using Bloon.Core.Services;
     using Bloon.Variables.Channels;
     using DSharpPlus;
