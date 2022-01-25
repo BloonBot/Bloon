@@ -13,7 +13,7 @@ namespace Bloon.Core.Commands
     /// This class pertains to the commands that can be ran practically anywhere. They're typically short and simple commands to run.
     /// </summary>
     [ModuleLifespan(ModuleLifespan.Transient)]
-    [General]
+    [LimitedChannels]
     public class GeneralCommands : BaseCommandModule
     {
         private readonly Dictionary<char, char> vecishMapping = new Dictionary<char, char>()

@@ -16,6 +16,7 @@ namespace Bloon.Features.FAQ
     [Group("ar")]
     [ModExclusive]
     [ModuleLifespan(ModuleLifespan.Transient)]
+    [Hidden]
     public class FAQCommands : BaseCommandModule
     {
         private const int FaqsPerEmbed = 5;

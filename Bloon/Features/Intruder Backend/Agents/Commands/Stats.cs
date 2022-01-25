@@ -13,7 +13,7 @@ namespace Bloon.Commands
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
 
-    [StatsAttribute]
+    [LimitedChannels]
     public class Stats : BaseCommandModule
     {
         private readonly AgentService agentService;

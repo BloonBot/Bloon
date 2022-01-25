@@ -4,6 +4,7 @@ namespace Bloon.Features.IntruderBackend.Servers
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using Bloon.Core.Commands.Attributes;
     using Bloon.Features.IntruderBackend.Rooms;
     using Bloon.Variables.Emojis;
     using DSharpPlus.CommandsNext;
@@ -13,6 +14,7 @@ namespace Bloon.Features.IntruderBackend.Servers
     [Group("servers")]
     [Aliases("gsi")]
     [Description("Retrieves all active servers.")]
+    [LimitedChannels]
     public class ServersCommand : BaseCommandModule
     {
         private readonly RoomService roomService;

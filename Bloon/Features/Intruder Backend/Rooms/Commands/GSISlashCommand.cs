@@ -21,7 +21,7 @@ namespace Bloon.Features.IntruderBackend.Servers
         }
 
         [SlashCommand("gsi", "Get server information.")]
-        [SlashSBGOnly]
+        [SlashSBGExclusive]
         public async Task GSISlash(InteractionContext ctx)
         {
             CurrentServerInfo csi = await this.roomService.GetCSIRooms(null, null, null, null, "false", "false", "false", "false", "false", null, 1, 100);

@@ -15,6 +15,7 @@ namespace Bloon.Features.Workshop
     [Group("maps")]
     [Aliases("workshop", "wmaps", "wmap")]
     [Description("Retrieves workshop data.")]
+    [LimitedChannels]
     public class WorkshopCommands : BaseCommandModule
     {
         private readonly WorkshopService workshopService;

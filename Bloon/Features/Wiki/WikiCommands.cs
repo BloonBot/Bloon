@@ -16,7 +16,7 @@ namespace Bloon.Features.Wiki
 
     [Group("wiki")]
     [Description("Retrieves a small description of a specified wiki article along with the URL where the information is pulled from.")]
-    [GeneralAttribute]
+    [LimitedChannels(additionalChannels: 154636594949652480)]
     public class WikiCommands : BaseCommandModule
     {
         private readonly WikiService wikiService;

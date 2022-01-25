@@ -25,7 +25,7 @@ namespace Bloon.Features.ModTools
 
         // Runs when a user selects the app via a Discord Message
         [ContextMenu(ApplicationCommandType.MessageContextMenu, "User Channel Perms")]
-        [ModOnlySlash]
+        [ContextModExclusive]
         public async Task UserInfoFromMessageCommand(ContextMenuContext ctx)
         {
             DiscordGuild guild = await ctx.Client.GetGuildAsync(Guilds.SBG);
@@ -55,7 +55,7 @@ namespace Bloon.Features.ModTools
 
         // Runs when a user selects the app via a User
         [ContextMenu(ApplicationCommandType.UserContextMenu, "Get User Info")]
-        [ModOnlySlash]
+        [ContextModExclusive]
         public async Task UserInfoFromUserMenu(ContextMenuContext ctx)
         {
             DiscordGuild guild = await ctx.Client.GetGuildAsync(Guilds.SBG);

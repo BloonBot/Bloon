@@ -2,6 +2,7 @@ namespace Bloon.Features.Z26
 {
     using System.Linq;
     using System.Threading.Tasks;
+    using Bloon.Core.Commands.Attributes;
     using Bloon.Core.Database;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
@@ -11,6 +12,7 @@ namespace Bloon.Features.Z26
     /// This class pertains to the commands that can be ran practically anywhere. They're typically short and simple commands to run.
     /// </summary>
     [ModuleLifespan(ModuleLifespan.Transient)]
+    [LimitedChannels]
     public class Z26Commands : BaseCommandModule
     {
         private readonly BloonContext db;
