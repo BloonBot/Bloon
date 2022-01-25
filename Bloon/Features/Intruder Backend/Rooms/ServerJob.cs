@@ -69,7 +69,7 @@ namespace Bloon.Features.IntruderBackend.Servers
                     serverList.Append($"<:unofficial:{ServerEmojis.Unofficial}> <:os:{ServerEmojis.Official}> <:passworded:{ServerEmojis.Password}> and **{skipRoomCount}** more.");
                 }
 
-                serverEmbed.AddField($"Server | Region | Name - [Agents]", serverList.ToString(), true);
+                serverEmbed.AddField($"Region | Name - [Agents]", serverList.ToString(), true);
             }
             else
             {

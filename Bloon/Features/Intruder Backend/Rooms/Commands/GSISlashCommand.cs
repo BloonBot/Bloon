@@ -60,7 +60,7 @@ namespace Bloon.Features.IntruderBackend.Servers
 
                 serverEmbed.Title = "Current Server Information";
                 serverEmbed.Url = "https://intruderfps.com/rooms";
-                serverEmbed.AddField($"Server | Region | Name - [Agents]", serverList.ToString(), true);
+                serverEmbed.AddField($"Region | Name - [Agents]", serverList.ToString(), true);
             }
             else
             {
