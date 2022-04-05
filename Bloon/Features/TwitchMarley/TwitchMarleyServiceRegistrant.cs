@@ -19,7 +19,7 @@ namespace Bloon.Features.TwitchMarley
 
             // [x] Generate the access token once with an expiration span of ~60 days
             // [ ] Let TwitchLib handle the token by generating a new one on every request
-            twitchAPI.Settings.AccessToken = twitchAPI.V5.Auth.GetAccessToken();
+            twitchAPI.Settings.AccessToken = twitchAPI.Auth.GetAccessToken();
 
             services.AddSingleton<TwitchClient>()
                 .AddSingleton(twitchAPI);
