@@ -58,7 +58,7 @@ namespace Bloon.Features.Workshop
                 // Only 1 new/updated
                 workshopMapEmbed.Timestamp = maps.ElementAt(0).TimeUpdated;
                 workshopMapEmbed.Title = $"Workshop Update: {maps.ElementAt(0).Title}";
-                workshopMapEmbed.Description = $"{DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)} __[{await this.workshopService.GetDBWorkshopMapCreator(maps.ElementAt(0).CreatorSteamID)}](https://steamcommunity.com/profiles/{maps.ElementAt(0).CreatorSteamID}/myworkshopfiles/?appid=518150)__ \n +" +
+                workshopMapEmbed.Description = $"{DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)} __[{await this.workshopService.GetDBWorkshopMapCreator(maps.ElementAt(0).CreatorSteamID)}](https://steamcommunity.com/profiles/{maps.ElementAt(0).CreatorSteamID}/myworkshopfiles/?appid=518150)__ \n" +
                     $"{maps.ElementAt(0).Description.Truncate(1000)}{(maps.ElementAt(0).Description.Length > 0 ? "..." : string.Empty)}";
                 workshopMapEmbed.Url = $"https://steamcommunity.com/sharedfiles/filedetails/?id={maps.ElementAt(0).FileID}";
                 workshopMapEmbed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
