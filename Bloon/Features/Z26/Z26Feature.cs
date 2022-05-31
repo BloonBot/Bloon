@@ -3,16 +3,18 @@ namespace Bloon.Features.Z26
     using System.Threading.Tasks;
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.CommandsNext;
+    using DSharpPlus.SlashCommands;
 
     public class Z26Feature : Feature
     {
-        private readonly CommandsNextExtension cNext;
+        private readonly SlashCommandsExtension slash;
 
         public Z26Feature(DiscordClient dClient)
         {
-            this.cNext = dClient.GetCommandsNext();
+            this.slash = dClient.GetSlashCommands();
         }
 
         public override string Name => "Z26";
@@ -21,14 +23,12 @@ namespace Bloon.Features.Z26
 
         public override Task Disable()
         {
-            this.cNext.UnregisterCommands<Z26Commands>();
-
             return base.Disable();
         }
 
         public override Task Enable()
         {
-            this.cNext.RegisterCommands<Z26Commands>();
+            //this.slash.RegisterCommands<Z26Commands>(Guilds.Bloon);
 
             return base.Enable();
         }

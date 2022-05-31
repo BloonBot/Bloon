@@ -6,6 +6,7 @@ namespace Bloon.Features.Z26
     using Bloon.Core.Database;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
+    using DSharpPlus.SlashCommands;
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
@@ -13,8 +14,8 @@ namespace Bloon.Features.Z26
     /// </summary>
     [ModuleLifespan(ModuleLifespan.Transient)]
     [Hidden]
-    [LimitedChannels]
-    public class Z26Commands : BaseCommandModule
+    [SlashLimitedChannels]
+    public class Z26Commands : ApplicationCommandModule
     {
         private readonly BloonContext db;
 
@@ -23,9 +24,7 @@ namespace Bloon.Features.Z26
             this.db = db;
         }
 
-        [Command("faq")]
-        [Description("Retrieves a Z26 faq response")]
-        [Hidden]
+        [SlashCommand("faq", "Retrieves a Z26 faq response")]
         public async Task FaqAsync(CommandContext ctx, [RemainingText] string argument = null)
         {
             if (string.IsNullOrEmpty(argument))
