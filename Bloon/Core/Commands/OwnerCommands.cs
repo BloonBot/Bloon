@@ -15,13 +15,6 @@ namespace Bloon.Core.Commands
 
     public class OwnerCommands : BaseCommandModule
     {
-        private readonly RoomService roomService;
-
-        public OwnerCommands(RoomService roomService)
-        {
-            this.roomService = roomService;
-        }
-
         [Command("build")]
         [Description("Provides current build bloon is on.")]
         [OwnersExclusive]
@@ -53,16 +46,6 @@ namespace Bloon.Core.Commands
             await channel.SendMessageAsync(message);
             await ctx.RespondAsync($"Sent {message} to channel: {channel.Name}");
         }
-
-        //[Command("testcommand")]
-        //public async Task emptyBasicCommand(CommandContext ctx)
-        //{
-        //    List<Rooms> rooms = await this.roomService.GetRooms(null, null, null, null, null, null, null, null, null, null, 1, 100);
-        //    await this.roomService.ArchiveRoomData(rooms);
-
-        //    // await this.roomService.ArchiveRoomMapHistory(rooms);
-        //    await ctx.RespondAsync($"{rooms.Count}");
-        //}
 
         private static string GetUptime()
         {

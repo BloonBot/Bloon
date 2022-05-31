@@ -3,30 +3,24 @@ namespace Bloon.Core.Commands
     using System;
     using System.Text;
     using System.Threading.Tasks;
+    using Bloon.Core.Commands.Attributes;
     using Bloon.Core.Database;
     using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using DSharpPlus.SlashCommands;
 
-    [SlashModuleLifespan(SlashModuleLifespan.Scoped)]
+    [SlashLimitedChannels]
     public class GeneralSlashCommands : ApplicationCommandModule
     {
-        private readonly BloonContext db;
-
-        public GeneralSlashCommands(BloonContext db)
+        [SlashCommand("ping", "Check the bot's ping to the Discord gateway.")]
+        public Task PingPongAsync(InteractionContext ctx)
         {
-            this.db = db;
+            return ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent($"pong! Latency: {ctx.Client.Ping}ms").AsEphemeral(true));
         }
 
-        [SlashCommand("ping", "This command is to be used when you think the bot is frozen or stuck. It'll reply with **pong** {ms}")]
-        public async Task PingPongAsync(InteractionContext ctx)
-        {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent($"pong! Latency: {ctx.Client.Ping}ms").AsEphemeral(true));
-        }
-
-        [SlashCommand("links", "Responds with a message containing important links for getting around the community.")]
-        public async Task DevelopmentURLAsync(InteractionContext ctx)
+        [SlashCommand("info", "Responds with a message containing lots of useful links and information for getting around the community.")]
+        public async Task InfoAsync(InteractionContext ctx)
         {
             DiscordEmbedBuilder linksEmbed = new DiscordEmbedBuilder
             {
@@ -41,11 +35,11 @@ namespace Bloon.Core.Commands
 
             StringBuilder socialLinks = new StringBuilder();
 
-            socialLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.YouTube)} | [**Youtube**](https://www.youtube.com/superbossgames)\n");
-            socialLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Twitter)} | [**Twitter**](https://twitter.com/SuperbossGames/)\n");
             socialLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Helprace)} | [**Helprace**](https://superbossgames.helprace.com/)\n");
             socialLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Reddit)} | [**Reddit**](https://www.reddit.com/r/Intruder)\n");
             socialLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Twitch)} | [**Twitch**](https://www.twitch.tv/superbossgames)\n");
+            socialLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Twitter)} | [**Twitter**](https://twitter.com/SuperbossGames/)\n");
+            socialLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.YouTube)} | [**Youtube**](https://www.youtube.com/superbossgames)\n");
 
             StringBuilder steamLinks = new StringBuilder();
             steamLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Steam)} | [**Steam Store Page**](https://store.steampowered.com/app/518150/Intruder/)\n");
@@ -62,9 +56,8 @@ namespace Bloon.Core.Commands
 
             StringBuilder botLinks = new StringBuilder();
             botLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Discord)} | [**Bloon Dev Discord**](https://discord.gg/tAVydGr)\n");
-            botLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Github)} | [**Source Code**](https://steamcommunity.com/app/518150/workshop/)\n");
-            botLinks.Append($"{DiscordEmoji.FromName(ctx.Client, ":dollar:")} | [**Donate**](https://steamcommunity.com/app/518150/discussions/)\n");
-            botLinks.Append($"{DiscordEmoji.FromName(ctx.Client, ":link:")} | [**Bloon.info**](https://bloon.info/)\n");
+            botLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Github)} | [**GitHub Repo**](https://github.com/BloonBot/Bloon)\n");
+            botLinks.Append($"{DiscordEmoji.FromName(ctx.Client, ":dollar:")} | [**Donate**](https://www.patreon.com/bloon)\n");
 
             StringBuilder discordLinks = new StringBuilder();
             discordLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Discord)} | [**Discord Guidelines**](https://discord.com/guidelines)\n");
