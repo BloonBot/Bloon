@@ -21,16 +21,6 @@ namespace Bloon.Features.FAQ
             this.faqRegexes.Add(faq.Id, faq);
         }
 
-        public void ReplaceFaq(int faqId, Faq faq)
-        {
-            this.faqRegexes[faqId] = faq;
-        }
-
-        public void RemoveFaq(int faqId)
-        {
-            this.faqRegexes.Remove(faqId);
-        }
-
         public bool TryForAutoResponse(string message, out string response)
         {
             response = string.Empty;
