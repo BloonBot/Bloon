@@ -7,7 +7,6 @@ namespace Bloon.Features.IntruderBackend.Agents
     using System.Text;
     using System.Threading.Tasks;
     using Bloon.Core.Database;
-    using Bloon.Features.PackageAccounts;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
@@ -28,13 +27,11 @@ namespace Bloon.Features.IntruderBackend.Agents
 
         private readonly IServiceScopeFactory scopeFactory;
         private readonly HttpClient httpClient;
-        private readonly AccountService accountService;
 
-        public AgentService(IServiceScopeFactory scopeFactory, HttpClient httpClient, AccountService accountService)
+        public AgentService(IServiceScopeFactory scopeFactory, HttpClient httpClient)
         {
             this.scopeFactory = scopeFactory;
             this.httpClient = httpClient;
-            this.accountService = accountService;
         }
 
         /// <summary>
@@ -79,102 +76,6 @@ namespace Bloon.Features.IntruderBackend.Agents
             }
 
             return agents;
-        }
-
-        /// <summary>
-        /// Collects and stores the agent_history from all Package Account Users.
-        /// </summary>
-        /// <returns>Jack shit.</returns>
-        public async Task ScrapeHistoricalData()
-        {
-            // Obtain all package accounts with their steam IDs
-            List<PackageAccount> packageAccounts = this.accountService.QueryAccounts();
-
-            // Convert SteamIDs from PackageAccounts to Agents using DB.
-            List<Agent> agents = new List<Agent>();
-            foreach (PackageAccount account in packageAccounts)
-            {
-                agents.Add(await this.GetAgentProfileAsync(account.SteamID));
-            }
-
-            foreach (Agent dbAgent in agents)
-            {
-                // Collect Agent Stats
-                AgentStats statsResponse = await this.GetAgentStatsAsync(dbAgent.SteamID);
-
-                // Collect Agent Votes
-                List<AgentVotes> votesResponse = await this.QueryAgentVotes(dbAgent.SteamID);
-
-                // Collect Profile Information
-                Agent agentResponse = await this.GetAgentProfileAsync(dbAgent.SteamID);
-
-                // If the player's latest lastUpdate value is greater than what we have stored in the database
-                if (statsResponse.LastUpdate > dbAgent.LastUpdate && agentResponse.LoginCount > dbAgent.LoginCount)
-                {
-                    AgentHistory agentHistory = new AgentHistory()
-                    {
-                        SteamID = dbAgent.SteamID,
-                        MatchesWon = statsResponse.MatchesWon,
-                        MatchesLost = statsResponse.MatchesLost,
-                        RoundsLost = statsResponse.RoundsLost,
-                        RoundsTied = statsResponse.RoundsTied,
-                        RoundsWonElim = statsResponse.RoundsWonElim,
-                        RoundsWonCapture = statsResponse.RoundsWonCapture,
-                        RoundsWonHack = statsResponse.RoundsWonHack,
-                        RoundsWonTimer = statsResponse.RoundsWonTimer,
-                        RoundsWonCustom = statsResponse.RoundsWonCustom,
-                        TimePlayed = statsResponse.TimePlayed,
-                        Kills = statsResponse.Kills,
-                        TeamKills = statsResponse.TeamKills,
-                        Deaths = statsResponse.Deaths,
-                        Arrests = statsResponse.Arrests,
-                        GotArrested = statsResponse.GotArrested,
-                        Captures = statsResponse.Captures,
-                        NetworkHacks = statsResponse.NetworkHacks,
-                        Survivals = statsResponse.Survivals,
-                        Suicides = statsResponse.Suicides,
-                        Knockdowns = statsResponse.Knockdowns,
-                        GotKnockedDown = statsResponse.GotKnockedDown,
-                        TeamKnockdowns = statsResponse.TeamKnockdowns,
-                        TeamDamage = statsResponse.TeamDamage,
-                        LevelXP = statsResponse.LevelXP,
-                        TotalXP = statsResponse.TotalXP,
-                        Level = statsResponse.Level,
-                        PositiveVotes = votesResponse.FirstOrDefault().PositiveVotes,
-                        NegativeVotes = votesResponse.FirstOrDefault().NegativeVotes,
-                        TotalVotes = votesResponse.FirstOrDefault().ReceivedVotes,
-                        LoginCount = dbAgent.LoginCount,
-                        LastLogin = dbAgent.LastLogin,
-                        Timestamp = DateTime.Now,
-                    };
-
-                    // Store new Agent Stat History in DB
-                    using IServiceScope scope = this.scopeFactory.CreateScope();
-                    using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
-                    try
-                    {
-                        db.AgentHistory.Add(agentHistory);
-                        await db.SaveChangesAsync();
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Error(e, $"Failed to store agent histoy in database. Agent: {agentHistory.ID}");
-                    }
-
-                    // Update Agent to include most recent XP.
-                    // dbAgent.LastUpdate = DateTime.Now;
-                    // dbAgent.XP = statsResponse.TotalXP;
-                    // try
-                    // {
-                    //    db.Agents.Update(dbAgent);
-                    //    await db.SaveChangesAsync();
-                    // }
-                    // catch (Exception e)
-                    // {
-                    //    Log.Error(e, $"Failed to update agent details in database. Agent: {dbAgent.Name} | ID: {dbAgent.SteamID}");
-                    // }
-                }
-            }
         }
 
         /// <summary>

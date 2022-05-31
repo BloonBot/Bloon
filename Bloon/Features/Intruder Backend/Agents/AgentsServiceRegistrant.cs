@@ -8,7 +8,6 @@ namespace Bloon.Features.IntruderBackend.Agents
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpClient<AgentService>();
-            services.AddSingleton<ScrapeAgents>();
         }
     }
 }
