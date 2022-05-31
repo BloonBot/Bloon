@@ -2,7 +2,7 @@ namespace Bloon.Features.IntruderBackend.Agents
 {
     using System.Threading.Tasks;
     using Bloon.Core.Services;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
 
     public class ScrapeAgents : ITimedJob
     {
@@ -13,7 +13,7 @@ namespace Bloon.Features.IntruderBackend.Agents
             this.agentService = agentService;
         }
 
-        public ulong Emoji => SBGEmojis.Superboss;
+        public ulong Emoji => Emojis.SBG.Superboss;
 
         public int Interval => 5;
 

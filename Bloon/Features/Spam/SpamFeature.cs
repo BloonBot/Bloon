@@ -5,7 +5,7 @@ namespace Bloon.Features.Spam
     using System.Threading.Tasks;
     using Bloon.Core.Database;
     using Bloon.Core.Services;
-    using Bloon.Variables.Channels;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.EventArgs;
     using Microsoft.Extensions.DependencyInjection;
@@ -51,14 +51,14 @@ namespace Bloon.Features.Spam
         /// <returns>Task.</returns>
         private async Task GeneralSpamAsync(DiscordClient dClient, MessageCreateEventArgs args)
         {
-            if (args.Author.IsBot || args.Channel.Id != SBGChannels.General)
+            if (args.Author.IsBot || args.Channel.Id != Channels.SBG.General)
             {
                 return;
             }
 
             this.messageCounter += 1;
 
-            if (this.messageCounter >= AdvertThreshold && args.Channel.Id == SBGChannels.General)
+            if (this.messageCounter >= AdvertThreshold && args.Channel.Id == Channels.SBG.General)
             {
                 Random rnd = new Random();
 

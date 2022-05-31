@@ -2,7 +2,7 @@ namespace Bloon.Core.Commands.Attributes
 {
     using System.Linq;
     using System.Threading.Tasks;
-    using Bloon.Variables.Roles;
+    using Bloon.Variables;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
 
@@ -15,7 +15,7 @@ namespace Bloon.Core.Commands.Attributes
     {
         public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help)
         {
-            return Task.FromResult(ctx.Member?.Roles?.Any(r => r.Id == SBGRoles.Mod) ?? false);
+            return Task.FromResult(ctx.Member?.Roles?.Any(r => r.Id == Roles.SBG.Mod) ?? false);
         }
     }
 }

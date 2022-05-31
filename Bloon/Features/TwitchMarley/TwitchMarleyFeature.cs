@@ -7,7 +7,7 @@ namespace Bloon.Features.TwitchMarley
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
     using Bloon.Utils;
-    using Bloon.Variables.Roles;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.Entities;
@@ -96,7 +96,7 @@ namespace Bloon.Features.TwitchMarley
                     return;
                 }
 
-                DiscordRole streaming = args.PresenceAfter.Guild.GetRole(SBGRoles.NowStreaming);
+                DiscordRole streaming = args.PresenceAfter.Guild.GetRole(Roles.SBG.NowStreaming);
                 DiscordMember member = await args.PresenceAfter.Guild.GetMemberAsync(args.UserAfter.Id);
                 bool wasStreaming = args.PresenceBefore?.Activities.Any(a => a.StreamUrl != null) ?? false;
                 DiscordActivity stream = args.PresenceAfter.Activities.Where(a => a.StreamUrl != null).FirstOrDefault();

@@ -3,8 +3,7 @@ namespace Bloon.Core.Discord
     using System;
     using System.Net.WebSockets;
     using System.Threading.Tasks;
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
 
@@ -75,13 +74,13 @@ namespace Bloon.Core.Discord
                 return;
             }
 
-            DiscordChannel sbgGeneral = await this.dClient.GetChannelAsync(SBGChannels.General);
+            DiscordChannel sbgGeneral = await this.dClient.GetChannelAsync(Channels.SBG.General);
             DiscordEmbed streamEmbed = new DiscordEmbedBuilder
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
                     Text = url,
-                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, PlatformEmojis.Twitch).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Platform.Twitch).Url,
                 },
                 Description = $"{streamerName} is streaming Intruder! Stop by and check them out! [**{streamerName}'s Stream**]({url})",
                 Color = new DiscordColor(100, 64, 165),

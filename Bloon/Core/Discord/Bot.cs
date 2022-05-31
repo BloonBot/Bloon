@@ -7,7 +7,6 @@ namespace Bloon.Core.Discord
     using Bloon.Core.Database;
     using Bloon.Core.Services;
     using Bloon.Variables;
-    using Bloon.Variables.Emojis;
     using DSharpPlus;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Exceptions;
@@ -149,7 +148,7 @@ namespace Bloon.Core.Discord
         {
             string logMessage = $"`{args.Context.User.Username}` ran `{args.Context.Message.Content}` in **[{(args.Context.Guild != null ? $"{args.Context.Guild.Name} - {args.Context.Channel.Name}" : "DM")}]**";
             Log.Debug(logMessage);
-            this.bloonLog.Information(LogConsole.Commands, CommandEmojis.Run, logMessage);
+            this.bloonLog.Information(LogConsole.Commands, Emojis.Command.Run, logMessage);
 
             using IServiceScope scope = this.scopeFactory.CreateScope();
             using AnalyticsContext db = scope.ServiceProvider.GetRequiredService<AnalyticsContext>();
@@ -184,7 +183,7 @@ namespace Bloon.Core.Discord
         {
             string logMessage = $"`{args.Context.User.Username}` ran `/{args.Context.CommandName}` in **[{(args.Context.Guild != null ? $"{args.Context.Guild.Name} - {args.Context.Channel.Name}" : "DM")}]**";
 
-            this.bloonLog.Information(LogConsole.Commands, CommandEmojis.Run, logMessage);
+            this.bloonLog.Information(LogConsole.Commands, Emojis.Command.Run, logMessage);
 
             Log.Debug(logMessage);
 

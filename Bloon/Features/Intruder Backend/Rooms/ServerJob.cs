@@ -6,8 +6,7 @@ namespace Bloon.Features.IntruderBackend.Servers
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
     using Bloon.Features.IntruderBackend.Rooms;
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using Serilog;
@@ -25,21 +24,21 @@ namespace Bloon.Features.IntruderBackend.Servers
             this.roomService = roomService;
         }
 
-        public ulong Emoji => SBGEmojis.Superboss;
+        public ulong Emoji => Emojis.SBG.Superboss;
 
         public int Interval => 5;
 
         public async Task Execute()
         {
             Log.Information("Looking for available Intruder servers..");
-            DiscordChannel sbgCSI = await this.dClient.GetChannelAsync(SBGChannels.CurrentServerInfo);
+            DiscordChannel sbgCSI = await this.dClient.GetChannelAsync(Channels.SBG.CurrentServerInfo);
             CurrentServerInfo csi = await this.roomService.GetCSIRooms(null, null, null, null, "false", "true", "false", "false", "false", null, 1, 100);
 
             DiscordEmbedBuilder serverEmbed = new DiscordEmbedBuilder
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Unofficial).Url,
                 },
                 Color = new DiscordColor(217, 187, 19),
                 Timestamp = DateTime.UtcNow,
@@ -66,7 +65,7 @@ namespace Bloon.Features.IntruderBackend.Servers
 
                 if (skipRoomCount >= 1)
                 {
-                    serverList.Append($"<:unofficial:{ServerEmojis.Unofficial}> <:os:{ServerEmojis.Official}> <:passworded:{ServerEmojis.Password}> and **{skipRoomCount}** more.");
+                    serverList.Append($"<:unofficial:{Emojis.Server.Unofficial}> <:os:{Emojis.Server.Official}> <:passworded:{Emojis.Server.Password}> and **{skipRoomCount}** more.");
                 }
 
                 serverEmbed.AddField($"Region | Name - [Agents]", serverList.ToString(), true);
@@ -81,23 +80,23 @@ namespace Bloon.Features.IntruderBackend.Servers
 #pragma warning disable SA1118 // Parameter should not span multiple lines
             serverEmbed.AddField(
                 "Statistics",
-                $"{RegionFlagEmojis.US}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.USTOD)}| **{csi.USPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)}| **{csi.USRoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial)}\n" +
-                $"{RegionFlagEmojis.SA}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.SATOD)}| **{csi.SAPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)}| **{csi.SARoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial)}\n" +
-                $"{RegionFlagEmojis.EU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.EUTOD)}| **{csi.EUPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)}| **{csi.EURoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial)}\n" +
-                $"{RegionFlagEmojis.RU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.RUTOD)}| **{csi.RUPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)}| **{csi.RURoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial)}\n" +
-                $"{RegionFlagEmojis.JP}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.JPTOD)}| **{csi.JPPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)}| **{csi.JPRoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial)}\n" +
-                $"{RegionFlagEmojis.Asia}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.ASTOD)}| **{csi.AsiaPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)}| **{csi.AsiaRoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial)}\n" +
-                $"{RegionFlagEmojis.AU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.AUTOD)}| **{csi.AUPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)}| **{csi.AURoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial)}\n" +
+                $"{Emojis.RegionFlag.US}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.USTOD)}| **{csi.USPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Players)}| **{csi.USRoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Unofficial)}\n" +
+                $"{Emojis.RegionFlag.SA}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.SATOD)}| **{csi.SAPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Players)}| **{csi.SARoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Unofficial)}\n" +
+                $"{Emojis.RegionFlag.EU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.EUTOD)}| **{csi.EUPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Players)}| **{csi.EURoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Unofficial)}\n" +
+                $"{Emojis.RegionFlag.RU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.RUTOD)}| **{csi.RUPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Players)}| **{csi.RURoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Unofficial)}\n" +
+                $"{Emojis.RegionFlag.JP}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.JPTOD)}| **{csi.JPPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Players)}| **{csi.JPRoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Unofficial)}\n" +
+                $"{Emojis.RegionFlag.Asia}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.ASTOD)}| **{csi.AsiaPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Players)}| **{csi.AsiaRoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Unofficial)}\n" +
+                $"{Emojis.RegionFlag.AU}|{DiscordEmoji.FromGuildEmote(this.dClient, csi.AUTOD)}| **{csi.AUPlayerCount}** {DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Players)}| **{csi.AURoomCount}** {DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Unofficial)}\n" +
                 $"Agents: **{csi.PlayerCount}** | Rooms: **{csi.Rooms.Count}**\n", true);
 #pragma warning restore SA1118 // Parameter should not span multiple lines
 
-            string extensions = $"{DiscordEmoji.FromGuildEmote(this.dClient, BrowserEmojis.Chrome)} [**Chrome**](https://chrome.google.com/webstore/detail/intruder-notifications/aoebpknpfcepopfgnbnikaipjeekalim) | "
-                + $"[**Firefox**](https://addons.mozilla.org/en-US/firefox/addon/intruder-notifications/) {DiscordEmoji.FromGuildEmote(this.dClient, BrowserEmojis.Firefox)}";
+            string extensions = $"{DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Browser.Chrome)} [**Chrome**](https://chrome.google.com/webstore/detail/intruder-notifications/aoebpknpfcepopfgnbnikaipjeekalim) | "
+                + $"[**Firefox**](https://addons.mozilla.org/en-US/firefox/addon/intruder-notifications/) {DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Browser.Firefox)}";
 
             serverEmbed.AddField("Browser Extensions", extensions);
 
             serverEmbed.Footer.Text = $"SuperbossGames | #current-server-info";
-            serverEmbed.Footer.IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Unofficial).Url;
+            serverEmbed.Footer.IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Unofficial).Url;
             serverEmbed.Color = new DiscordColor(217, 187, 19);
             serverEmbed.Timestamp = DateTime.UtcNow;
 

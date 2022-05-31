@@ -1,7 +1,7 @@
 namespace Bloon.Core.Discord
 {
     using System;
-    using Bloon.Variables.Channels;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
 
@@ -13,29 +13,19 @@ namespace Bloon.Core.Discord
         None = 0,
 
         /// <summary>
-        /// <see cref="BloonChannels.Console"/>
+        /// <see cref="Channels.Bloon.Commands"/>
         /// </summary>
-        Console = 1,
+        Commands = 1,
 
         /// <summary>
-        /// <see cref="BloonChannels.Commands"/>
+        /// <see cref="Channels.Bloon.RoleEdits"/>
         /// </summary>
-        Commands = 2,
+        RoleEdits = 2,
 
         /// <summary>
-        /// <see cref="BloonChannels.Jobs"/>
+        /// <see cref="Channels.Bloon.SBGUserInfo"/>
         /// </summary>
-        Jobs = 3,
-
-        /// <summary>
-        /// <see cref="BloonChannels.RoleEdits"/>
-        /// </summary>
-        RoleEdits = 4,
-
-        /// <summary>
-        /// <see cref="BloonChannels.SBGUserInfo"/>
-        /// </summary>
-        UserInfo = 5,
+        UserInfo = 3,
     }
 
     public class BloonLog
@@ -51,18 +41,17 @@ namespace Bloon.Core.Discord
         {
             DiscordChannel channel = consoleChannel switch
             {
-                LogConsole.Commands => await this.dClient.GetChannelAsync(BloonChannels.Commands),
-                LogConsole.Jobs => await this.dClient.GetChannelAsync(BloonChannels.Jobs),
-                LogConsole.RoleEdits => await this.dClient.GetChannelAsync(BloonChannels.RoleEdits),
-                LogConsole.UserInfo => await this.dClient.GetChannelAsync(BloonChannels.SBGUserInfo),
-                _ => await this.dClient.GetChannelAsync(BloonChannels.Console),
+                LogConsole.Commands => await this.dClient.GetChannelAsync(Channels.Bloon.Commands),
+                LogConsole.RoleEdits => await this.dClient.GetChannelAsync(Channels.Bloon.RoleEdits),
+                LogConsole.UserInfo => await this.dClient.GetChannelAsync(Channels.Bloon.SBGUserInfo),
+                _ => await this.dClient.GetChannelAsync(Channels.Bloon.ExceptionReporting),
             };
             await channel.SendMessageAsync($"**[{DateTime.UtcNow}]** {DiscordEmoji.FromGuildEmote(this.dClient, emoji)} {message}");
         }
 
         public async void Error(string message)
         {
-            DiscordChannel logChannel = await this.dClient.GetChannelAsync(BloonChannels.ExceptionReporting);
+            DiscordChannel logChannel = await this.dClient.GetChannelAsync(Channels.Bloon.ExceptionReporting);
             await logChannel.SendMessageAsync(message);
         }
     }

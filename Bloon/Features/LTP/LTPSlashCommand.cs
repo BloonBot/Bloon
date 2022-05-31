@@ -5,7 +5,7 @@ namespace Bloon.Features.LTP
     using System.Threading.Tasks;
     using Bloon.Core.Commands.Attributes;
     using Bloon.Core.Database;
-    using Bloon.Variables.Roles;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using DSharpPlus.SlashCommands;
@@ -24,9 +24,9 @@ namespace Bloon.Features.LTP
         [SlashSBGExclusive]
         public async Task LTPAsyncslash(InteractionContext ctx)
         {
-            DiscordRole ltp = ctx.Guild.GetRole(SBGRoles.LookingToPlay);
+            DiscordRole ltp = ctx.Guild.GetRole(Roles.SBG.LookingToPlay);
             DiscordMember guildUser = await ctx.Guild.GetMemberAsync(ctx.User.Id);
-            if (guildUser.Roles.Any(roles => roles.Id == SBGRoles.LookingToPlay))
+            if (guildUser.Roles.Any(roles => roles.Id == Roles.SBG.LookingToPlay))
             {
                 await guildUser.RevokeRoleAsync(ltp);
 

@@ -5,8 +5,6 @@ namespace Bloon.Core.Services
     using System.Linq;
     using System.Threading.Tasks;
     using Bloon.Variables;
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Emojis;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using DSharpPlus.EventArgs;
@@ -57,13 +55,13 @@ namespace Bloon.Core.Services
 
         private async Task OnMessageReactionAdded(DiscordClient dClient, MessageReactionAddEventArgs args)
         {
-            if (args.Guild.Id != Guilds.Bloon || args.Channel.Id != BloonChannels.Settings || args.User.Id == dClient.CurrentUser.Id)
+            if (args.Guild.Id != Guilds.Bloon || args.Channel.Id != Channels.Bloon.Settings || args.User.Id == dClient.CurrentUser.Id)
             {
                 return;
             }
 
-            DiscordChannel settingsChannel = await this.dClient.GetChannelAsync(BloonChannels.Settings);
-            DiscordChannel botMods = await this.dClient.GetChannelAsync(BloonChannels.BotMods);
+            DiscordChannel settingsChannel = await this.dClient.GetChannelAsync(Channels.Bloon.Settings);
+            DiscordChannel botMods = await this.dClient.GetChannelAsync(Channels.Bloon.BotMods);
             DiscordMessage featureMessage = await settingsChannel.GetMessageAsync(args.Message.Id);
             Feature feature = this.featureManager.Features.Where(f => f.Name == featureMessage.Embeds[0]?.Title).FirstOrDefault();
 
@@ -71,14 +69,14 @@ namespace Bloon.Core.Services
             {
                 return;
             }
-            else if (args.Emoji.Id == FeatureEmojis.ToggleOff && feature.Enabled)
+            else if (args.Emoji.Id == Emojis.Feature.ToggleOff && feature.Enabled)
             {
                 await feature.Disable();
                 await this.featureManager.UpdateFeatureStatusAsync(feature.Name, false);
                 await botMods.SendMessageAsync($"{args.User.Username}#{args.User.Discriminator} *disabled* `{feature.Name}` at {DateTime.Now}\n" +
                     $"{featureMessage.JumpLink}");
             }
-            else if (args.Emoji.Id == FeatureEmojis.ToggleOn && !feature.Enabled)
+            else if (args.Emoji.Id == Emojis.Feature.ToggleOn && !feature.Enabled)
             {
                 await feature.Enable();
                 await this.featureManager.UpdateFeatureStatusAsync(feature.Name, true);
@@ -99,7 +97,7 @@ namespace Bloon.Core.Services
 
             await this.dClient.Guilds[Guilds.Bloon].GetEmojisAsync();
 
-            DiscordChannel settingsChannel = await this.dClient.GetChannelAsync(BloonChannels.Settings);
+            DiscordChannel settingsChannel = await this.dClient.GetChannelAsync(Channels.Bloon.Settings);
             IReadOnlyList<DiscordMessage> messages = await settingsChannel.GetMessagesAsync(this.featureManager.Features.Count);
 
             for (int i = 0; i < this.featureManager.Features.Count; i++)
@@ -111,8 +109,8 @@ namespace Bloon.Core.Services
                 if (message == null)
                 {
                     message = await settingsChannel.SendMessageAsync(embed: newEmbed);
-                    await message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(this.dClient, FeatureEmojis.ToggleOff));
-                    await message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(this.dClient, FeatureEmojis.ToggleOn));
+                    await message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Feature.ToggleOff));
+                    await message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Feature.ToggleOn));
                 }
                 else if (!IdenticalEmbed(message.Embeds[0], newEmbed))
                 {

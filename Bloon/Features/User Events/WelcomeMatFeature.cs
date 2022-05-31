@@ -8,8 +8,7 @@ namespace Bloon.Features.Doorman
     using Bloon.Analytics.Users;
     using Bloon.Core.Database;
     using Bloon.Core.Services;
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Roles;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using DSharpPlus.EventArgs;
@@ -23,10 +22,10 @@ namespace Bloon.Features.Doorman
 
         private readonly Dictionary<Event, ulong> eventEmotes = new Dictionary<Event, ulong>
         {
-            { Event.Banned, Variables.Emojis.EventEmojis.Banned },
-            { Event.Joined, Variables.Emojis.EventEmojis.Join },
-            { Event.Left, Variables.Emojis.EventEmojis.Leave },
-            { Event.Unbanned, Variables.Emojis.EventEmojis.Edited },
+            { Event.Banned, Emojis.Event.Banned },
+            { Event.Joined, Emojis.Event.Join },
+            { Event.Left, Emojis.Event.Leave },
+            { Event.Unbanned, Emojis.Event.Edited },
         };
 
         public WelcomeMatFeature(IServiceProvider provider, DiscordClient dClient)
@@ -59,10 +58,10 @@ namespace Bloon.Features.Doorman
 
         private async Task GeneralWelcomeEmbed(DiscordClient dClient, GuildMemberAddEventArgs args)
         {
-            DiscordChannel sbgChannel = await this.dClient.GetChannelAsync(SBGChannels.General);
+            DiscordChannel sbgChannel = await this.dClient.GetChannelAsync(Channels.SBG.General);
 
             // If guild isn't SBG, just ignore this user join event.
-            if (args.Guild.Id != Variables.Guilds.SBG)
+            if (args.Guild.Id != Guilds.SBG)
             {
                 return;
             }
@@ -73,20 +72,20 @@ namespace Bloon.Features.Doorman
         private async Task GiveAgentRoleAsync(DiscordClient dClient, GuildMemberAddEventArgs args)
         {
             // If guild isn't SBG, just ignore this user join event.
-            if (args.Guild.Id != Variables.Guilds.SBG)
+            if (args.Guild.Id != Guilds.SBG)
             {
                 return;
             }
 
-            await args.Member.GrantRoleAsync(args.Guild.GetRole(SBGRoles.Agent));
+            await args.Member.GrantRoleAsync(args.Guild.GetRole(Roles.SBG.Agent));
         }
 
         private async Task BloonsideEmbed(DiscordClient dClient, GuildMemberAddEventArgs args)
         {
-            DiscordChannel sbgChannel = await this.dClient.GetChannelAsync(SBGChannels.Bloonside);
+            DiscordChannel sbgChannel = await this.dClient.GetChannelAsync(Channels.SBG.Bloonside);
 
             // If guild isn't SBG, just ignore this user join event.
-            if (args.Guild.Id != Variables.Guilds.SBG)
+            if (args.Guild.Id != Guilds.SBG)
             {
                 return;
             }

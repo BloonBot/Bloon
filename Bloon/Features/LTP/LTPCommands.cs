@@ -5,7 +5,7 @@ namespace Bloon.Features.LTP
     using System.Threading.Tasks;
     using Bloon.Core.Commands.Attributes;
     using Bloon.Core.Database;
-    using Bloon.Variables.Roles;
+    using Bloon.Variables;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
@@ -26,10 +26,10 @@ namespace Bloon.Features.LTP
         [Aliases("lookingtoplay", "je", "le")]
         public async Task LTPAsync(CommandContext ctx)
         {
-            DiscordRole ltp = ctx.Guild.GetRole(SBGRoles.LookingToPlay);
+            DiscordRole ltp = ctx.Guild.GetRole(Roles.SBG.LookingToPlay);
 
             // User is already within the looking to play role, remove them.
-            if (ctx.Member.Roles.Any(r => r.Id == SBGRoles.LookingToPlay))
+            if (ctx.Member.Roles.Any(r => r.Id == Roles.SBG.LookingToPlay))
             {
                 await ctx.Member.RevokeRoleAsync(ltp);
                 this.db.Remove(new LTPJoin()

@@ -8,7 +8,7 @@ namespace Bloon.Features.Censor
     using Bloon.Core.Database;
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
-    using Bloon.Variables.Channels;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.Entities;
@@ -58,15 +58,15 @@ namespace Bloon.Features.Censor
 
         private async Task ProfanityFilterRemove(DiscordClient dClient, MessageReactionAddEventArgs args)
         {
-            if (args.User.Id == dClient.CurrentUser.Id || (args.Channel?.Id != SBGChannels.Bloonside && !args.Emoji.Equals(DiscordEmoji.FromName(this.dClient, ":wastebasket:"))))
+            if (args.User.Id == dClient.CurrentUser.Id || (args.Channel?.Id != Channels.SBG.Bloonside && !args.Emoji.Equals(DiscordEmoji.FromName(this.dClient, ":wastebasket:"))))
             {
                 return;
             }
 
-            DiscordChannel bloonside = await this.dClient.GetChannelAsync(SBGChannels.Bloonside);
+            DiscordChannel bloonside = await this.dClient.GetChannelAsync(Channels.SBG.Bloonside);
             DiscordMessage foulEmbed = await bloonside.GetMessageAsync(args.Message.Id);
 
-            if (args.Message.Channel.Id == SBGChannels.Bloonside && foulEmbed.Author.Id == dClient.CurrentUser.Id && foulEmbed.Embeds.Count > 0 && foulEmbed.Embeds[0].Title.Contains("Censor"))
+            if (args.Message.Channel.Id == Channels.SBG.Bloonside && foulEmbed.Author.Id == dClient.CurrentUser.Id && foulEmbed.Embeds.Count > 0 && foulEmbed.Embeds[0].Title.Contains("Censor"))
             {
                 await foulEmbed.DeleteAsync();
             }
@@ -88,7 +88,7 @@ namespace Bloon.Features.Censor
 
             if (this.censorer.TryCensorContent(args.Message.Content, out string censored, out KeyValuePair<int, Regex> censor))
             {
-                DiscordChannel sbgMod = args.Message.Channel.Guild.GetChannel(SBGChannels.Bloonside);
+                DiscordChannel sbgMod = args.Message.Channel.Guild.GetChannel(Channels.SBG.Bloonside);
                 DiscordEmbedBuilder embed = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor(255, 0, 0),

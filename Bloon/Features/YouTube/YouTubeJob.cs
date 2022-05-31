@@ -3,8 +3,7 @@ namespace Bloon.Features.Youtube
     using System.Threading.Tasks;
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using Serilog;
@@ -22,7 +21,7 @@ namespace Bloon.Features.Youtube
             this.youTubeService = youTubeService;
         }
 
-        public ulong Emoji => PlatformEmojis.YouTube;
+        public ulong Emoji => Emojis.Platform.YouTube;
 
         public int Interval => 30;
 
@@ -44,19 +43,19 @@ namespace Bloon.Features.Youtube
                 return;
             }
 
-            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General);
+            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(Channels.SBG.General);
 
             DiscordEmbed ytEmbed = new DiscordEmbedBuilder
             {
                 Author = new DiscordEmbedBuilder.EmbedAuthor
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, SBGEmojis.Superboss).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, Emojis.SBG.Superboss).Url,
                     Name = "Superboss Games",
                     Url = "https://www.youtube.com/user/SuperbossGames",
                 },
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, PlatformEmojis.YouTube).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Platform.YouTube).Url,
                     Text = "YouTube",
                 },
                 Color = new DiscordColor(255, 0, 0),

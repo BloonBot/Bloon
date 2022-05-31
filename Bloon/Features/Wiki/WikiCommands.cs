@@ -9,7 +9,7 @@ namespace Bloon.Features.Wiki
     using Bloon.Core.Commands.Attributes;
     using Bloon.Features.Wiki.Models;
     using Bloon.Utils;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
@@ -40,7 +40,7 @@ namespace Bloon.Features.Wiki
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, PlatformEmojis.Wiki).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Wiki).Url,
                     Text = "Superbossgames Wiki",
                 },
                 Color = new DiscordColor(217, 187, 19),
@@ -108,7 +108,7 @@ namespace Bloon.Features.Wiki
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, PlatformEmojis.Wiki).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Wiki).Url,
                     Text = "Superbossgames Wiki",
                 },
                 Color = new DiscordColor(217, 187, 19),
@@ -131,7 +131,7 @@ namespace Bloon.Features.Wiki
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, PlatformEmojis.Wiki).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Wiki).Url,
                     Text = "Superbossgames Wiki | Recent Users Last 30 Days",
                 },
                 Color = new DiscordColor(217, 187, 19),

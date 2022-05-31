@@ -146,22 +146,22 @@ namespace Bloon.Features.ModTools
             {
                 if (events.Event == Event.Joined)
                 {
-                    discordUserEvents.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Variables.Emojis.EventEmojis.Join)} Joined - {events.Timestamp.ToString("ddd, MMM d, yyyy", CultureInfo.CurrentCulture)}\n");
+                    discordUserEvents.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Event.Join)} Joined - {events.Timestamp.ToString("ddd, MMM d, yyyy", CultureInfo.CurrentCulture)}\n");
                 }
 
                 if (events.Event == Event.Left)
                 {
-                    discordUserEvents.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Variables.Emojis.EventEmojis.Leave)} Left - {events.Timestamp.ToString("ddd, MMM d, yyyy", CultureInfo.CurrentCulture)}\n");
+                    discordUserEvents.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Event.Leave)} Left - {events.Timestamp.ToString("ddd, MMM d, yyyy", CultureInfo.CurrentCulture)}\n");
                 }
 
                 if (events.Event == Event.Banned)
                 {
-                    discordUserEvents.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Variables.Emojis.EventEmojis.Banned)} Banned - {events.Timestamp.ToString("ddd, MMM d, yyyy", CultureInfo.CurrentCulture)}\n");
+                    discordUserEvents.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Event.Banned)} Banned - {events.Timestamp.ToString("ddd, MMM d, yyyy", CultureInfo.CurrentCulture)}\n");
                 }
 
                 if (events.Event == Event.Unbanned)
                 {
-                    discordUserEvents.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Variables.Emojis.EventEmojis.Edited)} Unbanned - {events.Timestamp.ToString("ddd, MMM d, yyyy", CultureInfo.CurrentCulture)}\n");
+                    discordUserEvents.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Event.Edited)} Unbanned - {events.Timestamp.ToString("ddd, MMM d, yyyy", CultureInfo.CurrentCulture)}\n");
                 }
             }
 

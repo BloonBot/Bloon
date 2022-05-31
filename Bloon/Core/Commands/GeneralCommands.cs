@@ -4,7 +4,7 @@ namespace Bloon.Core.Commands
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Bloon.Core.Commands.Attributes;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
@@ -96,8 +96,8 @@ namespace Bloon.Core.Commands
         public Task ExtensionsAsync(CommandContext ctx)
         {
             return ctx.RespondAsync(
-                $"{DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Chrome)} <https://chrome.google.com/webstore/detail/intruder-notifications/aoebpknpfcepopfgnbnikaipjeekalim>\n" +
-                $"{DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Firefox)} <https://addons.mozilla.org/en-US/firefox/addon/intruder-notifications/>");
+                $"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Browser.Chrome)} <https://chrome.google.com/webstore/detail/intruder-notifications/aoebpknpfcepopfgnbnikaipjeekalim>\n" +
+                $"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Browser.Firefox)} <https://addons.mozilla.org/en-US/firefox/addon/intruder-notifications/>");
         }
 
         [Command("vecish")]

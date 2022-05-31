@@ -3,8 +3,7 @@ namespace Bloon.Features.RedditGuard
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Bloon.Core.Database;
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using Microsoft.Extensions.DependencyInjection;
@@ -74,7 +73,7 @@ namespace Bloon.Features.RedditGuard
 
             Log.Information("[REDDIT] Received {0} new post(s)!", posts.Count);
 
-            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General);
+            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(Channels.SBG.General);
 
             foreach (Post post in posts)
             {
@@ -94,7 +93,7 @@ namespace Bloon.Features.RedditGuard
                     },
                     Footer = new DiscordEmbedBuilder.EmbedFooter()
                     {
-                        IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, PlatformEmojis.Reddit).Url,
+                        IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Platform.Reddit).Url,
                         Text = "/r/Intruder",
                     },
                     Color = new DiscordColor(255, 69, 0),
@@ -122,7 +121,7 @@ namespace Bloon.Features.RedditGuard
                 }
                 else
                 {
-                    DiscordChannel sbgPNV = await this.dClient.GetChannelAsync(SBGChannels.PicsNVids);
+                    DiscordChannel sbgPNV = await this.dClient.GetChannelAsync(Channels.SBG.PicsNVids);
 
                     redditEmbed = new DiscordEmbedBuilder(redditEmbed)
                     {

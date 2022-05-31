@@ -3,8 +3,7 @@ namespace Bloon.Features.SteamNews
     using System.Threading.Tasks;
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using Serilog;
@@ -22,7 +21,7 @@ namespace Bloon.Features.SteamNews
             this.newsService = newsService;
         }
 
-        public ulong Emoji => PlatformEmojis.Steam;
+        public ulong Emoji => Emojis.Platform.Steam;
 
         public int Interval => 30;
 
@@ -44,13 +43,13 @@ namespace Bloon.Features.SteamNews
                 return;
             }
 
-            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General);
+            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(Channels.SBG.General);
 
             DiscordEmbedBuilder mapEmbed = new DiscordEmbedBuilder
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, PlatformEmojis.Steam).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Platform.Steam).Url,
                     Text = "Announcement",
                 },
                 Color = new DiscordColor(0, 173, 238),

@@ -3,10 +3,7 @@ namespace Bloon.Features.WelcomeAgents
     using System;
     using System.Text;
     using System.Threading.Tasks;
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Emojis;
-    using Bloon.Variables.Messages;
-    using Bloon.Variables.Roles;
+    using Bloon.Variables;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
@@ -51,22 +48,22 @@ namespace Bloon.Features.WelcomeAgents
         [Hidden]
         public async Task UpdateWelcomeAgents(CommandContext ctx)
         {
-            DiscordChannel rulesAndInfo = ctx.Guild.GetChannel(SBGChannels.RulesAndInfo);
+            DiscordChannel rulesAndInfo = ctx.Guild.GetChannel(Channels.SBG.RulesAndInfo);
             StringBuilder roleLinks = new StringBuilder();
 
-            roleLinks.Append($"<@&{SBGRoles.Developer}> : The developers of Intruder! \n");
-            roleLinks.Append($"<@&{SBGRoles.Nerds}> : Official staff partners working along with the developer for community management.\n");
-            roleLinks.Append($"<@&{SBGRoles.Mod}> : The amazing community volunteers assisting the team to keep the peace.  \n");
-            roleLinks.Append($"<@&{SBGRoles.AUG}> : A group of serious players who engage the community. \n");
-            roleLinks.Append($"<@&{SBGRoles.Agent}> : All members of the community.  \n");
+            roleLinks.Append($"<@&{Roles.SBG.Developer}> : The developers of Intruder! \n");
+            roleLinks.Append($"<@&{Roles.SBG.Nerds}> : Official staff partners working along with the developer for community management.\n");
+            roleLinks.Append($"<@&{Roles.SBG.Mod}> : The amazing community volunteers assisting the team to keep the peace.  \n");
+            roleLinks.Append($"<@&{Roles.SBG.AUG}> : A group of serious players who engage the community. \n");
+            roleLinks.Append($"<@&{Roles.SBG.Agent}> : All members of the community.  \n");
 
             StringBuilder importLinks = new StringBuilder();
-            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, PlatformEmojis.YouTube)} | [**Youtube**](https://www.youtube.com/superbossgames)\n");
-            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, PlatformEmojis.Twitter)} | [**Twitter**](https://twitter.com/SuperbossGames/)\n");
-            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, PlatformEmojis.Helprace)} | [**Helprace**](https://superbossgames.helprace.com/)\n");
-            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, PlatformEmojis.Reddit)} | [**Reddit**](https://www.reddit.com/r/Intruder)\n");
-            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, PlatformEmojis.Twitch)} | [**Twitch**](https://www.twitch.tv/superbossgames)\n");
-            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, PlatformEmojis.Discord)} | [**Server Invite**](https://discord.gg/superbossgames)\n");
+            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.YouTube)} | [**Youtube**](https://www.youtube.com/superbossgames)\n");
+            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Twitter)} | [**Twitter**](https://twitter.com/SuperbossGames/)\n");
+            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Helprace)} | [**Helprace**](https://superbossgames.helprace.com/)\n");
+            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Reddit)} | [**Reddit**](https://www.reddit.com/r/Intruder)\n");
+            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Twitch)} | [**Twitch**](https://www.twitch.tv/superbossgames)\n");
+            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Discord)} | [**Server Invite**](https://discord.gg/superbossgames)\n");
 
             this.rulesEmbed.AddField($"Roles", roleLinks.ToString(), false);
             this.rulesEmbed.AddField($"Important Links", importLinks.ToString(), false);
@@ -92,8 +89,8 @@ namespace Bloon.Features.WelcomeAgents
         [Hidden]
         public async Task UpdateRoleEmbed(CommandContext ctx)
         {
-            this.roleEmbed.Description = $"React to this message using {DiscordEmoji.FromGuildEmote(ctx.Client, ManageRoleEmojis.BloonMoji)} reaction to subscribe to news and stay up to date. This way, we will reserve using the @everyone for essential news only.\n";
-            DiscordChannel rulesAndInfo = ctx.Guild.GetChannel(SBGChannels.RulesAndInfo);
+            this.roleEmbed.Description = $"React to this message using {DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.ManageRole.BloonMoji)} reaction to subscribe to news and stay up to date. This way, we will reserve using the @everyone for essential news only.\n";
+            DiscordChannel rulesAndInfo = ctx.Guild.GetChannel(Channels.SBG.RulesAndInfo);
 
             StringBuilder roleLinks = new StringBuilder();
 
@@ -101,7 +98,7 @@ namespace Bloon.Features.WelcomeAgents
             {
                 foreach (DiscordMessage msg in await rulesAndInfo.GetMessagesAsync())
                 {
-                    if (msg.Author.Id == ctx.Client.CurrentUser.Id && msg.Id == SBGMessages.TheOnlyMessageIDWeCurrentlyCareAboutAtleastInAPublicFacingPerspective)
+                    if (msg.Author.Id == ctx.Client.CurrentUser.Id && msg.Id == Messages.TheOnlyMessageIDWeCurrentlyCareAboutAtleastInAPublicFacingPerspective)
                     {
                         await msg.ModifyAsync(embed: this.rulesEmbed.Build());
                         return;

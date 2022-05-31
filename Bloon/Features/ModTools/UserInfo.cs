@@ -43,16 +43,6 @@ namespace Bloon.Features.ModTools
                 case "bloondev":
                     guildId = Guilds.Bloon;
                     break;
-                case "leanto":
-                case "lean":
-                    guildId = Guilds.Leanto;
-                    break;
-                case "fox":
-                case "foxhound":
-                case "fhound":
-                case "fh":
-                    guildId = Guilds.Leanto;
-                    break;
                 default:
                     guildId = Guilds.SBG;
                     break;
@@ -152,22 +142,22 @@ namespace Bloon.Features.ModTools
             {
                 if (events.Event == Event.Joined)
                 {
-                    eventText = eventText + DiscordEmoji.FromGuildEmote(ctx.Client, Variables.Emojis.EventEmojis.Join) + " Joined\n";
+                    eventText = eventText + DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Event.Join) + " Joined\n";
                 }
 
                 if (events.Event == Event.Left)
                 {
-                    eventText = eventText + DiscordEmoji.FromGuildEmote(ctx.Client, Variables.Emojis.EventEmojis.Leave) + " Left\n";
+                    eventText = eventText + DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Event.Leave) + " Left\n";
                 }
 
                 if (events.Event == Event.Banned)
                 {
-                    eventText = eventText + DiscordEmoji.FromGuildEmote(ctx.Client, Variables.Emojis.EventEmojis.Banned) + " Banned\n";
+                    eventText = eventText + DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Event.Banned) + " Banned\n";
                 }
 
                 if (events.Event == Event.Unbanned)
                 {
-                    eventText = eventText + DiscordEmoji.FromGuildEmote(ctx.Client, Variables.Emojis.EventEmojis.Edited) + " Unbanned\n";
+                    eventText = eventText + DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Event.Edited) + " Unbanned\n";
                 }
 
                 timestamps += $"{events.Timestamp.ToString("ddd, MMM d, yyyy", CultureInfo.CurrentCulture)}\n";

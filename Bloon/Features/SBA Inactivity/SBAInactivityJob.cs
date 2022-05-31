@@ -9,9 +9,6 @@ namespace Bloon.Features.SBAInactivity
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
     using Bloon.Variables;
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Emojis;
-    using Bloon.Variables.Roles;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using Microsoft.Extensions.DependencyInjection;
@@ -30,15 +27,15 @@ namespace Bloon.Features.SBAInactivity
             this.bloonLog = bloonLog;
         }
 
-        public ulong Emoji => SBGEmojis.Superboss;
+        public ulong Emoji => Emojis.SBG.Superboss;
 
         public int Interval => 24 * 60;
 
         public async Task Execute()
         {
             DiscordGuild sbg = await this.dClient.GetGuildAsync(Guilds.SBG);
-            DiscordRole sbaRole = sbg.GetRole(SBGRoles.SBA);
-            DiscordChannel sbaChannel = await this.dClient.GetChannelAsync(SBGChannels.SecretBaseAlpha);
+            DiscordRole sbaRole = sbg.GetRole(Roles.SBG.SBA);
+            DiscordChannel sbaChannel = await this.dClient.GetChannelAsync(Channels.SBG.SecretBaseAlpha);
 
             List<DiscordMember> roleMembers = sbg.Members
                 .Select(m => m.Value)
@@ -57,7 +54,7 @@ namespace Bloon.Features.SBAInactivity
             {
                 if (!tracked.ContainsKey(user.Id))
                 {
-                    this.bloonLog.Information(LogConsole.RoleEdits, ManageRoleEmojis.Warning, $"**Inactivity Error**: No stored message for {user.Username} - SBA");
+                    this.bloonLog.Information(LogConsole.RoleEdits, Emojis.ManageRole.Warning, $"**Inactivity Error**: No stored message for {user.Username} - SBA");
                     continue;
                 }
 
@@ -81,7 +78,7 @@ namespace Bloon.Features.SBAInactivity
                         + $"Last activity: {trackedUser.LastMessage.ToString("D", CultureInfo.InvariantCulture)}";
 
                     await this.SendDM(user, dmMessage, false);
-                    this.bloonLog.Information(LogConsole.RoleEdits, ManageRoleEmojis.Warning, $"**Inactivity Warning**: {user.Username} - SBA");
+                    this.bloonLog.Information(LogConsole.RoleEdits, Emojis.ManageRole.Warning, $"**Inactivity Warning**: {user.Username} - SBA");
 
                     trackedUser.WarningTimestamp = DateTime.Now;
                     db.Update(trackedUser);
@@ -100,7 +97,7 @@ namespace Bloon.Features.SBAInactivity
 
                     db.Remove(trackedUser);
 
-                    this.bloonLog.Information(LogConsole.RoleEdits, ManageRoleEmojis.Demotion, $"**Inactivity Role Demotion**: {user.Username} - SBA");
+                    this.bloonLog.Information(LogConsole.RoleEdits, Emojis.ManageRole.Demotion, $"**Inactivity Role Demotion**: {user.Username} - SBA");
                 }
 
                 await db.SaveChangesAsync();
@@ -110,7 +107,7 @@ namespace Bloon.Features.SBAInactivity
         private async Task SendDM(DiscordMember member, string message, bool kicked)
         {
             DiscordDmChannel dmChannel = await member.CreateDmChannelAsync();
-            DiscordChannel sbaChannel = await this.dClient.GetChannelAsync(SBGChannels.SecretBaseAlpha);
+            DiscordChannel sbaChannel = await this.dClient.GetChannelAsync(Channels.SBG.SecretBaseAlpha);
 
             try
             {

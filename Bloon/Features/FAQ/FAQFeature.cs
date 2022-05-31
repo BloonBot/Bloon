@@ -5,7 +5,7 @@ namespace Bloon.Features.FAQ
     using System.Threading.Tasks;
     using Bloon.Core.Database;
     using Bloon.Core.Services;
-    using Bloon.Variables.Channels;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.EventArgs;
@@ -63,7 +63,7 @@ namespace Bloon.Features.FAQ
                 return;
             }
 
-            if ((args.Channel.Id == SBGChannels.Help || args.Channel.Id == SBGChannels.General ||args.Channel.Id == SBGChannels.BloonCommands || args.Channel.Id == BloonChannels.Ground0 || args.Channel.Id == SBGChannels.Mapmaker || args.Channel.Id == SBGChannels.Wiki || args.Channel.Id == SBGChannels.MapMakerShowcase || args.Channel.Id == SBGChannels.SecretBaseAlpha)
+            if ((args.Channel.Id == Channels.SBG.Help || args.Channel.Id == Channels.SBG.General ||args.Channel.Id == Channels.SBG.BloonCommands || args.Channel.Id == Channels.Bloon.Ground0 || args.Channel.Id == Channels.SBG.Mapmaker || args.Channel.Id == Channels.SBG.Wiki || args.Channel.Id == Channels.SBG.MapMakerShowcase || args.Channel.Id == Channels.SBG.SecretBaseAlpha)
                 && this.faqManager.TryForAutoResponse(args.Message.Content, out string response))
             {
                 await args.Channel.SendMessageAsync(response);

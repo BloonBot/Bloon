@@ -6,8 +6,7 @@ namespace Bloon.Features.RolePersistence
     using Bloon.Core.Database;
     using Bloon.Core.Services;
     using Bloon.Variables;
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Roles;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using DSharpPlus.EventArgs;
@@ -18,9 +17,9 @@ namespace Bloon.Features.RolePersistence
     {
         private static readonly HashSet<ulong> Blacklist = new HashSet<ulong>
         {
-            SBGRoles.LookingToPlay,
-            SBGRoles.NowPlaying,
-            SBGRoles.NowStreaming,
+            Roles.SBG.LookingToPlay,
+            Roles.SBG.NowPlaying,
+            Roles.SBG.NowStreaming,
         };
 
         private readonly IServiceScopeFactory scopeFactory;
@@ -107,7 +106,7 @@ namespace Bloon.Features.RolePersistence
                 return;
             }
 
-            await args.Guild.GetChannel(SBGChannels.Bloonside)
+            await args.Guild.GetChannel(Channels.SBG.Bloonside)
                 .SendMessageAsync($"Granted **{string.Join(", ", addedRoleNames)}** to **{args.Member.Username}**.");
         }
 

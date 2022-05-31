@@ -6,8 +6,7 @@ namespace Bloon.Features.Workshop
     using Bloon.Core.Services;
     using Bloon.Features.Workshop.Models;
     using Bloon.Utils;
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using Serilog;
@@ -23,7 +22,7 @@ namespace Bloon.Features.Workshop
             this.workshopService = workshopService;
         }
 
-        public ulong Emoji => PlatformEmojis.Steam;
+        public ulong Emoji => Emojis.Platform.Steam;
 
         public int Interval => 5;
 
@@ -40,14 +39,14 @@ namespace Bloon.Features.Workshop
                 return;
             }
 
-            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General);
-            DiscordChannel sbgMM = await this.dClient.GetChannelAsync(SBGChannels.MapMakerShowcase);
+            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(Channels.SBG.General);
+            DiscordChannel sbgMM = await this.dClient.GetChannelAsync(Channels.SBG.MapMakerShowcase);
 
             DiscordEmbedBuilder workshopMapEmbed = new DiscordEmbedBuilder
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, PlatformEmojis.Steam).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Platform.Steam).Url,
                     Text = "Workshop",
                 },
                 Color = new DiscordColor(0, 173, 238),
@@ -58,7 +57,7 @@ namespace Bloon.Features.Workshop
                 // Only 1 new/updated
                 workshopMapEmbed.Timestamp = maps.ElementAt(0).TimeUpdated;
                 workshopMapEmbed.Title = $"Workshop Update: {maps.ElementAt(0).Title}";
-                workshopMapEmbed.Description = $"{DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)} __[{await this.workshopService.GetDBWorkshopMapCreator(maps.ElementAt(0).CreatorSteamID)}](https://steamcommunity.com/profiles/{maps.ElementAt(0).CreatorSteamID}/myworkshopfiles/?appid=518150)__ \n" +
+                workshopMapEmbed.Description = $"{DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Players)} __[{await this.workshopService.GetDBWorkshopMapCreator(maps.ElementAt(0).CreatorSteamID)}](https://steamcommunity.com/profiles/{maps.ElementAt(0).CreatorSteamID}/myworkshopfiles/?appid=518150)__ \n" +
                     $"{maps.ElementAt(0).Description.Truncate(1000)}{(maps.ElementAt(0).Description.Length > 0 ? "..." : string.Empty)}";
                 workshopMapEmbed.Url = $"https://steamcommunity.com/sharedfiles/filedetails/?id={maps.ElementAt(0).FileID}";
                 workshopMapEmbed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
@@ -75,7 +74,7 @@ namespace Bloon.Features.Workshop
                 string embedDescription = string.Empty;
                 foreach (WorkshopMap workshopMap in maps)
                 {
-                    embedDescription = embedDescription + $"{DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Map)} __[{workshopMap.Title}](https://steamcommunity.com/sharedfiles/filedetails/?id={workshopMap.FileID})__ • {DiscordEmoji.FromGuildEmote(this.dClient, ServerEmojis.Players)} __[{await this.workshopService.GetDBWorkshopMapCreator(workshopMap.CreatorSteamID)}](https://steamcommunity.com/profiles/{workshopMap.CreatorSteamID}/myworkshopfiles/?appid=518150)__ \n" +
+                    embedDescription = embedDescription + $"{DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Map)} __[{workshopMap.Title}](https://steamcommunity.com/sharedfiles/filedetails/?id={workshopMap.FileID})__ • {DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Server.Players)} __[{await this.workshopService.GetDBWorkshopMapCreator(workshopMap.CreatorSteamID)}](https://steamcommunity.com/profiles/{workshopMap.CreatorSteamID}/myworkshopfiles/?appid=518150)__ \n" +
                         $"{workshopMap.Description.Truncate(256)}\n{(workshopMap.Description.Length > 0 ? "...\n" : string.Empty)}\n";
                 }
 

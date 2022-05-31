@@ -6,7 +6,7 @@ namespace Bloon.Features.IntruderBackend.Servers
     using System.Threading.Tasks;
     using Bloon.Core.Commands.Attributes;
     using Bloon.Features.IntruderBackend.Rooms;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
@@ -37,7 +37,7 @@ namespace Bloon.Features.IntruderBackend.Servers
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, ServerEmojis.Unofficial).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Server.Unofficial).Url,
                 },
                 Color = new DiscordColor(217, 187, 19),
                 Timestamp = DateTime.UtcNow,
@@ -63,7 +63,7 @@ namespace Bloon.Features.IntruderBackend.Servers
 
                 if (skipRoomCount >= 1)
                 {
-                    serverList.Append($"<:unofficial:{ServerEmojis.Unofficial}> <:os:{ServerEmojis.Official}> <:passworded:{ServerEmojis.Password}> and **{skipRoomCount}** more servers.");
+                    serverList.Append($"<:unofficial:{Emojis.Server.Unofficial}> <:os:{Emojis.Server.Official}> <:passworded:{Emojis.Server.Password}> and **{skipRoomCount}** more servers.");
                 }
 
                 serverEmbed.Title = "Current Server Information";
@@ -75,8 +75,8 @@ namespace Bloon.Features.IntruderBackend.Servers
                 serverEmbed.AddField($"Current Server Information", $"N/A", true);
             }
 
-            string extensions = $"{DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Chrome)} [**Chrome**](https://chrome.google.com/webstore/detail/intruder-notifications/aoebpknpfcepopfgnbnikaipjeekalim) | "
-                + $"[**Firefox**](https://addons.mozilla.org/en-US/firefox/addon/intruder-notifications/) {DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Firefox)}";
+            string extensions = $"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Browser.Chrome)} [**Chrome**](https://chrome.google.com/webstore/detail/intruder-notifications/aoebpknpfcepopfgnbnikaipjeekalim) | "
+                + $"[**Firefox**](https://addons.mozilla.org/en-US/firefox/addon/intruder-notifications/) {DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Browser.Firefox)}";
             serverEmbed.AddField("Browser Extensions", extensions);
             serverEmbed.Footer.Text = $"SuperbossGames | #current-server-info | Total Agents: {csi.PlayerCount}";
 
@@ -94,7 +94,7 @@ namespace Bloon.Features.IntruderBackend.Servers
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, ServerEmojis.Unofficial).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Server.Unofficial).Url,
                 },
                 Color = new DiscordColor(217, 187, 19),
                 Timestamp = DateTime.UtcNow,
@@ -120,7 +120,7 @@ namespace Bloon.Features.IntruderBackend.Servers
 
                 if (skipRoomCount >= 1)
                 {
-                    serverList.Append($"<:unofficial:{ServerEmojis.Unofficial}> <:os:{ServerEmojis.Official}> <:passworded:{ServerEmojis.Password}> and **{skipRoomCount}** more servers.");
+                    serverList.Append($"<:unofficial:{Emojis.Server.Unofficial}> <:os:{Emojis.Server.Official}> <:passworded:{Emojis.Server.Password}> and **{skipRoomCount}** more servers.");
                 }
 
                 serverEmbed.AddField($"Current Server Information", serverList.ToString(), true);
@@ -130,8 +130,8 @@ namespace Bloon.Features.IntruderBackend.Servers
                 serverEmbed.AddField($"Current Server Information", $"N/A", true);
             }
 
-            string extensions = $"{DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Chrome)} [**Chrome**](https://chrome.google.com/webstore/detail/intruder-notifications/aoebpknpfcepopfgnbnikaipjeekalim) | "
-                + $"[**Firefox**](https://addons.mozilla.org/en-US/firefox/addon/intruder-notifications/) {DiscordEmoji.FromGuildEmote(ctx.Client, BrowserEmojis.Firefox)}";
+            string extensions = $"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Browser.Chrome)} [**Chrome**](https://chrome.google.com/webstore/detail/intruder-notifications/aoebpknpfcepopfgnbnikaipjeekalim) | "
+                + $"[**Firefox**](https://addons.mozilla.org/en-US/firefox/addon/intruder-notifications/) {DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Browser.Firefox)}";
 
             serverEmbed.AddField("Browser Extensions", extensions);
             serverEmbed.Footer.Text = $"SuperbossGames | #current-server-info | Total Agents: {csi.PlayerCount}";

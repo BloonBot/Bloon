@@ -1,8 +1,6 @@
 namespace Bloon.Variables
 {
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Emojis;
-    using Bloon.Variables.Roles;
+    using Bloon.Variables;
     using DSharpPlus;
     using Serilog;
 
@@ -15,11 +13,10 @@ namespace Bloon.Variables
             if (isDev)
             {
                 Log.Warning("Intruder account detected, overriding SBG variables");
-                BloonChannels.Settings = BloonChannels.SettingsDebug;
+                Channels.MockFakeStub();
+                Emojis.MockFakeStub();
                 Guilds.MockFakeStub();
-                SBGChannels.MockFakeStub();
-                SBGRoles.MockFakeStub();
-                SBGEmojis.MockFakeStub();
+                Roles.MockFakeStub();
                 Users.MockFakeStub();
             }
         }

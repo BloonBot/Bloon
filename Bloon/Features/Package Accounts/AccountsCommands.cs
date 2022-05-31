@@ -2,7 +2,7 @@ namespace Bloon.Features.PackageAccounts
 {
     using System;
     using System.Threading.Tasks;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
@@ -29,7 +29,7 @@ namespace Bloon.Features.PackageAccounts
                 {
                     Footer = new DiscordEmbedBuilder.EmbedFooter
                     {
-                        IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, ManageRoleEmojis.Warning).Url,
+                        IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.ManageRole.Warning).Url,
                         Text = "Package Account Help Embed",
                     },
                     Color = new DiscordColor(52, 114, 53),
@@ -81,7 +81,7 @@ namespace Bloon.Features.PackageAccounts
                 {
                     Footer = new DiscordEmbedBuilder.EmbedFooter
                     {
-                        IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, CommandEmojis.Run).Url,
+                        IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Command.Run).Url,
                         Text = $"Package Account Profile | Account Created: {account.AccountCreated}",
                     },
                     Color = new DiscordColor(52, 114, 53),
@@ -115,7 +115,7 @@ namespace Bloon.Features.PackageAccounts
                 {
                     Footer = new DiscordEmbedBuilder.EmbedFooter
                     {
-                        IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, ManageRoleEmojis.Warning).Url,
+                        IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.ManageRole.Warning).Url,
                         Text = "Package Account Verification and Disclaimer",
                     },
                     Color = new DiscordColor(52, 114, 53),

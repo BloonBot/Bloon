@@ -5,7 +5,7 @@ namespace Bloon.Features.ModTools
     using System.Threading.Tasks;
     using Bloon.Core.Commands.Attributes;
     using Bloon.Core.Database;
-    using Bloon.Variables.Roles;
+    using Bloon.Variables;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
@@ -27,11 +27,11 @@ namespace Bloon.Features.ModTools
         {
             try
             {
-                DiscordRole muted = ctx.Guild.GetRole(SBGRoles.Muted);
+                DiscordRole muted = ctx.Guild.GetRole(Roles.SBG.Muted);
                 DiscordMember discordUser = await ctx.Guild.GetMemberAsync(discordId);
 
                 // User is already muted.
-                if (discordUser.Roles.Any(r => r.Id == SBGRoles.Muted))
+                if (discordUser.Roles.Any(r => r.Id == Roles.SBG.Muted))
                 {
                     await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":warning:"));
                     await ctx.RespondAsync("That user is already muted. Another moderator may have muted them before you. Use `.unmute {userID}` to unmute them.");
@@ -67,11 +67,11 @@ namespace Bloon.Features.ModTools
         {
             try
             {
-                DiscordRole muted = ctx.Guild.GetRole(SBGRoles.Muted);
+                DiscordRole muted = ctx.Guild.GetRole(Roles.SBG.Muted);
                 DiscordMember discordUser = await ctx.Guild.GetMemberAsync(discordId);
 
                 // User is already muted.
-                if (discordUser.Roles.Any(r => r.Id == SBGRoles.Muted))
+                if (discordUser.Roles.Any(r => r.Id == Roles.SBG.Muted))
                 {
                     await discordUser.RevokeRoleAsync(muted);
                     await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":heavy_check_mark:"));

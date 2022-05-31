@@ -5,8 +5,7 @@ namespace Bloon.Features.Helprace
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
     using Bloon.Utils;
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using Serilog;
@@ -24,7 +23,7 @@ namespace Bloon.Features.Helprace
             this.helpraceService = helpraceService;
         }
 
-        public ulong Emoji => PlatformEmojis.Helprace;
+        public ulong Emoji => Emojis.Platform.Helprace;
 
         public int Interval => 5;
 
@@ -46,7 +45,7 @@ namespace Bloon.Features.Helprace
                 return;
             }
 
-            DiscordChannel sbgBugs = await this.dClient.GetChannelAsync(SBGChannels.Bugs);
+            DiscordChannel sbgBugs = await this.dClient.GetChannelAsync(Channels.SBG.Bugs);
 
             if (post.Title.Length > 128)
             {
@@ -67,7 +66,7 @@ namespace Bloon.Features.Helprace
                 },
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, PlatformEmojis.Helprace).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Platform.Helprace).Url,
                     Text = $"Helprace | Channel: {post.Channel.Replace("ideas", "Suggestions", StringComparison.Ordinal).Replace("problems", "Bugs", StringComparison.Ordinal)}",
                 },
                 Color = new DiscordColor(23, 153, 177),
@@ -78,8 +77,8 @@ namespace Bloon.Features.Helprace
             };
 
             DiscordMessage message = await sbgBugs.SendMessageAsync(embed: hrEmbed);
-            await message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(this.dClient, ReputationEmojis.Up));
-            await message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(this.dClient, ReputationEmojis.Down));
+            await message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Reputation.Up));
+            await message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Reputation.Down));
             Log.Information("Finished Helprace Scraping");
         }
     }

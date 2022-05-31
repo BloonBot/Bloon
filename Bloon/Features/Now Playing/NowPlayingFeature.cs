@@ -7,7 +7,7 @@ namespace Bloon.Features.NowPlaying
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
     using Bloon.Features.LTP;
-    using Bloon.Variables.Roles;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using DSharpPlus.EventArgs;
@@ -66,7 +66,7 @@ namespace Bloon.Features.NowPlaying
                     return;
                 }
 
-                DiscordRole nowPlayingRole = args.PresenceAfter.Guild.GetRole(SBGRoles.NowPlaying);
+                DiscordRole nowPlayingRole = args.PresenceAfter.Guild.GetRole(Roles.SBG.NowPlaying);
                 DiscordMember member = await args.PresenceAfter.Guild.GetMemberAsync(args.UserAfter.Id);
 
                 // User started playing Intruder

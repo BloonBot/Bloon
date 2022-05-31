@@ -6,7 +6,7 @@ namespace Bloon.Features.Doorman
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
     using Bloon.Features.Analytics;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using DSharpPlus.EventArgs;
@@ -85,7 +85,7 @@ namespace Bloon.Features.Doorman
             }
 
             // Log to Discord
-            this.bloonLog.Information(LogConsole.UserInfo, EventEmojis.Join, $"{args.Member.Username} **Joined** SBG. Account Created: {args.Member.CreationTimestamp.UtcDateTime.ToString("D", CultureInfo.InvariantCulture)} | ID: {args.Member.Id}");
+            this.bloonLog.Information(LogConsole.UserInfo, Emojis.Event.Join, $"{args.Member.Username} **Joined** SBG. Account Created: {args.Member.CreationTimestamp.UtcDateTime.ToString("D", CultureInfo.InvariantCulture)} | ID: {args.Member.Id}");
         }
 
         private async Task DBLogMemberLeft(DiscordClient dClient, GuildMemberRemoveEventArgs args)
@@ -132,7 +132,7 @@ namespace Bloon.Features.Doorman
                 message += " - Joined: **Unknown**";
             }
 
-            this.bloonLog.Information(LogConsole.UserInfo, EventEmojis.Leave, message);
+            this.bloonLog.Information(LogConsole.UserInfo, Emojis.Event.Leave, message);
         }
     }
 }

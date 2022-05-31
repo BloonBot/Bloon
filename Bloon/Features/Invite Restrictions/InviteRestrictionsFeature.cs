@@ -4,7 +4,7 @@ namespace Bloon.Features.Censor
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Bloon.Core.Services;
-    using Bloon.Variables.Channels;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using DSharpPlus.EventArgs;
@@ -61,7 +61,7 @@ namespace Bloon.Features.Censor
 
             if ((DateTime.UtcNow - member.JoinedAt.UtcDateTime).TotalHours < 24)
             {
-                DiscordChannel sbgAUG = args.Channel.Guild.GetChannel(SBGChannels.Bloonside);
+                DiscordChannel sbgAUG = args.Channel.Guild.GetChannel(Channels.SBG.Bloonside);
 
                 await args.Message.DeleteAsync();
                 await args.Channel.SendMessageAsync("Invite link removed (Joined <24 hours ago)");

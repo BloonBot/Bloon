@@ -5,8 +5,7 @@ namespace Bloon.Features.Twitter
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
     using Bloon.Utils;
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using LinqToTwitter;
@@ -31,7 +30,7 @@ namespace Bloon.Features.Twitter
             this.redditAPI = redditAPI;
         }
 
-        public ulong Emoji => PlatformEmojis.Twitter;
+        public ulong Emoji => Emojis.Platform.Twitter;
 
         public int Interval => 5;
 
@@ -53,7 +52,7 @@ namespace Bloon.Features.Twitter
                 return;
             }
 
-            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General);
+            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(Channels.SBG.General);
 
             DiscordEmbed tweetEmbed = new DiscordEmbedBuilder
             {
@@ -64,7 +63,7 @@ namespace Bloon.Features.Twitter
                 },
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, PlatformEmojis.Twitter).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Platform.Twitter).Url,
                     Text = "Twitter",
                 },
                 Color = new DiscordColor(29, 161, 242),

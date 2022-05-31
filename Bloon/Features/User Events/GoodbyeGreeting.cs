@@ -4,7 +4,7 @@ namespace Bloon.Features.Doorman
     using System.Globalization;
     using System.Threading.Tasks;
     using Bloon.Core.Services;
-    using Bloon.Variables.Channels;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using DSharpPlus.EventArgs;
@@ -43,7 +43,7 @@ namespace Bloon.Features.Doorman
                 return;
             }
 
-            DiscordChannel sbgAug = await this.dClient.GetChannelAsync(SBGChannels.Bloonside);
+            DiscordChannel sbgAug = await this.dClient.GetChannelAsync(Channels.SBG.Bloonside);
 
             // Temp fix for https://github.com/DSharpPlus/DSharpPlus/pull/491
             bool memberCached = true;

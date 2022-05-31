@@ -4,7 +4,7 @@ namespace Bloon.Features.Wiki
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
@@ -34,7 +34,7 @@ namespace Bloon.Features.Wiki
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, PlatformEmojis.Wiki).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Wiki).Url,
                     Text = "Superbossgames Wiki",
                 },
                 Color = new DiscordColor(217, 187, 19),

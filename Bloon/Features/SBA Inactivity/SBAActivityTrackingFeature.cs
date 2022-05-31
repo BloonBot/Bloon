@@ -5,7 +5,7 @@ namespace Bloon.Features.SBAInactivity
     using System.Threading.Tasks;
     using Bloon.Core.Database;
     using Bloon.Core.Services;
-    using Bloon.Variables.Channels;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.EventArgs;
     using Microsoft.Extensions.DependencyInjection;
@@ -44,7 +44,7 @@ namespace Bloon.Features.SBAInactivity
         /// <returns>Task.</returns>
         private async Task TrackSBAAsync(DiscordClient dClient, MessageCreateEventArgs args)
         {
-            if (args.Author.IsBot || args.Channel.Id != SBGChannels.SecretBaseAlpha)
+            if (args.Author.IsBot || args.Channel.Id != Channels.SBG.SecretBaseAlpha)
             {
                 return;
             }

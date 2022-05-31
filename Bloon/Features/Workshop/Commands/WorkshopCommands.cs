@@ -7,7 +7,7 @@ namespace Bloon.Features.Workshop
     using System.Threading.Tasks;
     using Bloon.Core.Commands.Attributes;
     using Bloon.Features.Workshop.Models;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
@@ -35,7 +35,7 @@ namespace Bloon.Features.Workshop
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, PlatformEmojis.Steam).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Steam).Url,
                     Text = "Workshop",
                 },
                 Color = new DiscordColor(0, 173, 238),
@@ -47,11 +47,11 @@ namespace Bloon.Features.Workshop
             for (int i = 0; i < 5; i++)
             {
                 description = description +
-                    $"{DiscordEmoji.FromGuildEmote(ctx.Client, ServerEmojis.Map)} __[{maps.ElementAt(i).Title}](https://steamcommunity.com/sharedfiles/filedetails/?id={maps.ElementAt(i).FileID})__ " +
-                    $"• {DiscordEmoji.FromGuildEmote(ctx.Client, ServerEmojis.Players)} __[{await this.workshopService.GetDBWorkshopMapCreator(maps.ElementAt(i).CreatorSteamID)}](https://steamcommunity.com/profiles/{maps.ElementAt(i).CreatorSteamID}/myworkshopfiles/?appid=518150)__ \n" +
+                    $"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Server.Map)} __[{maps.ElementAt(i).Title}](https://steamcommunity.com/sharedfiles/filedetails/?id={maps.ElementAt(i).FileID})__ " +
+                    $"• {DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Server.Players)} __[{await this.workshopService.GetDBWorkshopMapCreator(maps.ElementAt(i).CreatorSteamID)}](https://steamcommunity.com/profiles/{maps.ElementAt(i).CreatorSteamID}/myworkshopfiles/?appid=518150)__ \n" +
                     $"{DiscordEmoji.FromName(ctx.Client, ":pushpin:")} Subscriptions: **{maps.ElementAt(i).Subscriptions}**\n" +
                     $"{DiscordEmoji.FromName(ctx.Client, ":heart:")} Favorites: **{maps.ElementAt(i).Favorited}**\n" +
-                    $"{DiscordEmoji.FromGuildEmote(ctx.Client, EventEmojis.Join)} Followers: **{maps.ElementAt(i).Followers}**\n" +
+                    $"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Event.Join)} Followers: **{maps.ElementAt(i).Followers}**\n" +
                     $"\n";
             }
 

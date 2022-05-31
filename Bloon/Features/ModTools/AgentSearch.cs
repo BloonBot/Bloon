@@ -4,6 +4,7 @@ namespace Bloon.Features.ModTools
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Bloon.Features.IntruderBackend.Agents;
+    using Bloon.Variables;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
     using DSharpPlus.Entities;
@@ -37,7 +38,7 @@ namespace Bloon.Features.ModTools
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, Variables.Emojis.SBGEmojis.Superboss).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.SBG.Superboss).Url,
                     Text = $"IntruderFPS API | Total Online Users: {agents.Count}",
                 },
                 Color = new DiscordColor(95, 95, 95),

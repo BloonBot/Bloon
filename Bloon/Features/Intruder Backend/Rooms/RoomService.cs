@@ -9,7 +9,7 @@ namespace Bloon.Features.IntruderBackend.Servers
     using Bloon.Core.Database;
     using Bloon.Features.IntruderBackend.Rooms;
     using Bloon.Utils;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
@@ -90,16 +90,16 @@ namespace Bloon.Features.IntruderBackend.Servers
             {
                 if (room.Official)
                 {
-                    room.ServerIcon = $"<:os:{ServerEmojis.Official}>";
+                    room.ServerIcon = $"<:os:{Emojis.Server.Official}>";
                 }
                 else
                 {
-                    room.ServerIcon = $"<:uo:{ServerEmojis.Unofficial}>";
+                    room.ServerIcon = $"<:uo:{Emojis.Server.Unofficial}>";
                 }
 
                 if (room.Passworded)
                 {
-                    room.ServerIcon = $"<:asd:{ServerEmojis.Password}>";
+                    room.ServerIcon = $"<:asd:{Emojis.Server.Password}>";
                 }
 
                 room.Name = FilterRoomNames(room.Name);
@@ -123,16 +123,16 @@ namespace Bloon.Features.IntruderBackend.Servers
                 {
                     if (room.Official)
                     {
-                        room.ServerIcon = $"<:os:{ServerEmojis.Official}>";
+                        room.ServerIcon = $"<:os:{Emojis.Server.Official}>";
                     }
                     else
                     {
-                        room.ServerIcon = $"<:uo:{ServerEmojis.Unofficial}>";
+                        room.ServerIcon = $"<:uo:{Emojis.Server.Unofficial}>";
                     }
 
                     if (room.Passworded)
                     {
-                        room.ServerIcon = $"<:asd:{ServerEmojis.Password}>";
+                        room.ServerIcon = $"<:asd:{Emojis.Server.Password}>";
                     }
 
                     rooms.Add(room);
@@ -247,37 +247,37 @@ namespace Bloon.Features.IntruderBackend.Servers
             switch (region)
             {
                 case "EU":
-                    flag = RegionFlagEmojis.EU;
+                    flag = Emojis.RegionFlag.EU;
                     break;
                 case "US":
-                    flag = RegionFlagEmojis.US;
+                    flag = Emojis.RegionFlag.US;
                     break;
                 case "Asia":
-                    flag = RegionFlagEmojis.Asia;
+                    flag = Emojis.RegionFlag.Asia;
                     break;
                 case "JP":
-                    flag = RegionFlagEmojis.JP;
+                    flag = Emojis.RegionFlag.JP;
                     break;
                 case "AU":
-                    flag = RegionFlagEmojis.AU;
+                    flag = Emojis.RegionFlag.AU;
                     break;
                 case "USW":
-                    flag = RegionFlagEmojis.US;
+                    flag = Emojis.RegionFlag.US;
                     break;
                 case "SA":
-                    flag = RegionFlagEmojis.SA;
+                    flag = Emojis.RegionFlag.SA;
                     break;
                 case "CAE":
-                    flag = RegionFlagEmojis.CAE;
+                    flag = Emojis.RegionFlag.CAE;
                     break;
                 case "KR":
-                    flag = RegionFlagEmojis.KR;
+                    flag = Emojis.RegionFlag.KR;
                     break;
                 case "IN":
-                    flag = RegionFlagEmojis.IN;
+                    flag = Emojis.RegionFlag.IN;
                     break;
                 case "RU":
-                    flag = RegionFlagEmojis.RU;
+                    flag = Emojis.RegionFlag.RU;
                     break;
             }
 
@@ -299,46 +299,46 @@ namespace Bloon.Features.IntruderBackend.Servers
             // time is less between 12:AM & 3:59AM
             if (IsTimeOfDayBetween(time, new TimeSpan(0, 0, 0), new TimeSpan(3, 59, 0)))
             {
-                return DayNightEmojis.Moon;
+                return Emojis.DayNight.Moon;
             }
 
             // time is less between 04:00AM & 6:59AM
             if (IsTimeOfDayBetween(time, new TimeSpan(4, 0, 0), new TimeSpan(6, 59, 0)))
             {
-                return DayNightEmojis.Moonset;
+                return Emojis.DayNight.Moonset;
             }
 
             // time is less between 7:00AM & 11:59AM
             if (IsTimeOfDayBetween(time, new TimeSpan(7, 0, 0), new TimeSpan(11, 59, 0)))
             {
-                return DayNightEmojis.Sunrise;
+                return Emojis.DayNight.Sunrise;
             }
 
             // time is less between 12:00PM & 4:59PM
             if (IsTimeOfDayBetween(time, new TimeSpan(12, 0, 0), new TimeSpan(16, 59, 0)))
             {
-                return DayNightEmojis.Sun;
+                return Emojis.DayNight.Sun;
             }
 
             // time is less between 5:00PM & 7:59PM
             if (IsTimeOfDayBetween(time, new TimeSpan(17, 0, 0), new TimeSpan(19, 59, 0)))
             {
-                return DayNightEmojis.Sunset;
+                return Emojis.DayNight.Sunset;
             }
 
             // time is less between 8:00PM & 10:59PM
             if (IsTimeOfDayBetween(time, new TimeSpan(20, 0, 0), new TimeSpan(22, 59, 0)))
             {
-                return DayNightEmojis.Moonrise;
+                return Emojis.DayNight.Moonrise;
             }
 
             // time is less between 11:00PM & 12:59PM
             if (IsTimeOfDayBetween(time, new TimeSpan(23, 0, 0), new TimeSpan(24, 59, 0)))
             {
-                return DayNightEmojis.Moon;
+                return Emojis.DayNight.Moon;
             }
 
-            return DayNightEmojis.Sunrise;
+            return Emojis.DayNight.Sunrise;
         }
 
         private static CurrentServerInfo CountRegions(List<Rooms> rooms)

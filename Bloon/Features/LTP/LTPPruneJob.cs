@@ -8,8 +8,7 @@ namespace Bloon.Features.LTP
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
     using Bloon.Variables;
-    using Bloon.Variables.Emojis;
-    using Bloon.Variables.Roles;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using Microsoft.Extensions.DependencyInjection;
@@ -29,14 +28,14 @@ namespace Bloon.Features.LTP
             this.bloonLog = bloonLog;
         }
 
-        public ulong Emoji => SBGEmojis.Superboss;
+        public ulong Emoji => Emojis.SBG.Superboss;
 
         public int Interval => 24 * 60;
 
         public async Task Execute()
         {
             DiscordGuild sbg = await this.dClient.GetGuildAsync(Guilds.SBG);
-            DiscordRole ltpRole = sbg.GetRole(SBGRoles.LookingToPlay);
+            DiscordRole ltpRole = sbg.GetRole(Roles.SBG.LookingToPlay);
 
             List<DiscordMember> roleMembers = sbg.Members
                 .Select(m => m.Value)
@@ -59,7 +58,7 @@ namespace Bloon.Features.LTP
 
                 await member.RevokeRoleAsync(ltpRole);
 
-                this.bloonLog.Information(LogConsole.RoleEdits, ManageRoleEmojis.Demotion, $"**Role Demotion**: {member.Username} - LTP");
+                this.bloonLog.Information(LogConsole.RoleEdits, Emojis.ManageRole.Demotion, $"**Role Demotion**: {member.Username} - LTP");
             }
 
             db.LTPJoins.RemoveRange(prunable);

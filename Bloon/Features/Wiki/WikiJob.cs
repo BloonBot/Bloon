@@ -3,8 +3,7 @@ namespace Bloon.Features.Wiki
     using System.Threading.Tasks;
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
-    using Bloon.Variables.Channels;
-    using Bloon.Variables.Emojis;
+    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using Serilog;
@@ -22,7 +21,7 @@ namespace Bloon.Features.Wiki
             this.wikiService = wikiService;
         }
 
-        public ulong Emoji => PlatformEmojis.Wiki;
+        public ulong Emoji => Emojis.Platform.Wiki;
 
         public int Interval => 5;
 
@@ -44,14 +43,14 @@ namespace Bloon.Features.Wiki
                 return;
             }
 
-            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(SBGChannels.General);
-            DiscordChannel sbgWiki = await this.dClient.GetChannelAsync(SBGChannels.Wiki);
+            DiscordChannel sbgGen = await this.dClient.GetChannelAsync(Channels.SBG.General);
+            DiscordChannel sbgWiki = await this.dClient.GetChannelAsync(Channels.SBG.Wiki);
 
             DiscordEmbed wikiEmbed = new DiscordEmbedBuilder
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, PlatformEmojis.Wiki).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(this.dClient, Emojis.Platform.Wiki).Url,
                     Text = $"Superbossgames Wiki | Bytes Changed: {(article.ByteDifference > 0 ? "+" : string.Empty)}{article.ByteDifference}",
                 },
                 Color = new DiscordColor(217, 187, 19),
