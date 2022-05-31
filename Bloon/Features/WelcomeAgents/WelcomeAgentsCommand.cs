@@ -60,7 +60,6 @@ namespace Bloon.Features.WelcomeAgents
             StringBuilder importLinks = new StringBuilder();
             importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.YouTube)} | [**Youtube**](https://www.youtube.com/superbossgames)\n");
             importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Twitter)} | [**Twitter**](https://twitter.com/SuperbossGames/)\n");
-            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Helprace)} | [**Helprace**](https://superbossgames.helprace.com/)\n");
             importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Reddit)} | [**Reddit**](https://www.reddit.com/r/Intruder)\n");
             importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Twitch)} | [**Twitch**](https://www.twitch.tv/superbossgames)\n");
             importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Discord)} | [**Server Invite**](https://discord.gg/superbossgames)\n");

@@ -4,7 +4,6 @@ namespace Bloon.Core.Database
     using System.Text.RegularExpressions;
     using Bloon.Core.Services;
     using Bloon.Features.FAQ;
-    using Bloon.Features.Helprace;
     using Bloon.Features.RedditGuard;
     using Bloon.Features.SteamNews;
     using Bloon.Features.Twitter;
@@ -44,7 +43,6 @@ namespace Bloon.Core.Database
             // Magic
             modelBuilder.Entity<SocialItem>()
                 .HasDiscriminator<SocialType>("Type")
-                .HasValue<HelpracePost>(SocialType.Helprace)
                 .HasValue<RedditPost>(SocialType.Reddit)
                 .HasValue<SteamNewsPost>(SocialType.SteamNews)
                 .HasValue<Tweet>(SocialType.Twitter)

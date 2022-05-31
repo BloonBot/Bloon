@@ -35,7 +35,6 @@ namespace Bloon.Core.Commands
 
             StringBuilder socialLinks = new StringBuilder();
 
-            socialLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Helprace)} | [**Helprace**](https://superbossgames.helprace.com/)\n");
             socialLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Reddit)} | [**Reddit**](https://www.reddit.com/r/Intruder)\n");
             socialLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Twitch)} | [**Twitch**](https://www.twitch.tv/superbossgames)\n");
             socialLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Twitter)} | [**Twitter**](https://twitter.com/SuperbossGames/)\n");

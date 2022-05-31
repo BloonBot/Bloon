@@ -3,11 +3,6 @@ namespace Bloon.Core.Services
     public enum SocialType
     {
         /// <summary>
-        /// Why is it called "Helprace" when it's actually really slow?
-        /// </summary>
-        Helprace = 1,
-
-        /// <summary>
         /// Read it, ydi
         /// </summary>
         Reddit = 2,

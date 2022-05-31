@@ -62,7 +62,6 @@ namespace Bloon.Variables
             public const ulong Twitter = 288089852736438273;
             public const ulong Steam = 288084279349608448;
             public const ulong Reddit = 288084240967401474;
-            public const ulong Helprace = 499579695491448852;
             public const ulong Wiki = 587812105340846100;
             public const ulong Twitch = 655655324308471829;
             public const ulong Github = 891007467910217739;
