@@ -21,7 +21,7 @@ namespace Bloon.Features.IntruderBackend.Servers
         }
 
         [SlashCommand("gsi", "Get server information.")]
-        [SlashSBGOnly]
+        [SlashSBGExclusive]
         public async Task GSISlash(InteractionContext ctx)
         {
             CurrentServerInfo csi = await this.roomService.GetCSIRooms(null, null, null, null, "false", "false", "false", "false", "false", null, 1, 100);
@@ -60,7 +60,7 @@ namespace Bloon.Features.IntruderBackend.Servers
 
                 serverEmbed.Title = "Current Server Information";
                 serverEmbed.Url = "https://intruderfps.com/rooms";
-                serverEmbed.AddField($"Server | Region | Name - [Agents]", serverList.ToString(), true);
+                serverEmbed.AddField($"Region | Name - [Agents]", serverList.ToString(), true);
             }
             else
             {

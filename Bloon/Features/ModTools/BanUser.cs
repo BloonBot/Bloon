@@ -9,6 +9,7 @@ namespace Bloon.Features.ModTools
     using DSharpPlus.Entities;
 
     [ModuleLifespan(ModuleLifespan.Transient)]
+    [ModExclusive]
     public class BanUser : BaseCommandModule
     {
         private readonly AnalyticsContext db;
@@ -20,7 +21,6 @@ namespace Bloon.Features.ModTools
 
         [Command("banid")]
         [Description("Bans a user from SuperBossGames server.")]
-        [ModExclusive]
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public async Task BanUserAsync(CommandContext ctx, ulong discordId, bool deleteMessages, [RemainingText] string? notes)
 #pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
@@ -51,7 +51,6 @@ namespace Bloon.Features.ModTools
         [Command("ban")]
         [Description("Bans a user from SuperBossGames server.")]
         [Aliases("banhammer", "hammertime")]
-        [ModExclusive]
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public async Task BanUserAsync(CommandContext ctx, DiscordUser user, bool deleteMessages, [RemainingText] string? notes)
 #pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
@@ -61,7 +60,6 @@ namespace Bloon.Features.ModTools
 
         [Command("unbanid")]
         [Description("Bans a user from SuperBossGames server via ID.")]
-        [ModExclusive]
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public async Task UnbanUserByIDAsync(CommandContext ctx, ulong discordId, [RemainingText] string? notes)
 #pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
@@ -86,7 +84,6 @@ namespace Bloon.Features.ModTools
         [Command("unban")]
         [Description("Unbans a user from the SuperbossGames server.")]
         [Aliases("unyeet")]
-        [ModExclusive]
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public async Task UnbanUserAsync(CommandContext ctx, DiscordUser user, [RemainingText] string? notes)
 #pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.

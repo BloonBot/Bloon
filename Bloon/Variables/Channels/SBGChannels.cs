@@ -47,6 +47,8 @@ namespace Bloon.Variables.Channels
 
         public static ulong PicsNVids { get; private set; } = 268062505761243137;
 
+        public static ulong BloonCommands { get; private set; } = 934126841206308905;
+
         public static ulong Mapmaker { get; private set; } = 141327816300953600;
 
         public static ulong MapMakerShowcase { get; private set; } = 630869030139592726;
@@ -78,6 +80,7 @@ namespace Bloon.Variables.Channels
             Bugs = BloonChannels.CommandCentre;
             General = BloonChannels.Ground0;
             PicsNVids = BloonChannels.CommandCentre;
+            BloonCommands = BloonChannels.CommandCentre;
             AUG = BloonChannels.CommandCentre;
             SecretBaseAlpha = BloonChannels.Ground0;
             Wiki = BloonChannels.CommandCentre;

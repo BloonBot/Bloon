@@ -11,6 +11,7 @@ namespace Bloon.Features.ModTools
     using DSharpPlus.Entities;
 
     [ModuleLifespan(ModuleLifespan.Transient)]
+    [ModExclusive]
     public class MuteUser : BaseCommandModule
     {
         private readonly AnalyticsContext db;
@@ -22,7 +23,6 @@ namespace Bloon.Features.ModTools
 
         [Command("muteid")]
         [Description("Mute a particular user. Requires Moderator Role. Usage: `.mute {discordId} {notes}`. Notes are optional.")]
-        [ModExclusive]
         public async Task MuteUserByIDAsync(CommandContext ctx, ulong discordId, [RemainingText] string? notes)
         {
             try
@@ -56,7 +56,6 @@ namespace Bloon.Features.ModTools
         [Command("mute")]
         [Description("Mute a particular user. Requires Moderator Role. Usage: `.mute @DiscordUserMention {notes}`. Notes are optional.")]
         [Aliases("m", "mu", "silence", "shh")]
-        [ModExclusive]
         public async Task MuteUserAsync(CommandContext ctx, DiscordUser user, [RemainingText] string? notes)
         {
             await this.MuteUserByIDAsync(ctx, user.Id, notes);
@@ -64,7 +63,6 @@ namespace Bloon.Features.ModTools
 
         [Command("unmuteid")]
         [Description("umid")]
-        [ModExclusive]
         public async Task UnmuteUserByIDAsync(CommandContext ctx, ulong discordId, [RemainingText] string? notes)
         {
             try
@@ -97,7 +95,6 @@ namespace Bloon.Features.ModTools
 
         [Command("unmute")]
         [Description("Unmute")]
-        [ModExclusive]
         public async Task UnmuteUserAsync(CommandContext ctx, DiscordUser user, [RemainingText] string? notes)
         {
             await this.UnmuteUserByIDAsync(ctx, user.Id, notes);

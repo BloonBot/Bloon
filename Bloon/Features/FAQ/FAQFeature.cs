@@ -63,7 +63,7 @@ namespace Bloon.Features.FAQ
                 return;
             }
 
-            if ((args.Channel.Id == SBGChannels.Help || args.Channel.Id == SBGChannels.General || args.Channel.Id == BloonChannels.Ground0 || args.Channel.Id == SBGChannels.Mapmaker || args.Channel.Id == SBGChannels.Wiki || args.Channel.Id == SBGChannels.MapMakerShowcase || args.Channel.Id == SBGChannels.SecretBaseAlpha)
+            if ((args.Channel.Id == SBGChannels.Help || args.Channel.Id == SBGChannels.General ||args.Channel.Id == SBGChannels.BloonCommands || args.Channel.Id == BloonChannels.Ground0 || args.Channel.Id == SBGChannels.Mapmaker || args.Channel.Id == SBGChannels.Wiki || args.Channel.Id == SBGChannels.MapMakerShowcase || args.Channel.Id == SBGChannels.SecretBaseAlpha)
                 && this.faqManager.TryForAutoResponse(args.Message.Content, out string response))
             {
                 await args.Channel.SendMessageAsync(response);

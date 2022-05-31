@@ -9,6 +9,7 @@ namespace Bloon.Features.ModTools
     using DSharpPlus.Entities;
 
     [ModuleLifespan(ModuleLifespan.Transient)]
+    [ModExclusive]
     public class KickUser : BaseCommandModule
     {
         private readonly AnalyticsContext db;
@@ -20,7 +21,6 @@ namespace Bloon.Features.ModTools
 
         [Command("kickid")]
         [Description("Kicks a user from the guild.")]
-        [ModExclusive]
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public async Task KickUserAsync(CommandContext ctx, ulong discordId, [RemainingText] string? notes)
 #pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
@@ -44,7 +44,6 @@ namespace Bloon.Features.ModTools
         [Command("kick")]
         [Description("Kicks a user from the guild.")]
         [Aliases("boot", "yeet")]
-        [ModExclusive]
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public async Task KickUserAsync(CommandContext ctx, DiscordUser user, [RemainingText] string? notes)
 #pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.

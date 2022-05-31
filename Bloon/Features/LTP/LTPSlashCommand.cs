@@ -21,7 +21,7 @@ namespace Bloon.Features.LTP
         }
 
         [SlashCommand("ltp", "Add or remove yourself from the Looking To Play role.")]
-        [SlashSBGOnly]
+        [SlashSBGExclusive]
         public async Task LTPAsyncslash(InteractionContext ctx)
         {
             DiscordRole ltp = ctx.Guild.GetRole(SBGRoles.LookingToPlay);

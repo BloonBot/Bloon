@@ -3,6 +3,7 @@ namespace Bloon.Commands
     using System;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using Bloon.Core.Commands.Attributes;
     using Bloon.Core.Discord;
     using Bloon.Utils;
     using DSharpPlus.CommandsNext;
@@ -15,6 +16,7 @@ namespace Bloon.Commands
 
     [Group("stream")]
     [Description("Manage bloon's streaming status. This currently only supports Twitch streams.")]
+    [LimitedChannels]
     public class StreamCommands : BaseCommandModule
     {
         private readonly TwitchAPI twitchAPI;
