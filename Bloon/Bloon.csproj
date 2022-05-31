@@ -31,8 +31,8 @@
     <PackageReference Include="dotenv.net" Version="3.1.1" />
     <PackageReference Include="DSharpPlus" Version="4.2.0" />
     <PackageReference Include="DSharpPlus.CommandsNext" Version="4.2.0" />
+    <PackageReference Include="DSharpPlus.SlashCommands" Version="4.2.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
-    <PackageReference Include="IDoEverything.DSharpPlus.SlashCommands" Version="2.0.4" />
     <PackageReference Include="linqtotwitter" Version="6.14.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
