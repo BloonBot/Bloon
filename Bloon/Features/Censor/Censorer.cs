@@ -23,11 +23,6 @@ namespace Bloon.Features.Censor
             this.censorRegexes.Add(censor.Id, new Regex(ToRegexPattern(censor.Pattern), RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant));
         }
 
-        public void RemoveCensor(int censorId)
-        {
-            this.censorRegexes.Remove(censorId);
-        }
-
         public bool TryCensorContent(string text, out string highlighted, out KeyValuePair<int, Regex> censor)
         {
             highlighted = text;

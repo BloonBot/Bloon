@@ -19,14 +19,12 @@ namespace Bloon.Features.Censor
     {
         private readonly IServiceProvider provider;
         private readonly DiscordClient dClient;
-        private readonly CommandsNextExtension cNext;
         private readonly Censorer censorer;
 
         public CensorFeature(IServiceProvider provider, DiscordClient dClient, Censorer censorer)
         {
             this.provider = provider;
             this.dClient = dClient;
-            this.cNext = dClient.GetCommandsNext();
             this.censorer = censorer;
         }
 
@@ -37,7 +35,6 @@ namespace Bloon.Features.Censor
         public override Task Disable()
         {
             this.censorer.Reset();
-            this.cNext.UnregisterCommands<CensorCommands>();
             this.dClient.MessageCreated -= this.CensorAsync;
             this.dClient.MessageReactionAdded -= this.ProfanityFilterRemove;
 
@@ -49,7 +46,6 @@ namespace Bloon.Features.Censor
             using IServiceScope scope = this.provider.CreateScope();
             using BloonContext db = scope.ServiceProvider.GetRequiredService<BloonContext>();
             this.censorer.Init(db.Censors.ToList());
-            this.cNext.RegisterCommands<CensorCommands>();
             this.dClient.MessageCreated += this.CensorAsync;
             this.dClient.MessageReactionAdded += this.ProfanityFilterRemove;
 
@@ -58,7 +54,9 @@ namespace Bloon.Features.Censor
 
         private async Task ProfanityFilterRemove(DiscordClient dClient, MessageReactionAddEventArgs args)
         {
-            if (args.User.Id == dClient.CurrentUser.Id || (args.Channel?.Id != Channels.SBG.Bloonside && !args.Emoji.Equals(DiscordEmoji.FromName(this.dClient, ":wastebasket:"))))
+            if (args.Guild?.Id != Guilds.SBG
+                || args.User.Id == dClient.CurrentUser.Id
+                || (args.Channel?.Id != Channels.SBG.Bloonside && !args.Emoji.Equals(DiscordEmoji.FromName(this.dClient, ":wastebasket:"))))
             {
                 return;
             }
@@ -81,7 +79,7 @@ namespace Bloon.Features.Censor
         /// <returns>Profantiy warning to AUG chat.</returns>
         private async Task CensorAsync(DiscordClient dClient, MessageCreateEventArgs args)
         {
-            if (args.Author.IsBot)
+            if (args.Guild?.Id != Guilds.SBG || args.Author.IsBot)
             {
                 return;
             }
