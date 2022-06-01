@@ -57,8 +57,7 @@ namespace Bloon.Features.RandomResponses
 
         private async Task OnMessageCreatedAsync(DiscordClient dClient, MessageCreateEventArgs args)
         {
-            // Ignore the message if the author is a bot account.
-            if (args.Author.IsBot == true)
+            if (args.Author.IsBot)
             {
                 return;
             }
