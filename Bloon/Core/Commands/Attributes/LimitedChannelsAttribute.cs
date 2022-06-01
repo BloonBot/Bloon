@@ -3,6 +3,7 @@ namespace Bloon.Core.Commands.Attributes
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Bloon.Variables;
     using Bloon.Variables.Channels;
     using Bloon.Variables.Roles;
     using DSharpPlus.CommandsNext;
@@ -36,7 +37,7 @@ namespace Bloon.Core.Commands.Attributes
 
         public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help)
         {
-            return Task.FromResult(this.Channels.Contains(ctx.Channel.Id)
+            return Task.FromResult(((ctx.Guild?.Id == Guilds.SBG || ctx.Guild?.Id == Guilds.Bloon) && this.Channels.Contains(ctx.Channel.Id))
                 || (this.AllowDMs && ctx.Channel.IsPrivate)
                 || (this.IgnoreMods && (ctx.Member?.Roles?.Any(r => r.Id == SBGRoles.Mod) ?? false)));
         }
