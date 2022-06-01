@@ -219,7 +219,7 @@ namespace Bloon.Commands
             {
                 Footer = new DiscordEmbedBuilder.EmbedFooter
                 {
-                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, Variables.Emojis.SBG.Superboss).Url,
+                    IconUrl = DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.SBG.Superboss).Url,
                     Text = "Superbossgames API | Run .help top for all available columns",
                 },
                 Color = new DiscordColor(217, 187, 19),

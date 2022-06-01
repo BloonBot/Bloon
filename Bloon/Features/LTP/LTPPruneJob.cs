@@ -8,7 +8,6 @@ namespace Bloon.Features.LTP
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
     using Bloon.Variables;
-    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using Microsoft.Extensions.DependencyInjection;

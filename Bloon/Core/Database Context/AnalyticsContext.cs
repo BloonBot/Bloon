@@ -2,7 +2,6 @@ namespace Bloon.Core.Database
 {
     using System;
     using Bloon.Analytics;
-    using Bloon.Analytics.Users;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
     using Newtonsoft.Json;
@@ -22,19 +21,5 @@ namespace Bloon.Core.Database
             + $"SSL Mode=none";
 
         public DbSet<Commands> Commands { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            JsonSerializerSettings settings = new JsonSerializerSettings()
-            {
-                Formatting = Formatting.None,
-            };
-
-            modelBuilder.Entity<UserEvent>()
-            .Property(s => s.Event)
-            .HasConversion(new EnumToStringConverter<Event>());
-
-            base.OnModelCreating(modelBuilder);
-        }
     }
 }

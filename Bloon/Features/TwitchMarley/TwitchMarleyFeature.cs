@@ -91,7 +91,7 @@ namespace Bloon.Features.TwitchMarley
             Task.Run(async () =>
             {
                 // Ignore non-SBG events
-                if (args.PresenceAfter.Guild.Id != Variables.Guilds.SBG)
+                if (args.PresenceAfter.Guild.Id != Guilds.SBG)
                 {
                     return;
                 }

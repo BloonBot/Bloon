@@ -5,6 +5,7 @@ namespace Bloon.Variables
     /// </summary>
     public static class Messages
     {
-        public const ulong TheOnlyMessageIDWeCurrentlyCareAboutAtleastInAPublicFacingPerspective = 892811060413886504;
+        public const ulong Rules = 892811059897991208;
+        public const ulong NewsRole = 892811060413886504;
     }
 }

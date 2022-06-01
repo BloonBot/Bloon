@@ -49,7 +49,7 @@ namespace Bloon.Commands
             string name = url;
 
             // Probably a url
-            if (url.Contains(".", StringComparison.Ordinal))
+            if (url.Contains('.', StringComparison.Ordinal))
             {
                 Match match = Regex.Match(url, @"\.tv\/([^\/]*)");
 

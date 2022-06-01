@@ -29,8 +29,8 @@ namespace Bloon.Features.WelcomeAgents
         {
             this.cNext.UnregisterCommands<WelcomeAgentsCommand>();
 
-            this.dClient.MessageReactionAdded -= this.NewsRoleAssignment;
-            this.dClient.MessageReactionRemoved -= this.DClient_MessageReactionRemoved;
+            this.dClient.MessageReactionAdded -= this.AssignNewsRoleAsync;
+            this.dClient.MessageReactionRemoved -= this.RevokeNewsRoleAsync;
 
             return base.Disable();
         }
@@ -39,15 +39,15 @@ namespace Bloon.Features.WelcomeAgents
         {
             this.cNext.RegisterCommands<WelcomeAgentsCommand>();
 
-            this.dClient.MessageReactionAdded += this.NewsRoleAssignment;
-            this.dClient.MessageReactionRemoved += this.DClient_MessageReactionRemoved;
+            this.dClient.MessageReactionAdded += this.AssignNewsRoleAsync;
+            this.dClient.MessageReactionRemoved += this.RevokeNewsRoleAsync;
 
             return base.Enable();
         }
 
-        private async Task NewsRoleAssignment(DiscordClient dClient, MessageReactionAddEventArgs args)
+        private async Task AssignNewsRoleAsync(DiscordClient dClient, MessageReactionAddEventArgs args)
         {
-            if (args.User.Id == dClient.CurrentUser.Id || (args.Message?.Id != Messages.TheOnlyMessageIDWeCurrentlyCareAboutAtleastInAPublicFacingPerspective && !args.Emoji.Equals(DiscordEmoji.FromGuildEmote(this.dClient, Emojis.ManageRole.BloonMoji))))
+            if (args.User.Id == dClient.CurrentUser.Id || (args.Message?.Id != Messages.NewsRole && !args.Emoji.Equals(DiscordEmoji.FromGuildEmote(this.dClient, Emojis.ManageRole.BloonMoji))))
             {
                 return;
             }
@@ -55,16 +55,17 @@ namespace Bloon.Features.WelcomeAgents
             DiscordMember discordUser = await args.Guild.GetMemberAsync(args.User.Id);
             DiscordRole newsRole = args.Guild.GetRole(Roles.SBG.News);
 
-            if (args.Message.Id == Messages.TheOnlyMessageIDWeCurrentlyCareAboutAtleastInAPublicFacingPerspective && !discordUser.Roles.Contains(newsRole))
+            if (!discordUser.Roles.Contains(newsRole))
             {
                 await discordUser.GrantRoleAsync(newsRole);
             }
+
             return;
         }
 
-        private async Task DClient_MessageReactionRemoved(DiscordClient sender, MessageReactionRemoveEventArgs args)
+        private async Task RevokeNewsRoleAsync(DiscordClient sender, MessageReactionRemoveEventArgs args)
         {
-            if (args.User.Id == this.dClient.CurrentUser.Id || (args.Message?.Id != Messages.TheOnlyMessageIDWeCurrentlyCareAboutAtleastInAPublicFacingPerspective && !args.Emoji.Equals(DiscordEmoji.FromGuildEmote(this.dClient, Emojis.ManageRole.BloonMoji))))
+            if (args.User.Id == this.dClient.CurrentUser.Id || (args.Message?.Id != Messages.NewsRole && !args.Emoji.Equals(DiscordEmoji.FromGuildEmote(this.dClient, Emojis.ManageRole.BloonMoji))))
             {
                 return;
             }
@@ -72,7 +73,7 @@ namespace Bloon.Features.WelcomeAgents
             DiscordMember discordUser = await args.Guild.GetMemberAsync(args.User.Id);
             DiscordRole newsRole = args.Guild.GetRole(Roles.SBG.News);
 
-            if (args.Message.Id == Messages.TheOnlyMessageIDWeCurrentlyCareAboutAtleastInAPublicFacingPerspective && discordUser.Roles.Contains(newsRole))
+            if (discordUser.Roles.Contains(newsRole))
             {
                 await discordUser.RevokeRoleAsync(newsRole);
             }

@@ -9,10 +9,9 @@ namespace Bloon.Features.WelcomeAgents
     using DSharpPlus.Entities;
     using Serilog;
 
-    [ModuleLifespan(ModuleLifespan.Transient)]
     public class WelcomeAgentsCommand : BaseCommandModule
     {
-        private DiscordEmbedBuilder rulesEmbed = new DiscordEmbedBuilder
+        private readonly DiscordEmbedBuilder rulesEmbed = new DiscordEmbedBuilder
         {
             Footer = new DiscordEmbedBuilder.EmbedFooter
             {
@@ -33,7 +32,7 @@ namespace Bloon.Features.WelcomeAgents
             $"**10**. No discussion of moderator actions in public chats. Contact <@272792185454198806> if you feel wrongfully moderated in accordance with the rules listed above.",
         };
 
-        private DiscordEmbedBuilder roleEmbed = new DiscordEmbedBuilder
+        private readonly DiscordEmbedBuilder roleEmbed = new DiscordEmbedBuilder
         {
             Footer = new DiscordEmbedBuilder.EmbedFooter
             {
@@ -58,11 +57,11 @@ namespace Bloon.Features.WelcomeAgents
             roleLinks.Append($"<@&{Roles.SBG.Agent}> : All members of the community.  \n");
 
             StringBuilder importLinks = new StringBuilder();
-            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.YouTube)} | [**Youtube**](https://www.youtube.com/superbossgames)\n");
-            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Twitter)} | [**Twitter**](https://twitter.com/SuperbossGames/)\n");
+            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Discord)} | [**Server Invite**](https://discord.gg/superbossgames)\n");
             importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Reddit)} | [**Reddit**](https://www.reddit.com/r/Intruder)\n");
             importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Twitch)} | [**Twitch**](https://www.twitch.tv/superbossgames)\n");
-            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Discord)} | [**Server Invite**](https://discord.gg/superbossgames)\n");
+            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.Twitter)} | [**Twitter**](https://twitter.com/SuperbossGames/)\n");
+            importLinks.Append($"{DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.Platform.YouTube)} | [**Youtube**](https://www.youtube.com/superbossgames)\n");
 
             this.rulesEmbed.AddField($"Roles", roleLinks.ToString(), false);
             this.rulesEmbed.AddField($"Important Links", importLinks.ToString(), false);
@@ -71,9 +70,9 @@ namespace Bloon.Features.WelcomeAgents
             {
                 foreach (DiscordMessage msg in await rulesAndInfo.GetMessagesAsync())
                 {
-                    if (msg.Author.Id == ctx.Client.CurrentUser.Id && msg.Id == 892811059897991208)
+                    if (msg.Author.Id == ctx.Client.CurrentUser.Id && msg.Id == Messages.Rules)
                     {
-                        await msg.ModifyAsync(embed: this.rulesEmbed.Build());
+                        await msg.ModifyAsync(this.rulesEmbed.Build());
                         return;
                     }
                 }
@@ -91,24 +90,21 @@ namespace Bloon.Features.WelcomeAgents
             this.roleEmbed.Description = $"React to this message using {DiscordEmoji.FromGuildEmote(ctx.Client, Emojis.ManageRole.BloonMoji)} reaction to subscribe to news and stay up to date. This way, we will reserve using the @everyone for essential news only.\n";
             DiscordChannel rulesAndInfo = ctx.Guild.GetChannel(Channels.SBG.RulesAndInfo);
 
-            StringBuilder roleLinks = new StringBuilder();
-
             try
             {
                 foreach (DiscordMessage msg in await rulesAndInfo.GetMessagesAsync())
                 {
-                    if (msg.Author.Id == ctx.Client.CurrentUser.Id && msg.Id == Messages.TheOnlyMessageIDWeCurrentlyCareAboutAtleastInAPublicFacingPerspective)
+                    if (msg.Author.Id == ctx.Client.CurrentUser.Id && msg.Id == Messages.NewsRole)
                     {
-                        await msg.ModifyAsync(embed: this.rulesEmbed.Build());
+                        await msg.ModifyAsync(this.rulesEmbed.Build());
                         return;
                     }
                 }
             }
             catch (Exception e)
             {
-                Log.Error(e.InnerException, "Failed to edit or update the Current Server Info.");
+                Log.Error(e.InnerException, "Failed to edit or update the news role message.");
             }
         }
-
     }
 }

@@ -6,7 +6,6 @@ namespace Bloon.Features.RolePersistence
     using Bloon.Core.Database;
     using Bloon.Core.Services;
     using Bloon.Variables;
-    using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using DSharpPlus.EventArgs;
