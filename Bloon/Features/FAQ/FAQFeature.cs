@@ -5,6 +5,7 @@ namespace Bloon.Features.FAQ
     using System.Threading.Tasks;
     using Bloon.Core.Database;
     using Bloon.Core.Services;
+    using Bloon.Variables;
     using Bloon.Variables.Channels;
     using DSharpPlus;
     using DSharpPlus.CommandsNext;
@@ -58,7 +59,7 @@ namespace Bloon.Features.FAQ
         /// <returns>Task.</returns>
         private async Task ProcessFAQAsync(DiscordClient dClient, MessageCreateEventArgs args)
         {
-            if (args.Author.IsBot)
+            if (args.Guild?.Id != Guilds.SBG || args.Author.IsBot)
             {
                 return;
             }

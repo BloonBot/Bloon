@@ -4,6 +4,7 @@ namespace Bloon.Features.Censor
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Bloon.Core.Services;
+    using Bloon.Variables;
     using Bloon.Variables.Channels;
     using DSharpPlus;
     using DSharpPlus.Entities;
@@ -45,7 +46,7 @@ namespace Bloon.Features.Censor
         /// <returns>Task.</returns>
         private async Task RestrictInvitesAsync(DiscordClient dClient, MessageCreateEventArgs args)
         {
-            if (args.Author.IsBot)
+            if (args.Guild?.Id != Guilds.SBG || args.Author.IsBot)
             {
                 return;
             }
@@ -61,11 +62,11 @@ namespace Bloon.Features.Censor
 
             if ((DateTime.UtcNow - member.JoinedAt.UtcDateTime).TotalHours < 24)
             {
-                DiscordChannel sbgAUG = args.Channel.Guild.GetChannel(SBGChannels.Bloonside);
+                DiscordChannel channel = args.Channel.Guild.GetChannel(SBGChannels.Bloonside);
 
                 await args.Message.DeleteAsync();
                 await args.Channel.SendMessageAsync("Invite link removed (Joined <24 hours ago)");
-                await sbgAUG.SendMessageAsync($"Removed an invite link from `{args.Author.Username}#{args.Author.Discriminator}` to `{match.Value}` in {args.Channel.Mention}.");
+                await channel.SendMessageAsync($"Removed an invite link from `{args.Author.Username}#{args.Author.Discriminator}` to `{match.Value}` in {args.Channel.Mention}.");
             }
         }
     }

@@ -8,6 +8,7 @@ namespace Bloon.Features.Censor
     using Bloon.Core.Database;
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
+    using Bloon.Variables;
     using Bloon.Variables.Channels;
     using DSharpPlus;
     using DSharpPlus.CommandsNext;
@@ -81,7 +82,7 @@ namespace Bloon.Features.Censor
         /// <returns>Profantiy warning to AUG chat.</returns>
         private async Task CensorAsync(DiscordClient dClient, MessageCreateEventArgs args)
         {
-            if (args.Author.IsBot)
+            if (args.Guild?.Id != Guilds.SBG || args.Author.IsBot)
             {
                 return;
             }
