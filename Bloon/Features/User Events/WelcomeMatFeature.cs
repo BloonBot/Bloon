@@ -5,7 +5,6 @@ namespace Bloon.Features.Doorman
     using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
-    using Bloon.Analytics.Users;
     using Bloon.Core.Database;
     using Bloon.Core.Services;
     using Bloon.Variables;
@@ -17,20 +16,10 @@ namespace Bloon.Features.Doorman
 
     public class WelcomeMatFeature : Feature
     {
-        private readonly IServiceProvider provider;
         private readonly DiscordClient dClient;
 
-        private readonly Dictionary<Event, ulong> eventEmotes = new Dictionary<Event, ulong>
+        public WelcomeMatFeature(DiscordClient dClient)
         {
-            { Event.Banned, Emojis.Event.Banned },
-            { Event.Joined, Emojis.Event.Join },
-            { Event.Left, Emojis.Event.Leave },
-            { Event.Unbanned, Emojis.Event.Edited },
-        };
-
-        public WelcomeMatFeature(IServiceProvider provider, DiscordClient dClient)
-        {
-            this.provider = provider;
             this.dClient = dClient;
         }
 
@@ -41,7 +30,6 @@ namespace Bloon.Features.Doorman
         public override Task Disable()
         {
             this.dClient.GuildMemberAdded -= this.GeneralWelcomeEmbed;
-            this.dClient.GuildMemberAdded -= this.BloonsideEmbed;
             this.dClient.GuildMemberAdded -= this.GiveAgentRoleAsync;
 
             return base.Disable();
@@ -50,7 +38,6 @@ namespace Bloon.Features.Doorman
         public override Task Enable()
         {
             this.dClient.GuildMemberAdded += this.GeneralWelcomeEmbed;
-            this.dClient.GuildMemberAdded += this.BloonsideEmbed;
             this.dClient.GuildMemberAdded += this.GiveAgentRoleAsync;
 
             return base.Enable();
@@ -66,7 +53,33 @@ namespace Bloon.Features.Doorman
                 return;
             }
 
-            await sbgChannel.SendMessageAsync(this.BuildEmbed(args.Member));
+            DiscordColor colorDate = new DiscordColor(95, 95, 95);
+
+            // If the user's account age is less than 24 hours, we may be dealing with a throwaway/spam/etc. account.
+            // Change their welcome embed color to flag these users as they may be malicious
+            if ((DateTime.UtcNow - args.Member.CreationTimestamp.UtcDateTime).TotalHours <= 24)
+            {
+                colorDate = new DiscordColor(249, 183, 255);
+            }
+
+            DiscordEmbed embed = new DiscordEmbedBuilder
+            {
+                Footer = new DiscordEmbedBuilder.EmbedFooter()
+                {
+                    Text = $"Account Created: {args.Member.CreationTimestamp.UtcDateTime.ToString("D", CultureInfo.InvariantCulture)}",
+                },
+                Color = colorDate,
+                Timestamp = DateTime.UtcNow,
+                Title = $"**New User Joined** | {args.Member.DisplayName}",
+                Description = $"**User**: <@{args.Member.Id}>\n" +
+                    $"**ID**: {args.Member.Id}",
+                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
+                {
+                    Url = args.Member.AvatarUrl,
+                },
+            };
+
+            await sbgChannel.SendMessageAsync(embed);
         }
 
         private async Task GiveAgentRoleAsync(DiscordClient dClient, GuildMemberAddEventArgs args)
@@ -78,65 +91,8 @@ namespace Bloon.Features.Doorman
             }
 
             await args.Member.GrantRoleAsync(args.Guild.GetRole(Roles.SBG.Agent));
-        }
-
-        private async Task BloonsideEmbed(DiscordClient dClient, GuildMemberAddEventArgs args)
-        {
-            DiscordChannel sbgChannel = await this.dClient.GetChannelAsync(Channels.SBG.Bloonside);
-
-            // If guild isn't SBG, just ignore this user join event.
-            if (args.Guild.Id != Guilds.SBG)
-            {
-                return;
-            }
-
-            DiscordEmbedBuilder embed = this.BuildEmbed(args.Member);
-
-            using IServiceScope scope = this.provider.CreateScope();
-            using AnalyticsContext db = scope.ServiceProvider.GetRequiredService<AnalyticsContext>();
-            List<UserEvent> userEvents = await db.UserEvents
-                .Where(u => u.UserId == args.Member.Id)
-                .OrderByDescending(u => u.Timestamp)
-                .Take(10)
-                .ToListAsync();
-
-            embed.AddField(
-                "Events",
-                string.Join(
-                    "\n",
-                    userEvents.Select(u => $"{DiscordEmoji.FromGuildEmote(this.dClient, this.eventEmotes[u.Event])} {u.Event.ToString().PadRight(8, '\u2000')} - {u.Timestamp.ToString("ddd, dd MMM yyyy, hh:mm:ss tt", CultureInfo.InvariantCulture)}")));
-
-            // Post embed to #bloonside
-            await sbgChannel.SendMessageAsync(embed);
-        }
-
-        private DiscordEmbedBuilder BuildEmbed(DiscordMember member)
-        {
-            DiscordColor colorDate = new DiscordColor(95, 95, 95);
-
-            // If the user's account age is less than 24 hours, we may be dealing with a throwaway/spam/etc. account.
-            // Change their welcome embed color to flag these users as they may be malicious
-            if ((DateTime.UtcNow - member.CreationTimestamp.UtcDateTime).TotalHours <= 24)
-            {
-                colorDate = new DiscordColor(249, 183, 255);
-            }
-
-            return new DiscordEmbedBuilder
-            {
-                Footer = new DiscordEmbedBuilder.EmbedFooter()
-                {
-                    Text = $"Account Created: {member.CreationTimestamp.UtcDateTime.ToString("D", CultureInfo.InvariantCulture)}",
-                },
-                Color = colorDate,
-                Timestamp = DateTime.UtcNow,
-                Title = $"**New User Joined** | {member.DisplayName}",
-                Description = $"**User**: <@{member.Id}>\n" +
-                    $"**ID**: {member.Id}",
-                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
-                {
-                    Url = member.AvatarUrl,
-                },
-            };
+            await args.Guild.GetChannel(Channels.SBG.Bloonside)
+                .SendMessageAsync($"Granted **Agent** to **{args.Member.Username}**.");
         }
     }
 }

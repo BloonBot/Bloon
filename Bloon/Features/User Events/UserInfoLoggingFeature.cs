@@ -5,100 +5,61 @@ namespace Bloon.Features.Doorman
     using System.Threading.Tasks;
     using Bloon.Core.Discord;
     using Bloon.Core.Services;
-    using Bloon.Features.Analytics;
     using Bloon.Variables;
     using DSharpPlus;
     using DSharpPlus.Entities;
     using DSharpPlus.EventArgs;
 
     /// <summary>
-    /// Logs the events of users joining, leaving, and banning into the database and text channels.
+    /// Logs the events of users joining and leaving into text channels.
     /// </summary>
     public class UserInfoLoggingFeature : Feature
     {
         private readonly DiscordClient dClient;
         private readonly BloonLog bloonLog;
-        private readonly UserEventService userEventService;
 
-        public UserInfoLoggingFeature(DiscordClient dClient, BloonLog bloonLog, UserEventService userEventService)
+        public UserInfoLoggingFeature(DiscordClient dClient, BloonLog bloonLog)
         {
             this.dClient = dClient;
             this.bloonLog = bloonLog;
-            this.userEventService = userEventService;
         }
 
         public override string Name => "#sbg_userinfo Logging";
 
-        public override string Description => "Logs Joins/Leaves/Bans into DB/Discord Chats";
+        public override string Description => "Logs Joins/Leaves into #sbg_userinfo";
 
         public override Task Disable()
         {
-            this.dClient.GuildMemberAdded -= this.DBLogMemberJoined;
-
-            this.dClient.GuildMemberRemoved -= this.DBLogMemberLeft;
-            this.dClient.GuildMemberRemoved -= this.DiscordLogUserLeft;
-
-            this.dClient.GuildBanAdded -= this.DBLogBanAdded;
-            this.dClient.GuildBanRemoved -= this.DBLogBanRemoved;
+            this.dClient.GuildMemberAdded -= this.LogUserJoin;
+            this.dClient.GuildMemberRemoved -= this.LogUserLeaveAsync;
             return base.Disable();
         }
 
         public override Task Enable()
         {
-            this.dClient.GuildMemberAdded += this.DBLogMemberJoined;
-
-            this.dClient.GuildMemberRemoved += this.DBLogMemberLeft;
-            this.dClient.GuildMemberRemoved += this.DiscordLogUserLeft;
-
-            this.dClient.GuildBanAdded += this.DBLogBanAdded;
-            this.dClient.GuildBanRemoved += this.DBLogBanRemoved;
+            this.dClient.GuildMemberAdded += this.LogUserJoin;
+            this.dClient.GuildMemberRemoved += this.LogUserLeaveAsync;
 
             return base.Enable();
         }
 
-        private static bool IsSBG(ulong guildId)
+        private Task LogUserJoin(DiscordClient dClient, GuildMemberAddEventArgs args)
         {
-            return guildId == Variables.Guilds.SBG;
-        }
-
-        private async Task DBLogBanRemoved(DiscordClient sender, GuildBanRemoveEventArgs args)
-        {
-            if (IsSBG(args.Guild.Id))
+            if (args.Guild.Id != Guilds.SBG)
             {
-                await this.userEventService.AddUserUnBannedEventAsync(args);
-            }
-        }
-
-        private async Task DBLogBanAdded(DiscordClient sender, GuildBanAddEventArgs args)
-        {
-            if (IsSBG(args.Guild.Id))
-            {
-                await this.userEventService.AddUserBannedEventAsync(args);
-            }
-        }
-
-        private async Task DBLogMemberJoined(DiscordClient dClient, GuildMemberAddEventArgs args)
-        {
-            if (IsSBG(args.Guild.Id))
-            {
-                await this.userEventService.AddUserJoinedEventAsync(args);
+                return Task.CompletedTask;
             }
 
-            // Log to Discord
-            this.bloonLog.Information(LogConsole.UserInfo, Emojis.Event.Join, $"{args.Member.Username} **Joined** SBG. Account Created: {args.Member.CreationTimestamp.UtcDateTime.ToString("D", CultureInfo.InvariantCulture)} | ID: {args.Member.Id}");
+            string message = $"{args.Member.Username} **Joined** SBG. Account Created: {args.Member.CreationTimestamp.UtcDateTime.ToString("D", CultureInfo.InvariantCulture)} | ID: {args.Member.Id}";
+
+            this.bloonLog.Information(LogConsole.UserInfo, Emojis.Event.Join, message);
+
+            return Task.CompletedTask;
         }
 
-        private async Task DBLogMemberLeft(DiscordClient dClient, GuildMemberRemoveEventArgs args)
+        private async Task LogUserLeaveAsync(DiscordClient dClient, GuildMemberRemoveEventArgs args)
         {
-            if (IsSBG(args.Guild.Id))
-            {
-                await this.userEventService.AddUserLeftEventAsync(args);
-            }
-        }
-
-        private async Task DiscordLogUserLeft(DiscordClient dClient, GuildMemberRemoveEventArgs args)
-        {
-            if (args.Guild.Id != Variables.Guilds.SBG)
+            if (args.Guild.Id != Guilds.SBG)
             {
                 return;
             }
