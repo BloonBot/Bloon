@@ -17,7 +17,6 @@ namespace Bloon.Core
             ServerVersion version = ServerVersion.AutoDetect(BloonContext.ConnectionString);
 
             services.AddDbContextPool<BloonContext>(options => options.UseMySql(BloonContext.ConnectionString, version))
-                .AddDbContextPool<AnalyticsContext>(options => options.UseMySql(AnalyticsContext.ConnectionString, version))
                 .AddDbContextPool<IntruderContext>(options => options.UseMySql(IntruderContext.ConnectionString, version))
                 .AddSingleton<ActivityManager>()
                 .AddSingleton<BloonLog>()

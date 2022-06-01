@@ -149,20 +149,6 @@ namespace Bloon.Core.Discord
             Log.Debug(logMessage);
             this.bloonLog.Information(LogConsole.Commands, Emojis.Command.Run, logMessage);
 
-            using IServiceScope scope = this.scopeFactory.CreateScope();
-            using AnalyticsContext db = scope.ServiceProvider.GetRequiredService<AnalyticsContext>();
-            db.Commands.Add(new Analytics.Commands()
-            {
-                Command = args.Context.Message.Content.Substring(1),
-                Guild = args.Context.Guild != null ? args.Context.Guild.Id : ulong.MinValue,
-                Channel = args.Context.Channel != null ? args.Context.Channel.Id : ulong.MinValue,
-                UserId = args.Context.User.Id,
-                Link = args.Context.Guild != null ? $"https://discord.com/channels/{args.Context.Guild.Id}/{args.Context.Channel.Id}/{args.Context.User.Id}" : "DM",
-                Timestamp = DateTime.Now,
-            });
-
-            await db.SaveChangesAsync();
-
             return;
         }
 
@@ -185,21 +171,6 @@ namespace Bloon.Core.Discord
             this.bloonLog.Information(LogConsole.Commands, Emojis.Command.Run, logMessage);
 
             Log.Debug(logMessage);
-
-            using IServiceScope scope = this.scopeFactory.CreateScope();
-            using AnalyticsContext db = scope.ServiceProvider.GetRequiredService<AnalyticsContext>();
-
-            db.Commands.Add(new Analytics.Commands()
-            {
-                Command = args.Context.CommandName,
-                Guild = args.Context.Guild != null ? args.Context.Guild.Id : ulong.MinValue,
-                Channel = args.Context.Channel != null ? args.Context.Channel.Id : ulong.MinValue,
-                UserId = args.Context.User.Id,
-                Link = args.Context.Guild != null ? $"https://discord.com/channels/{args.Context.Guild.Id}/{args.Context.Channel.Id}/{args.Context.User.Id}" : "DM",
-                Timestamp = DateTime.Now,
-            });
-
-            await db.SaveChangesAsync();
 
             return;
         }
