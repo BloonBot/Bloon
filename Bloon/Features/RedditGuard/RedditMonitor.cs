@@ -12,13 +12,13 @@ namespace Bloon.Features.RedditGuard
     using Reddit.Controllers.EventArgs;
     using Serilog;
 
-    public class NewPostEvent
+    public class RedditMonitor
     {
         private readonly IServiceScopeFactory scopeFactory;
         private readonly DiscordClient dClient;
         private readonly Subreddit subreddit;
 
-        public NewPostEvent(IServiceScopeFactory scopeFactory, DiscordClient dClient, RedditClient rClient)
+        public RedditMonitor(IServiceScopeFactory scopeFactory, DiscordClient dClient, RedditClient rClient)
         {
             this.scopeFactory = scopeFactory;
             this.dClient = dClient;

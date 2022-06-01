@@ -11,12 +11,12 @@ namespace Bloon.Features.RedditGuard
     public class RedditGuardFeature : Feature
     {
         private readonly DiscordClient dClient;
-        private readonly NewPostEvent newPostEvent;
+        private readonly RedditMonitor redditMonitor;
 
         public RedditGuardFeature(IServiceScopeFactory scopeFactory, DiscordClient dClient, RedditClient rClient)
         {
             this.dClient = dClient;
-            this.newPostEvent = new NewPostEvent(scopeFactory, dClient, rClient);
+            this.redditMonitor = new RedditMonitor(scopeFactory, dClient, rClient);
         }
 
         public override string Name => "Reddit";
@@ -25,7 +25,7 @@ namespace Bloon.Features.RedditGuard
 
         public override Task Disable()
         {
-            this.newPostEvent.Unregister();
+            this.redditMonitor.Unregister();
             return base.Disable();
         }
 
@@ -33,7 +33,7 @@ namespace Bloon.Features.RedditGuard
         {
             if (Bot.Ready)
             {
-                this.newPostEvent.Register();
+                this.redditMonitor.Register();
             }
             else
             {
@@ -45,7 +45,7 @@ namespace Bloon.Features.RedditGuard
 
         private Task OnDClientReady(DiscordClient dClient, ReadyEventArgs args)
         {
-            Task.Run(() => this.newPostEvent.Register());
+            Task.Run(() => this.redditMonitor.Register());
             return Task.CompletedTask;
         }
     }
