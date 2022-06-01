@@ -17,7 +17,7 @@ namespace Bloon.Features.Censor
         public InviteRestrictionsFeature(DiscordClient dClient)
         {
             this.dClient = dClient;
-            this.inviteRegex = new Regex(@"(discord\.gg|discordapp\.com\/invite)\/[a-zA-Z0-9]+", RegexOptions.Compiled);
+            this.inviteRegex = new Regex(@"(discord\.gg|discord(?:app)?\.com\/invite)\/[a-zA-Z0-9]+", RegexOptions.Compiled);
         }
 
         public override string Name => "Remove Discord Invites";
