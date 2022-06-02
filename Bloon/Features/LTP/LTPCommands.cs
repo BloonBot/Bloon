@@ -11,6 +11,7 @@ namespace Bloon.Features.LTP
     using DSharpPlus.Entities;
 
     [ModuleLifespan(ModuleLifespan.Transient)]
+    [SBGExclusive]
     [LimitedChannels(additionalChannels: 892874024403763211)]
     public class LTPCommands : BaseCommandModule
     {
