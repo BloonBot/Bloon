@@ -92,6 +92,11 @@ namespace Bloon.Features.Workshop
 
             List<WorkshopMap> updatedMaps = new List<WorkshopMap>();
 
+            if (workshopMaps == null)
+            {
+                return updatedMaps;
+            }
+
             using IServiceScope scope = this.scopeFactory.CreateScope();
             using IntruderContext db = scope.ServiceProvider.GetRequiredService<IntruderContext>();
             foreach (WorkshopMap map in workshopMaps)
