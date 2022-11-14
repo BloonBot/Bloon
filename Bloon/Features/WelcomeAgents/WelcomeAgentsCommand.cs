@@ -33,7 +33,7 @@ namespace Bloon.Features.WelcomeAgents
             $"**7**. Post in the correct channels. \n" +
             $"**8**. No advertising non-Intruder content. \n" +
             $"**9**. Respect the staff and follow instructions. Mods are doing their best to make a friendly environment. \n" +
-            $"**10**. No discussion of moderator actions in public chats. Contact <@272792185454198806> if you feel wrongfully moderated in accordance with the rules listed above.",
+            $"**10**. No discussion of moderator actions in public chats. Contact <@104389223280295936> if you feel wrongfully moderated in accordance with the rules listed above.",
         };
 
         private DiscordEmbedBuilder roleEmbed = new DiscordEmbedBuilder
