@@ -31,9 +31,10 @@ namespace Bloon.Features.WelcomeAgents
             $"**5**. Do not over message/mention staff. \n" +
             $"**6**. No alternate accounts to dodge moderation action. \n" +
             $"**7**. Post in the correct channels. \n" +
-            $"**8**. No advertising non-Intruder content. \n" +
-            $"**9**. Respect the staff and follow instructions. Mods are doing their best to make a friendly environment. \n" +
-            $"**10**. No discussion of moderator actions in public chats. Contact <@104389223280295936> if you feel wrongfully moderated in accordance with the rules listed above.",
+            $"**8**. Chat in English only. \n" +
+            $"**9**. No advertising non-Intruder content. \n" +
+            $"**10**. Respect the staff and follow instructions. Mods are doing their best to make a friendly environment. \n" +
+            $"**11**. No discussion of moderator actions in public chats. Contact <@104389223280295936> if you feel wrongfully moderated in accordance with the rules listed above.",
         };
 
         private DiscordEmbedBuilder roleEmbed = new DiscordEmbedBuilder
